@@ -1,0 +1,3 @@
+# Project exclude paths
+/dkperms-api/target/
+/dkperms-common/target/
