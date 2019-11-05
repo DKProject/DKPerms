@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 
 public interface PermissionScopeBuilder {
 
-    PermissionScopeBuilder of(String type, String value);
+    PermissionScopeBuilder of(String key, String value);
 
     PermissionScope build();
 

@@ -10,6 +10,11 @@
 
 package net.pretronic.dkperms.api.context;
 
+/**
+ * You are able to assign contexts with a value to objects, permissions and groups.
+ *
+ * <p>A permission is only valid, when the object and the permission entity has the same same value.</p>
+ */
 public interface PermissionContextAssignment {
 
     int getId();

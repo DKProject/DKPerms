@@ -12,20 +12,18 @@ package net.pretronic.dkperms.common.scope;
 
 import net.prematic.libraries.utility.Iterators;
 import net.prematic.libraries.utility.annonations.Nullable;
+import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.scope.PermissionScope;
-import net.pretronic.dkperms.api.storage.DKPermsStorage;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
-//@Todo implement async
 public class DefaultPermissionScope implements PermissionScope {
 
     private final int UNSAVED_ID = -1;
-
-    private final DKPermsStorage storage;
 
     private int id;
     private int level;
@@ -35,8 +33,7 @@ public class DefaultPermissionScope implements PermissionScope {
     private PermissionScope parent;
     private List<PermissionScope> children;
 
-    public DefaultPermissionScope(DKPermsStorage storage, int id, String key, String name,@Nullable PermissionScope parent) {
-        this.storage = storage;
+    public DefaultPermissionScope(int id, String key, String name,@Nullable PermissionScope parent) {
         this.id = id;
         this.key = key;
         this.name = name;
@@ -44,8 +41,7 @@ public class DefaultPermissionScope implements PermissionScope {
         this.parent = parent;
     }
 
-    public DefaultPermissionScope(DKPermsStorage storage, int id, String key, String name, int level, PermissionScope parent, List<PermissionScope> children) {
-        this.storage = storage;
+    public DefaultPermissionScope(int id, String key, String name, int level, PermissionScope parent, List<PermissionScope> children) {
         this.id = id;
         this.key = key;
         this.name = name;
@@ -75,6 +71,12 @@ public class DefaultPermissionScope implements PermissionScope {
     }
 
     @Override
+    public String getPath() {
+        if(parent == null) return "\\";
+        else return parent.getPath()+"\\"+key+"@"+name;
+    }
+
+    @Override
     public PermissionScope getParent() {
         return parent;
     }
@@ -85,7 +87,7 @@ public class DefaultPermissionScope implements PermissionScope {
         Objects.requireNonNull(name,"Name can't be null");
         PermissionScope result =  Iterators.findOne(getChildren(), scope -> scope.getKey().equalsIgnoreCase(key) && scope.getName().equalsIgnoreCase(name));
         if(result == null){
-            result = new DefaultPermissionScope(storage,UNSAVED_ID,key,name,this);
+            result = new DefaultPermissionScope(UNSAVED_ID,key,name,this);
             this.children.add(result);
         }
         return result;
@@ -93,7 +95,7 @@ public class DefaultPermissionScope implements PermissionScope {
 
     @Override
     public CompletableFuture<PermissionScope> getChildAsync(String key, String name) {
-        return null;
+        return DKPerms.getInstance().getExecutor().execute(() -> getChild(key, name));
     }
 
     @Override
@@ -104,7 +106,7 @@ public class DefaultPermissionScope implements PermissionScope {
 
     @Override
     public CompletableFuture<List<PermissionScope>> getChildrenAsync() {
-        return null;
+        return DKPerms.getInstance().getExecutor().execute(this::getChildren);
     }
 
     @Override
@@ -115,42 +117,52 @@ public class DefaultPermissionScope implements PermissionScope {
     @Override
     public void insert() {
         if(isSaved()) throw new IllegalArgumentException("The Scope is already inserted.");
-        if(!parent.isSaved()) parent.insert();
-        this.id = this.storage.insertScope(this);
+        if(parent != null && !parent.isSaved()) parent.insert();
+        this.id = DKPerms.getInstance().getStorage().getScopeStorage().insertScope(parent!=null?parent.getId():UNSAVED_ID,this.key,this.name);
     }
 
     @Override
     public void rename(String key, String name) {
         Objects.requireNonNull(key,"Key can't be null");
         Objects.requireNonNull(name,"Name can't be null");
+        DKPerms.getInstance().getStorage().getScopeStorage().updateScopeName(this.id,this.key,this.name);
         this.key = key;
         this.name = name;
-        if(isSaved()){
-            try{
-                this.storage.updateScopeName(this);
-            }catch (RuntimeException exception){
-                throw exception;
-            }
-        }
     }
 
+
     @Override
-    public void move(PermissionScope newParent) {
-        Objects.requireNonNull(newParent,"Parent can't be null");
-        this.storage.updateScopeParent(this,newParent);
-        this.parent = newParent;
-        this.level = newParent.getLevel()+1;
+    public CompletableFuture<Void> renameAsync(String key, String name) {
+        return DKPerms.getInstance().getExecutor().executeVoid(() -> rename(key, name));
     }
 
     @Override
     public void delete() {
         this.children.forEach(PermissionScope::delete);
-        this.storage.deleteScope(this);
+        DKPerms.getInstance().getStorage().getScopeStorage().deleteScope(this.id);
         this.id = UNSAVED_ID;
     }
 
-    private void loadChildren(){
-        if(isSaved()) this.children = this.storage.loadScopes(this);
+    @Override
+    public CompletableFuture<Void> deleteAsync() {
+        return DKPerms.getInstance().getExecutor().executeVoid(this::delete);
+    }
+
+    @Override
+    public void move(PermissionScope newParent) {
+        Objects.requireNonNull(newParent,"Parent can't be null");
+        DKPerms.getInstance().getStorage().getScopeStorage().updateScopeParent(this.id,newParent.getId());
+        this.parent = newParent;
+        this.level = newParent.getLevel()+1;
+    }
+
+    @Override
+    public CompletableFuture<Void> moveAsync(PermissionScope parent) {
+        return DKPerms.getInstance().getExecutor().executeVoid(() -> move(parent));
+    }
+
+    private void loadChildren() {
+        if (isSaved()) this.children = DKPerms.getInstance().getStorage().getScopeStorage().loadScopes(this);
         else this.children = new ArrayList<>();
     }
 }

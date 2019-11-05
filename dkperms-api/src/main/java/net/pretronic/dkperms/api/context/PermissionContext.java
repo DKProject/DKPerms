@@ -10,6 +10,12 @@
 
 package net.pretronic.dkperms.api.context;
 
+import java.util.concurrent.CompletableFuture;
+
+/**
+ * The PermissionContext is an addition to the scope and is used for setting condition for a permission.
+ * A permission is only valid, when the placer has the same context value.
+ */
 public interface PermissionContext {
 
     int getId();
@@ -18,8 +24,12 @@ public interface PermissionContext {
 
     void rename(String name);
 
+    CompletableFuture<Void> renameAsync(String name);
+
     PermissionContextAssignment assign(Object value);
 
     void delete();
+
+    CompletableFuture<Void> deleteAsync();
 
 }

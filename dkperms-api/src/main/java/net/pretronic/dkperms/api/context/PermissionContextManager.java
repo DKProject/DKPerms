@@ -27,21 +27,26 @@ public interface PermissionContextManager {
     CompletableFuture<PermissionContext> getOrCreateContextAsync(String name);
 
 
-    PermissionContext createContext(String key);
+    boolean hasContext(String name);
 
-    CompletableFuture<PermissionContext> createContextAsync(String key);
+    CompletableFuture<Boolean> hasContextAsync(String name);
 
 
-    boolean deleteContext(int id);
+    PermissionContext createContext(String name);
 
-    boolean deleteContext(String name);
+    CompletableFuture<PermissionContext> createContextAsync(String name);
 
-    boolean deleteContext(PermissionContext context);
 
-    CompletableFuture<Boolean> deleteContextAsync(int id);
+    void deleteContext(int id);
 
-    CompletableFuture<Boolean> deleteContextAsync(String name);
+    void deleteContext(String name);
 
-    CompletableFuture<Boolean> deleteContextAsync(PermissionContext context);
+    void deleteContext(PermissionContext context);
+
+    CompletableFuture<Void> deleteContextAsync(int id);
+
+    CompletableFuture<Void> deleteContextAsync(String name);
+
+    CompletableFuture<Void> deleteContextAsync(PermissionContext context);
 
 }

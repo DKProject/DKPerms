@@ -11,11 +11,13 @@
 package net.pretronic.dkperms.common.scope;
 
 import net.prematic.libraries.utility.map.Pair;
+import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.PermissionScopeBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 public class DefaultPermissionScopeBuilder implements PermissionScopeBuilder {
@@ -23,14 +25,16 @@ public class DefaultPermissionScopeBuilder implements PermissionScopeBuilder {
     private final PermissionScope root;
     private final List<Pair<String,String>> conditions;
 
-    public DefaultPermissionScopeBuilder(PermissionScope root) {
+    DefaultPermissionScopeBuilder(PermissionScope root) {
         this.root = root;
         this.conditions = new ArrayList<>();
     }
 
     @Override
-    public PermissionScopeBuilder of(String type, String value) {
-        this.conditions.add(new Pair<>(type,value));
+    public PermissionScopeBuilder of(String key, String value) {
+        Objects.requireNonNull(key,"Key can't be null");
+        Objects.requireNonNull(value,"Value can't be null");
+        this.conditions.add(new Pair<>(key,value));
         return this;
     }
 
@@ -43,6 +47,6 @@ public class DefaultPermissionScopeBuilder implements PermissionScopeBuilder {
 
     @Override
     public CompletableFuture<PermissionScope> buildAsync() {
-        return null;//@Todo async
+        return DKPerms.getInstance().getExecutor().execute(this::build);
     }
 }

@@ -10,6 +10,8 @@
 
 package net.pretronic.dkperms.api.object;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface PermissionObjectType {
 
     PermissionObjectType GROUP = Registry.INFO.getGroup();
@@ -23,12 +25,13 @@ public interface PermissionObjectType {
 
     String getName();
 
-    void setName(String name);
+    void rename(String name);
 
-    PermissionObjectFactory getLocalFactory(PermissionObjectFactory factory);
+    CompletableFuture<Void> renameAsync(String name);
+
+    PermissionObjectFactory getLocalFactory();
 
     void setLocalFactory(PermissionObjectFactory factory);
-
 
 
     class Registry {

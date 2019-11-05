@@ -10,31 +10,48 @@
 
 package net.pretronic.dkperms.api;
 
+import net.prematic.libraries.logging.PrematicLogger;
+import net.prematic.libraries.utility.concurrent.AsyncExecutor;
 import net.pretronic.dkperms.api.backup.BackupManager;
 import net.pretronic.dkperms.api.context.PermissionContextManager;
 import net.pretronic.dkperms.api.object.PermissionObjectManager;
 import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyse;
 import net.pretronic.dkperms.api.scope.PermissionScope;
+import net.pretronic.dkperms.api.scope.PermissionScopeManager;
+import net.pretronic.dkperms.api.storage.DKPermsStorage;
 
-public interface DKPerms {
+public abstract class DKPerms {
 
-    String getVersion();
+    private static DKPerms INSTANCE;
 
-    int getBuild();
+    public abstract String getVersion();
 
-    PermissionScope getScopeManager();
+    public abstract int getBuild();
 
-    PermissionContextManager getContextManager();
+    public abstract PrematicLogger getLogger();
 
-    PermissionObjectManager getObjectManager();
+    public abstract PermissionScopeManager getScopeManager();
 
-    BackupManager getBackupManager();
+    public abstract PermissionContextManager getContextManager();
 
-    PermissionAnalyse startAnalyse();
+    public abstract PermissionObjectManager getObjectManager();
 
-    boolean synchronize();
+    public abstract BackupManager getBackupManager();
 
-    static DKPerms getInstance(){
-        return null;
+    public abstract DKPermsStorage getStorage();
+
+    public abstract AsyncExecutor getExecutor();
+
+    public abstract PermissionAnalyse startAnalyse();
+
+    public abstract boolean synchronize();
+
+    public static DKPerms getInstance(){
+        return INSTANCE;
+    }
+
+    public static void setInstance(DKPerms instance){
+        if(INSTANCE != null) throw new IllegalArgumentException("DKPerms instance is already set.");
+        INSTANCE = instance;
     }
 }

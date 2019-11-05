@@ -37,6 +37,12 @@
     <dependencies>
         <dependency>
             <groupId>net.prematic.libraries</groupId>
+            <artifactId>prematiclibraries-logging</artifactId>
+            <version>${dependency.pretronic.libraries}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.prematic.libraries</groupId>
             <artifactId>prematiclibraries-document</artifactId>
             <version>${dependency.pretronic.libraries}</version>
             <scope>provided</scope>

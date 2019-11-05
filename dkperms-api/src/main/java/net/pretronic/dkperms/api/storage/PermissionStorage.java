@@ -2,13 +2,13 @@
  * (C) Copyright 2019 The DKPerms Project (Davide Wietlisbach & Philipp Elvin Friedhoff)
  *
  * @author Davide Wietlisbach
- * @since 28.10.19, 19:40
+ * @since 05.11.19, 18:36
  * @website %web%
  *
  * %license%
  */
 
-package net.pretronic.dkperms.api.minecraft;
+package net.pretronic.dkperms.api.storage;
 
-public class dsf {
+public class PermissionStorage {
 }

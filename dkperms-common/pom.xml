@@ -44,6 +44,13 @@
         </dependency>
 
         <dependency>
+            <groupId>net.prematic.libraries</groupId>
+            <artifactId>prematiclibraries-caching</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>net.prematic.databasequery</groupId>
             <artifactId>prematicdatabasequery-core</artifactId>
             <version>1.0.0</version>

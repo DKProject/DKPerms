@@ -16,8 +16,11 @@ import net.pretronic.dkperms.api.object.search.ObjectSearcher;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 
 import java.util.Collection;
+import java.util.Collections;
 
 public interface PermissionObjectManager {
+
+    Collection<PermissionObjectType> getTypes();
 
     PermissionObjectType getType(int id);
 
@@ -27,9 +30,9 @@ public interface PermissionObjectManager {
 
     PermissionObjectType createType(String name);
 
-    boolean deleteType(int id);
+    void deleteType(int id);
 
-    boolean deleteType(String name);
+    void deleteType(String name);
 
 
     PermissionObject getObject(int id);
@@ -50,7 +53,8 @@ public interface PermissionObjectManager {
     ObjectSearcher search();
 
 
-    PermissionObject createObject(PermissionObjectType type, int id, String name);
+    PermissionObject createObject(PermissionScope scope, PermissionObjectType type, String name);
+
 
     boolean deleteObject(int id);
 

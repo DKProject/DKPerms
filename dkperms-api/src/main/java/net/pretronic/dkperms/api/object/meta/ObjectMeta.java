@@ -16,11 +16,13 @@ import java.util.Collection;
 
 public interface ObjectMeta extends Iterable<ObjectMetaEntry> {
 
-    ObjectMetaEntry get(String key);
+    ObjectMetaEntry get(String key);//From root
 
     ObjectMetaEntry get(PermissionScope scope, String key);
 
-    ObjectMetaEntry getInheritance(PermissionScope scope, String key);
+    ObjectMetaEntry getInheritance(PermissionScope scope, String key);//
+
+    ObjectMeta getEffective(PermissionScope scope, String key);
 
 
     Collection<ObjectMetaEntry> getEntries();
@@ -29,23 +31,29 @@ public interface ObjectMeta extends Iterable<ObjectMetaEntry> {
 
     Collection<ObjectMetaEntry> getInheritanceEntries(PermissionScope scope);
 
-
-    void set(String key, Object value);
-
-    void set(String key, Object value,PermissionScope scope);
-
-    void set(ObjectMetaEntry entry);
+    Collection<ObjectMetaEntry> getEffectiveEntries(PermissionScope scope, String key);
 
 
     boolean contains(String key);
 
-    boolean contains(String key,PermissionScope scope);
+    boolean contains(PermissionScope scope,String key);
 
-    boolean containsInheritance(String key,PermissionScope scope);
+    boolean containsInheritance(PermissionScope scope, String key);
+
+    boolean containsEffective(PermissionScope scope,String key);
 
 
-    boolean clear();
+    ObjectMetaEntry set(String key, Object value);//to root
 
-    boolean clear(PermissionScope scope);
+    ObjectMetaEntry set(String key, Object value,PermissionScope scope);
+
+    void unset(String key);//from root
+
+    void unset(String key,PermissionScope scope);
+
+
+    void clear();
+
+    void clear(PermissionScope scope);
 
 }

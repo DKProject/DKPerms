@@ -10,9 +10,15 @@
 
 package net.pretronic.dkperms.api.scope;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 public interface PermissionScopeManager {
 
     PermissionScope getCurrentInstanceScope();
+
+    void setCurrentInstanceScope(PermissionScope scope);
 
     PermissionScope getRoot();
 
@@ -20,8 +26,13 @@ public interface PermissionScopeManager {
 
     PermissionScope get(String scopeOrder);
 
+    List<PermissionScope> getValidScopes(PermissionScope currentScope);
+
+    CompletableFuture<Collection<PermissionScope>> getValidScopesAsync(PermissionScope currentScope);
+
     PermissionScopeBuilder newBuilder();
 
+    void loadRootScope();
     //search
 
 }

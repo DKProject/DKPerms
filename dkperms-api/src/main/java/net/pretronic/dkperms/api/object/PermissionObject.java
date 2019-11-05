@@ -35,6 +35,8 @@ public interface PermissionObject extends Castable<PermissionObject>{
 
     void setName(String name);
 
+    String getPath();
+
 
     String getDisplayName();
 

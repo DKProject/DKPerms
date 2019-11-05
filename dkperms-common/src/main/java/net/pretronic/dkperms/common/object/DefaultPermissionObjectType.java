@@ -2,27 +2,31 @@
  * (C) Copyright 2019 The DKPerms Project (Davide Wietlisbach & Philipp Elvin Friedhoff)
  *
  * @author Davide Wietlisbach
- * @since 28.10.19, 19:40
+ * @since 02.11.19, 14:05
  * @website %web%
  *
  * %license%
  */
 
-package net.pretronic.dkperms.common.context;
+package net.pretronic.dkperms.common.object;
 
+import net.prematic.libraries.utility.concurrent.AsyncExecutor;
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.context.PermissionContext;
-import net.pretronic.dkperms.api.context.PermissionContextAssignment;
+import net.pretronic.dkperms.api.object.PermissionObjectFactory;
+import net.pretronic.dkperms.api.object.PermissionObjectType;
+import net.pretronic.dkperms.api.storage.DKPermsStorage;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-public final class DefaultPermissionContext implements PermissionContext {
+public class DefaultPermissionObjectType implements PermissionObjectType {
 
     private final int id;
     private String name;
 
-    public DefaultPermissionContext(int id, String name) {
+    private PermissionObjectFactory factory;
+
+    public DefaultPermissionObjectType(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -40,7 +44,7 @@ public final class DefaultPermissionContext implements PermissionContext {
     @Override
     public void rename(String name) {
         Objects.requireNonNull(name,"Name can't be null");
-        DKPerms.getInstance().getStorage().getContextStorage().updateContextName(this.id,name);
+        DKPerms.getInstance().getStorage().getObjectStorage().updateObjectType(this.id,name);
         this.name = name;
     }
 
@@ -51,17 +55,12 @@ public final class DefaultPermissionContext implements PermissionContext {
     }
 
     @Override
-    public void delete() {
-        DKPerms.getInstance().getStorage().getContextStorage().deleteContext(this.id);
+    public PermissionObjectFactory getLocalFactory() {
+        return factory;
     }
 
     @Override
-    public CompletableFuture<Void> deleteAsync() {
-        return DKPerms.getInstance().getExecutor().executeVoid(this::delete);
-    }
-
-    @Override
-    public PermissionContextAssignment assign(Object valueDKPerms) {
-        return null;
+    public void setLocalFactory(PermissionObjectFactory factory) {
+        this.factory = factory;
     }
 }
