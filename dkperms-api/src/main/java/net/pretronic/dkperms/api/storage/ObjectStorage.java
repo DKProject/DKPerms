@@ -10,57 +10,81 @@
 
 package net.pretronic.dkperms.api.storage;
 
-import net.prematic.libraries.utility.map.Pair;
+import net.pretronic.dkperms.api.object.search.ObjectSearchQuery;
+import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
+import net.pretronic.libraries.utility.map.Pair;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
+import net.pretronic.dkperms.api.object.meta.ObjectMeta;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import net.pretronic.dkperms.api.scope.PermissionScope;
+import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
 
 public interface ObjectStorage {
 
     Collection<PermissionObjectType> getObjectTypes();
 
-    PermissionObjectType getObjectType(int id);
+    PermissionObjectType getObjectType(int typeId);
 
     PermissionObjectType getObjectType(String name);
 
-    int createObjectType(String name);
+    int createObjectType(String name, boolean group);
 
     void updateObjectType(int typeId, String name);
 
-    void deleteObjectType(int id);
+    void deleteObjectType(int typeId);
 
     void deleteObjectType(String name);
 
 
     PermissionObject getObject(int id);
 
-    PermissionObject getObject(String name, int scopeId);
+    PermissionObject getObjectByAssignment(UUID id);
 
-    PermissionObject createObject(int scopeId,int objectType, String name);
+    PermissionObject getObject(String name, PermissionScope scope, PermissionObjectType type);
 
 
-    ObjectMetaEntry getMeta(int metaId);
+    ObjectSearchQuery createSearchQuery();
 
-    Collection<ObjectMetaEntry> getMetas(int objectId);
 
-    Collection<ObjectMetaEntry> getMetas(int objectId, PermissionScope scopes);
+    Collection<PermissionObject> getObjects(String name, PermissionObjectType type,Collection<PermissionObject> skipp);
 
-    Collection<Pair<PermissionScope,Collection<ObjectMetaEntry>>> getMetas(int objectId, PermissionScope... scopes);
+    PermissionObject createObject(PermissionScope scope,PermissionObjectType type, String name, UUID assignmentId);
 
-    Collection<Pair<PermissionScope,Collection<ObjectMetaEntry>>> getMetas(int objectId, Collection<PermissionScope> scopes);
+    void updateObjectName(int objectId, String name);
 
-    int insertMeta(int scopeId, int objectId, String key, String value);
+    void updateObjectType(int objectId, PermissionObjectType type);
+
+    void updateObjectScope(int objectId, PermissionScope scope);
+
+    void updateObjectDisabled(int objectId, boolean disabled);
+
+    void deleteObject(int objectId);
+
+
+    ObjectMetaEntry getMetaEntry(int metaId);
+
+
+    Collection<ObjectMetaEntry> getMetaEntries(int objectId, PermissionScope scopes);
+
+    ScopeBasedDataList<ObjectMetaEntry> getMetaEntries(int objectId, Collection<PermissionScope> scopes);
+
+    ScopeBasedDataList<ObjectMetaEntry> getAllMetaEntries(int objectId, Collection<PermissionScope> skipped);
+
+
+    int insertMeta(int objectId,int scopeId, String key, String value);
 
     void updateMeta(int metaId, String value);
 
-    void deleteMeta(int objectId, String key, int scopeId);
+    void deleteMetaEntry(int objectId, String key, int scopeId);
 
-    void deleteMeta(int metaId);
+    void deleteMetaEntry(int entryId);
 
-    void clearMetas(int objectId);
+    void clearMeta(int objectId);
 
-    void clearMetas(int objectId, int scopeId);
+    void clearMeta(int objectId, int scopeId);
 }

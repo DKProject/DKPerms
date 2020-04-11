@@ -10,12 +10,10 @@
 
 package net.pretronic.dkperms.api.entity;
 
-import net.pretronic.dkperms.api.context.PermissionContext;
-import net.pretronic.dkperms.api.context.PermissionContextAssignment;
+import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 
-import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 public interface Entity {
@@ -24,35 +22,39 @@ public interface Entity {
 
     int SESSION = -2;
 
+    int ONCE = -3;
+
 
     int getId();
 
     PermissionAction getAction();
 
-    void setAction(PermissionAction action);
+    void updateAction(PermissionObject executor,PermissionAction action);
 
 
     PermissionScope getScope();
 
-    void setScope(PermissionScope scope);
-
-
-    PermissionContextAssignment getContext(PermissionContext context);
-
-    Collection<PermissionContextAssignment> getContextAssignment();
-
-    boolean setContext(PermissionContext context, Object value);
-
-    boolean removeContext(PermissionContext context);
+    void updateScope(PermissionObject executor,PermissionScope scope);
 
 
     long getTimeout();
 
-    void setTimeout(long timeout);
+    void updateTimeout(PermissionObject executor,long timeout);
 
-    void setDuration(long duration, TimeUnit unit);
 
-    long getRemainingDuration();
+    default void updateDuration(PermissionObject executor,long duration, TimeUnit unit){
+        updateTimeout(executor,System.currentTimeMillis()+unit.toMillis(duration));
+    }
 
-    boolean hasTimeout();
+    default long getRemainingDuration(){
+        if(getTimeout() > 0) return System.currentTimeMillis()-getTimeout();
+        return getTimeout();
+    }
+
+    default boolean hasTimeout(){
+        return getTimeout() > 0 && getTimeout() < System.currentTimeMillis();
+    }
+
+
+    void remove(PermissionObject executor);
 }

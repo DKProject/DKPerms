@@ -11,10 +11,13 @@
 package net.pretronic.dkperms.api.object.search;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.holder.PermissionObjectHolder;
 
 import java.util.Collection;
 
 public interface ObjectSearchResult extends Iterable<PermissionObject> {
+
+    ObjectSearchQuery getQuery();
 
     int getCount();
 
@@ -24,8 +27,14 @@ public interface ObjectSearchResult extends Iterable<PermissionObject> {
 
     PermissionObject get(int index);
 
-    PermissionObject get(int fromIndex, int toIndex);
+    Collection<PermissionObject> get(int fromIndex, int toIndex);
+
 
     Collection<PermissionObject> getAll();
+
+
+    Collection<PermissionObjectHolder> getAllHolders();
+
+    <T extends PermissionObjectHolder> Collection<T> getAllHolders(Class<T> holderClass);
 
 }

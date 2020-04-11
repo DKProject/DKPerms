@@ -13,6 +13,7 @@ package net.pretronic.dkperms.api.permission.analyse;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 
 public interface PermissionAnalyse {
 
@@ -27,6 +28,8 @@ public interface PermissionAnalyse {
     void setScope(PermissionScope scope);
 
     Collection<PermissionRequest> getRequests();
+
+    void setRequestListener(Consumer<PermissionRequest> request);
 
     boolean stop();
 

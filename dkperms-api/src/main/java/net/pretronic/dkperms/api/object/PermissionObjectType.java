@@ -10,16 +10,11 @@
 
 package net.pretronic.dkperms.api.object;
 
+import net.pretronic.dkperms.api.object.holder.PermissionHolderFactory;
+
 import java.util.concurrent.CompletableFuture;
 
 public interface PermissionObjectType {
-
-    PermissionObjectType GROUP = Registry.INFO.getGroup();
-
-    PermissionObjectType USER = Registry.INFO.getUser();
-
-    PermissionObjectType SERVICE = Registry.INFO.getService();
-
 
     int getId();
 
@@ -29,40 +24,16 @@ public interface PermissionObjectType {
 
     CompletableFuture<Void> renameAsync(String name);
 
-    PermissionObjectFactory getLocalFactory();
-
-    void setLocalFactory(PermissionObjectFactory factory);
+    boolean isGroup();
 
 
-    class Registry {
+    PermissionHolderFactory getLocalHolderFactory();
 
-        public static DefaultObjectType INFO;
+    void setLocalHolderFactory(PermissionHolderFactory factory);
 
-    }
 
-    class DefaultObjectType {
-
-        private final PermissionObjectType user;
-        private final PermissionObjectType group;
-        private final PermissionObjectType service;
-
-        public DefaultObjectType(PermissionObjectType user, PermissionObjectType group, PermissionObjectType service) {
-            this.user = user;
-            this.group = group;
-            this.service = service;
-        }
-
-        public PermissionObjectType getUser() {
-            return user;
-        }
-
-        public PermissionObjectType getGroup() {
-            return group;
-        }
-
-        public PermissionObjectType getService() {
-            return service;
-        }
+    default void checkIsGroup(){
+        if(!isGroup()) throw new IllegalArgumentException("Object "+getName()+" is not a group object");
     }
 
 }

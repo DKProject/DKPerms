@@ -10,7 +10,7 @@
 
 package net.pretronic.dkperms.api.permission;
 
-import net.pretronic.dkperms.api.context.PermissionContext;
+import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 
 public interface PermissionCheck {
@@ -19,10 +19,14 @@ public interface PermissionCheck {
 
     PermissionCheck scope(PermissionScope scope);
 
-    PermissionCheck context(PermissionContext contexts);
+    PermissionCheck scope(PermissionScope start, PermissionScope end);
+
+    PermissionCheck scope(Graph<PermissionScope> range);
 
     PermissionAction check();
 
-    boolean has();
+    boolean hasOne();
+
+    boolean hasAll();
 
 }

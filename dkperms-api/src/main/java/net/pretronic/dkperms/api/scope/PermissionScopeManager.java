@@ -10,9 +10,7 @@
 
 package net.pretronic.dkperms.api.scope;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import net.pretronic.dkperms.api.graph.Graph;
 
 public interface PermissionScopeManager {
 
@@ -26,13 +24,15 @@ public interface PermissionScopeManager {
 
     PermissionScope get(String scopeOrder);
 
-    List<PermissionScope> getValidScopes(PermissionScope currentScope);
+    PermissionScope getScope(int id);
 
-    CompletableFuture<Collection<PermissionScope>> getValidScopesAsync(PermissionScope currentScope);
+    default Graph<PermissionScope> newGraph(PermissionScope end){
+        return newGraph(getRoot(),end);
+    }
+
+    Graph<PermissionScope> newGraph(PermissionScope start, PermissionScope end);
 
     PermissionScopeBuilder newBuilder();
 
-    void loadRootScope();
-    //search
 
 }

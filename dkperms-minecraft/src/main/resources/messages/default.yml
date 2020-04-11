@@ -1,0 +1,68 @@
+meta:
+  name: 'DKPerms English'
+  module: 'DKPerms'
+  language:
+    name: 'English'
+    localizedName: 'English'
+    code: 'en'
+messages:
+  dkperms.prefix: '&8» &9DKPerms &8|&f'
+
+  dkperms.command.perms.help: '${dkperms.prefix} &7Commands&8:
+  &7/perms info &8- &7Get information about DKPerms
+  &7/perms sync &8- &7Reload all permissions, groups and players
+  &7/perms migrate &8- &7Import permissions from another system
+  &7/perms groups &8- &7List all permission groups
+  &7/perms group &8- &7For more group information
+  &7/perms user &8- &7For more user information
+  '
+
+  dkperms.user.notfound: '${dkperms.prefix} &cThe user &9{user} &cwas not found.'
+  dkperms.group.notfound: '${dkperms.prefix} &cThe group &9{group} &cwas not found.'
+  dkperms.scope.notfound: '${dkperms.prefix} &cThe scope &9{scope} &cwas not found.'
+  dkperms.command.invalid.syntax: '${dkperms.prefix} &cInvalid usage of &9{command} &ccommand.\n\n  &8» &7{usage} \n'
+
+  dkperms.object.meta.set: '${dkperms.prefix} &7The meta entry of {object.type} &9{object} &7was changed&8: ${dkperms.object.meta.info}'
+  dkperms.object.meta.unset: '${dkperms.object.meta.set}'
+  dkperms.object.meta.show: '${dkperms.prefix} &7The meta entry of {object.type} &9{object}: ${dkperms.object.meta.info}'
+  dkperms.object.meta.info: '\n
+  &8» &7Key&8: &9{key}
+  &8» &7Value&8: &9{value}
+  &8» &7Scope&8: &9{scope}
+  '
+  dkperms.object.meta.list: '${dkperms.prefix} &7Meta entries of {object.type}\n
+  &8» &7Scope&8: &9{scope}
+  @for("entry" in {entries},${dkperms.object.meta.list.loop},"\n")
+
+  '
+  dkperms.object.meta.list.loop: ' &8- &7{entry.key}&8: &9{entry.value}'
+  dkperms.object.meta.tree: '${dkperms.prefix} &7Meta tree of {object.type} &9{object}\n'
+  dkperms.object.meta.tree.header: '{spaces}&8» &9{scope.key}&8=&9{scope.name} &8(&7{scope.level}&8)'
+  dkperms.object.meta.tree.entry: '{spaces}&8- {entry.key}&8: &9{entry.value}'
+
+  dkperms.object.meta.clear: '${dkperms.prefix} &7The meta of {object.type.name} &9{object.name} &7was cleared for scope &9{object.scope}\n'
+
+  dkperms.object.permission.set: '${dkperms.prefix} &7The permission of {type} &9{object} &7was changed&8: ${dkperms.object.permission.info}'
+  dkperms.object.permission.unset: '${dkperms.object.permission.set}'
+  dkperms.object.permission.show: '${dkperms.prefix} &7The permission of {type} &9{object}: ${dkperms.object.permission.info}'
+  dkperms.object.permission.info: '\n
+  &8» &Permission&8: &9{permission}
+  &8» &7Action&8: &9{action}
+  &8» &7Scope&8: &9{scope}
+  '
+  dkperms.object.permission.clear: '${dkperms.prefix} &7The permissions of {type} &9{player} &wear cleared\n\n&7Scope&8: &9{scope}\n'
+
+  dkperms.user.info: '
+  &8» &7Id&8: &9{user.id}
+  &8» &7Name&8: &9{user.property.color}{user.name}
+  &8» &7UniqueId&8: &9{user.uniqueId}
+  &8» &7Scope&8: &9{user.scope}
+  &8
+  &8» &7Team&8: &9{user.property.team}
+  &8» &7Color&8: &9{user.color}[]
+  &8» &7Chat&8: &9{user.property.chat} {user.name}
+  &8» &7Tablist&8: &9{user.property.prefix}{user.name}{user.property.suffix}
+  &8
+  &8» &9Groups &8(&7Global&8) &8:
+  @for("group" in {user.globalGroups},${dkperms.user.info.groups.loop},"\n")'
+  dkperms.user.info.groups.loop: ' &8- {group.color}{group.name}'

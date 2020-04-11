@@ -10,15 +10,14 @@
 
 package net.pretronic.dkperms.api;
 
-import net.prematic.libraries.logging.PrematicLogger;
-import net.prematic.libraries.utility.concurrent.AsyncExecutor;
-import net.pretronic.dkperms.api.backup.BackupManager;
-import net.pretronic.dkperms.api.context.PermissionContextManager;
+import net.pretronic.dkperms.api.migration.MigrationAssistant;
+import net.pretronic.dkperms.api.storage.DKPermsStorage;
+import net.pretronic.libraries.logging.PretronicLogger;
+import net.pretronic.libraries.utility.concurrent.AsyncExecutor;
+import net.pretronic.dkperms.api.logging.AuditLog;
 import net.pretronic.dkperms.api.object.PermissionObjectManager;
 import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyse;
-import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.PermissionScopeManager;
-import net.pretronic.dkperms.api.storage.DKPermsStorage;
 
 public abstract class DKPerms {
 
@@ -28,23 +27,22 @@ public abstract class DKPerms {
 
     public abstract int getBuild();
 
-    public abstract PrematicLogger getLogger();
+
+    public abstract PretronicLogger getLogger();
+
+    public abstract DKPermsStorage getStorage();
+
+    public abstract MigrationAssistant getMigrationAssistant();
+
+    public abstract AuditLog getAuditLog();
 
     public abstract PermissionScopeManager getScopeManager();
 
-    public abstract PermissionContextManager getContextManager();
-
     public abstract PermissionObjectManager getObjectManager();
-
-    public abstract BackupManager getBackupManager();
-
-    public abstract DKPermsStorage getStorage();
 
     public abstract AsyncExecutor getExecutor();
 
     public abstract PermissionAnalyse startAnalyse();
-
-    public abstract boolean synchronize();
 
     public static DKPerms getInstance(){
         return INSTANCE;

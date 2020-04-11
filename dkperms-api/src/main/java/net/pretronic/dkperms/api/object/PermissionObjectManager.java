@@ -10,13 +10,12 @@
 
 package net.pretronic.dkperms.api.object;
 
-import net.pretronic.dkperms.api.object.group.PermissionGroupOrder;
 import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
-import net.pretronic.dkperms.api.object.search.ObjectSearcher;
+import net.pretronic.dkperms.api.object.search.ObjectSearchQuery;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.UUID;
 
 public interface PermissionObjectManager {
 
@@ -26,22 +25,31 @@ public interface PermissionObjectManager {
 
     PermissionObjectType getType(String name);
 
-    PermissionObjectType getTypeOrCreate(String name);
+    default PermissionObjectType getTypeOrCreate(String name, boolean group){
+        return getTypeOrCreate(getSuperAdministrator(),name,group);
+    }
 
-    PermissionObjectType createType(String name);
+    PermissionObjectType getTypeOrCreate(PermissionObject executor,String name, boolean group);
 
-    void deleteType(int id);
+    PermissionObjectType createType(PermissionObject executor,String name, boolean group);
 
-    void deleteType(String name);
+    void deleteType(PermissionObject executor, int id);
 
+    void deleteType(PermissionObject executor,String name);
+
+
+    PermissionObject getSuperAdministrator();
 
     PermissionObject getObject(int id);
 
-    PermissionObject getObject(String name);
+    PermissionObject getObject(String name,PermissionScope scope,PermissionObjectType type);
 
-    <T extends PermissionObject> T getObject(int id,Class<?> objectClass);
+    PermissionObject getObjectByAssignment(UUID assignmentId);
 
-    <T extends PermissionObject> T  getObject(String name,Class<?> objectClass);
+
+    ObjectSearchResult getObjects(String name);
+
+    ObjectSearchResult getObjects(String name,PermissionObjectType type);
 
 
     ObjectSearchResult getObjects(PermissionObjectType type);
@@ -50,18 +58,37 @@ public interface PermissionObjectManager {
 
     ObjectSearchResult getObjects(PermissionScope scope);
 
-    ObjectSearcher search();
+    ObjectSearchQuery search();
+
+    default PermissionObject createObject(PermissionScope scope, PermissionObjectType type,String name){
+        return createObject(getSuperAdministrator(),scope, type, name,null);
+    }
+
+    default PermissionObject createObject(PermissionObject executor,PermissionScope scope, PermissionObjectType type,String name){
+        return createObject(executor,scope, type, name,null);
+    }
+
+    PermissionObject createObject(PermissionObject executor,PermissionScope scope, PermissionObjectType type, String name,UUID assignmentId);
+
+    default PermissionObject createObject(PermissionScope scope, PermissionObjectType type, String name,UUID assignmentId){
+        return createObject(getSuperAdministrator(),scope,type,name,assignmentId);
+    }
+
+    default void deleteObject(int id){
+        deleteObject(getSuperAdministrator(),id);
+    }
+
+    void deleteObject(PermissionObject executor,int id);
+
+    default void deleteObject(PermissionObject object){
+        deleteObject(object);
+    }
+
+    void deleteObject(PermissionObject executor,PermissionObject object);
 
 
-    PermissionObject createObject(PermissionScope scope, PermissionObjectType type, String name);
 
-
-    boolean deleteObject(int id);
-
-    boolean deleteObject(PermissionObject object);
-
-
-
+   /*
     Collection<PermissionGroupOrder> getOrders();
 
     PermissionGroupOrder getOrder(String name);
@@ -71,4 +98,5 @@ public interface PermissionObjectManager {
     PermissionGroupOrder createOrder(int id);
 
     PermissionGroupOrder createOrder(int id, PermissionScope scope);
+    */
 }

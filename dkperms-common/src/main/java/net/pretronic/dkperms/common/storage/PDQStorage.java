@@ -10,38 +10,42 @@
 
 package net.pretronic.dkperms.common.storage;
 
-import net.prematic.databasequery.api.Database;
-import net.prematic.databasequery.api.DatabaseCollection;
-import net.prematic.databasequery.api.DatabaseDriver;
-import net.prematic.databasequery.api.ForeignKey;
-import net.prematic.databasequery.api.datatype.DataType;
-import net.prematic.databasequery.api.query.option.CreateOption;
-import net.pretronic.dkperms.api.storage.ContextStorage;
-import net.pretronic.dkperms.api.storage.DKPermsStorage;
-import net.pretronic.dkperms.api.storage.ObjectStorage;
-import net.pretronic.dkperms.api.storage.ScopeStorage;
+import net.pretronic.databasequery.api.Database;
+import net.pretronic.databasequery.api.collection.DatabaseCollection;
+import net.pretronic.databasequery.api.collection.field.FieldOption;
+import net.pretronic.databasequery.api.datatype.DataType;
+import net.pretronic.databasequery.api.query.ForeignKey;
+import net.pretronic.dkperms.api.storage.*;
 
 public class PDQStorage implements DKPermsStorage {
 
-    private final DatabaseDriver driver;
     private final Database database;
 
+    private final PDQAuditLogStorage auditLogStorage;
     private final PDQScopeStorage scopeStorage;
-    private final PDQContextStorage contextStorage;
     private final PDQObjectStorage objectStorage;
+    private final PDQGroupStorage groupStorage;
+    private final PDQPermissionStorage permissionStorage;
 
-    public PDQStorage(DatabaseDriver driver, Database database) {
-        this.driver = driver;
+    public PDQStorage(Database database) {
         this.database = database;
 
+        this.auditLogStorage = new PDQAuditLogStorage();
         this.scopeStorage = new PDQScopeStorage();
-        this.contextStorage = new PDQContextStorage();
         this.objectStorage = new PDQObjectStorage();
+        this.groupStorage = new PDQGroupStorage();
+        this.permissionStorage = new PDQPermissionStorage();
+        createTables();
     }
 
     @Override
     public String getName() {
-        return driver.getName();
+        return database.getDriver().getName()+" ("+database.getDriver().getType()+")";
+    }
+
+    @Override
+    public AuditLogStorage getAuditLogStorage() {
+        return null;
     }
 
     @Override
@@ -50,72 +54,94 @@ public class PDQStorage implements DKPermsStorage {
     }
 
     @Override
-    public ContextStorage getContextStorage() {
-        return contextStorage;
-    }
-
-    @Override
     public ObjectStorage getObjectStorage() {
         return objectStorage;
     }
 
     @Override
-    public boolean connect() {
-        driver.connect();
-        createTables();
-        return isConnected();
+    public GroupStorage getGroupStorage() {
+        return groupStorage;
     }
 
     @Override
-    public boolean isConnected() {
-        return true; //driver.isConnected();
+    public PermissionStorage getPermissionStorage() {
+        return permissionStorage;
     }
-
-    @Override
-    public boolean disconnect() {
-        driver.disconnect();
-        return false;
-    }
-
-
 
     private void createTables(){
         DatabaseCollection scope = database.createCollection("DKPerms_Scope")
-                .attribute("Id", DataType.INTEGER, CreateOption.AUTO_INCREMENT,CreateOption.PRIMARY_KEY,CreateOption.NOT_NULL)
-                .attribute("ParentId",DataType.INTEGER, ForeignKey.of(database.getName(),"DKPerms_Scope","Id", ForeignKey.Option.CASCADE))
-                .attribute("Key",DataType.STRING,64,CreateOption.NOT_NULL)
-                .attribute("Name",DataType.STRING,64,CreateOption.NOT_NULL)
+                .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL,FieldOption.INDEX)
+                .field("ParentId",DataType.INTEGER, ForeignKey.of(database.getName(),"DKPerms_Scope","Id", ForeignKey.Option.CASCADE),FieldOption.INDEX)
+                .field("Key",DataType.STRING,64,FieldOption.NOT_NULL)
+                .field("Name",DataType.STRING,64,FieldOption.NOT_NULL)
                 .create();
 
         DatabaseCollection context = database.createCollection("DKPerms_Context")
-                .attribute("Id", DataType.INTEGER, CreateOption.AUTO_INCREMENT,CreateOption.PRIMARY_KEY,CreateOption.NOT_NULL)
-                .attribute("Name",DataType.STRING,64,CreateOption.NOT_NULL,CreateOption.UNIQUE)
+                .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
+                .field("Name",DataType.STRING,64,FieldOption.NOT_NULL,FieldOption.UNIQUE,FieldOption.INDEX)
                 .create();
 
         DatabaseCollection object_type = database.createCollection("DKPerms_Object_Type")
-                .attribute("Id", DataType.INTEGER, CreateOption.AUTO_INCREMENT,CreateOption.PRIMARY_KEY,CreateOption.NOT_NULL)
-                .attribute("Name",DataType.STRING,64,CreateOption.NOT_NULL,CreateOption.UNIQUE)
+                .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
+                .field("Name",DataType.STRING,64,FieldOption.NOT_NULL,FieldOption.UNIQUE)
+                .field("IsGroup",DataType.BOOLEAN,FieldOption.NOT_NULL)
                 .create();
 
         DatabaseCollection object = database.createCollection("DKPerms_Object")
-                .attribute("Id", DataType.INTEGER, CreateOption.AUTO_INCREMENT,CreateOption.PRIMARY_KEY,CreateOption.NOT_NULL)
-                .attribute("TypeId",DataType.INTEGER,ForeignKey.of(object_type,"Id"),CreateOption.NOT_NULL)
-                .attribute("ScopeId",DataType.INTEGER,ForeignKey.of(scope,"Id"),CreateOption.NOT_NULL)
-                .attribute("Name",DataType.STRING,64,CreateOption.NOT_NULL)
-                .attribute("DisplayName",DataType.STRING,64,CreateOption.NOT_NULL)
-                .attribute("Description",DataType.LONG_TEXT,CreateOption.NOT_NULL)
+                .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL,FieldOption.INDEX)
+                .field("AssignmentId", DataType.UUID,FieldOption.INDEX)
+                .field("Name",DataType.STRING,64,FieldOption.NOT_NULL,FieldOption.INDEX)
+                .field("TypeId",DataType.INTEGER,ForeignKey.of(object_type,"Id"),FieldOption.NOT_NULL)
+                .field("ScopeId",DataType.INTEGER,ForeignKey.of(scope,"Id"),FieldOption.NOT_NULL)
+                .field("Disabled",DataType.BOOLEAN,FieldOption.NOT_NULL)
+                .field("Deleted",DataType.BOOLEAN,FieldOption.NOT_NULL)
+                .field("DisplayName",DataType.STRING,64,FieldOption.NOT_NULL)
+                .field("Description",DataType.LONG_TEXT,FieldOption.NOT_NULL)
                 .create();
 
         DatabaseCollection object_meta = database.createCollection("DKPerms_Object_Meta")
-                .attribute("Id", DataType.INTEGER, CreateOption.AUTO_INCREMENT,CreateOption.PRIMARY_KEY,CreateOption.NOT_NULL)
-                .attribute("ObjectId",DataType.INTEGER,ForeignKey.of(object,"Id"),CreateOption.NOT_NULL)
-                .attribute("ScopeId",DataType.INTEGER,ForeignKey.of(scope,"Id"),CreateOption.NOT_NULL)
-                .attribute("Key",DataType.STRING,CreateOption.NOT_NULL)
-                .attribute("Value",DataType.STRING,CreateOption.NOT_NULL)
+                .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
+                .field("ObjectId",DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
+                .field("ScopeId",DataType.INTEGER,ForeignKey.of(scope,"Id"),FieldOption.NOT_NULL)
+                .field("Key",DataType.STRING,FieldOption.NOT_NULL)
+                .field("Value",DataType.STRING,FieldOption.NOT_NULL)
                 .create();
 
+        DatabaseCollection object_groups = database.createCollection("DKPerms_Object_Groups")
+                .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
+                .field("ObjectId",DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
+                .field("ScopeId",DataType.INTEGER,ForeignKey.of(scope,"Id"),FieldOption.NOT_NULL)
+                .field("GroupId",DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
+                .field("Action",DataType.INTEGER,FieldOption.NOT_NULL)
+                .field("Timeout",DataType.LONG,FieldOption.NOT_NULL)
+                .create();
+
+        DatabaseCollection object_permissions = database.createCollection("DKPerms_Object_Permissions")
+                .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
+                .field("ObjectId",DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
+                .field("ScopeId",DataType.INTEGER,ForeignKey.of(scope,"Id"),FieldOption.NOT_NULL)
+                .field("Permission",DataType.STRING,FieldOption.NOT_NULL)
+                .field("Action",DataType.INTEGER,FieldOption.NOT_NULL)
+                .field("Timeout",DataType.LONG,FieldOption.NOT_NULL)
+                .create();
+
+        DatabaseCollection auditLog = database.createCollection("DKPerms_AuditLog")
+                .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
+                .field("ExecutorId", DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
+                .field("Time",DataType.INTEGER,FieldOption.NOT_NULL)
+                .field("Type",DataType.STRING,20,FieldOption.NOT_NULL)
+                .field("Action",DataType.STRING,20,FieldOption.NOT_NULL)
+                .field("OwnerId",DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
+                .field("ScopeId",DataType.INTEGER,ForeignKey.of(scope,"Id"),FieldOption.NOT_NULL)
+                .field("Field",DataType.STRING,32,FieldOption.NOT_NULL)
+                .field("OldValue",DataType.STRING,500,FieldOption.NOT_NULL)
+                .field("NewValue",DataType.STRING,500,FieldOption.NOT_NULL)
+                .create();
+
+        this.auditLogStorage.setCollections(auditLog);
         this.scopeStorage.setCollections(scope);
-        this.contextStorage.setCollections(context);
         this.objectStorage.setCollections(object,object_type,object_meta);
+        this.groupStorage.setCollections(object_groups);
+        this.permissionStorage.setCollections(object_permissions);
     }
 }

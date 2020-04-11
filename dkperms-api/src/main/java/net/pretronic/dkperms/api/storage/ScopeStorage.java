@@ -18,6 +18,8 @@ public interface ScopeStorage {
 
     List<PermissionScope> loadScopes(PermissionScope parent);
 
+    PermissionScope getScope(int id);
+
     int insertScope(int parentId, String key, String name);
 
     void updateScopeName(int scopeId, String key, String name);

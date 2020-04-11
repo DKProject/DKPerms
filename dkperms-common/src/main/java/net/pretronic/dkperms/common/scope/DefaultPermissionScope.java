@@ -10,8 +10,10 @@
 
 package net.pretronic.dkperms.common.scope;
 
-import net.prematic.libraries.utility.Iterators;
-import net.prematic.libraries.utility.annonations.Nullable;
+import net.pretronic.libraries.message.bml.variable.describer.VariableObjectToString;
+import net.pretronic.libraries.utility.Iterators;
+import net.pretronic.libraries.utility.annonations.Internal;
+import net.pretronic.libraries.utility.annonations.Nullable;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 
@@ -21,7 +23,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
-public class DefaultPermissionScope implements PermissionScope {
+public class DefaultPermissionScope implements PermissionScope, VariableObjectToString {
 
     private final int UNSAVED_ID = -1;
 
@@ -85,7 +87,7 @@ public class DefaultPermissionScope implements PermissionScope {
     public PermissionScope getChild(String key, String name) {
         Objects.requireNonNull(key,"Key can't be null");
         Objects.requireNonNull(name,"Name can't be null");
-        PermissionScope result =  Iterators.findOne(getChildren(), scope -> scope.getKey().equalsIgnoreCase(key) && scope.getName().equalsIgnoreCase(name));
+        PermissionScope result = Iterators.findOne(getChildren(), scope -> scope.getKey().equalsIgnoreCase(key) && scope.getName().equalsIgnoreCase(name));
         if(result == null){
             result = new DefaultPermissionScope(UNSAVED_ID,key,name,this);
             this.children.add(result);
@@ -110,6 +112,21 @@ public class DefaultPermissionScope implements PermissionScope {
     }
 
     @Override
+    public boolean contains(PermissionScope innerScope) {
+        PermissionScope previous = innerScope;
+        while (previous != null){
+            if(previous == this) return true;
+            previous = previous.getParent();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean areChildrenLoaded() {
+        return children != null;
+    }
+
+    @Override
     public boolean isSaved() {
         return id != UNSAVED_ID;
     }
@@ -129,7 +146,6 @@ public class DefaultPermissionScope implements PermissionScope {
         this.key = key;
         this.name = name;
     }
-
 
     @Override
     public CompletableFuture<Void> renameAsync(String key, String name) {
@@ -164,5 +180,25 @@ public class DefaultPermissionScope implements PermissionScope {
     private void loadChildren() {
         if (isSaved()) this.children = DKPerms.getInstance().getStorage().getScopeStorage().loadScopes(this);
         else this.children = new ArrayList<>();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) return true;
+        else if(obj == null) return false;
+        else if(obj instanceof DefaultPermissionScope) return this.id == ((DefaultPermissionScope) obj).getId();
+        return false;
+    }
+
+    @Internal
+    public void provideReversedLoadedScope(PermissionScope scope){
+        loadChildren();
+        this.children.remove(scope);
+        this.children.add(scope);
+    }
+
+    @Override
+    public String toStringVariable() {
+        return getPath();
     }
 }

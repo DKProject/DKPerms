@@ -16,7 +16,5 @@ import java.util.UUID;
 
 public interface PermissionGroupEntity extends Entity {
 
-    int getGroupId();
-
     PermissionObject getGroup();
 }

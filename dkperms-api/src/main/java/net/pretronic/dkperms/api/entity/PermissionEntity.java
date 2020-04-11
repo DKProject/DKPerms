@@ -14,7 +14,13 @@ import net.pretronic.dkperms.api.permission.PermissionAction;
 
 public interface PermissionEntity extends Entity {
 
+    String[] getNodes();
+
     String getPermission();
 
     PermissionAction check(String permission);
+
+    PermissionAction check(String[] nodes);
+
+    boolean matches(String[] nodes);
 }

@@ -10,9 +10,11 @@
 
 package net.pretronic.dkperms.common.object.meta;
 
-import net.prematic.libraries.document.Document;
-import net.prematic.libraries.utility.Convert;
+import net.pretronic.libraries.document.Document;
+import net.pretronic.libraries.document.type.DocumentFileType;
+import net.pretronic.libraries.utility.Convert;
 import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 
@@ -26,7 +28,7 @@ public class DefaultObjectMetaEntry implements ObjectMetaEntry {
     private final PermissionScope scope;
     private Object value;
 
-    public DefaultObjectMetaEntry( PermissionScope scope,int id, String key, Object value) {
+    public DefaultObjectMetaEntry(PermissionScope scope,int id, String key, Object value) {
         this.id = id;
         this.key = key;
         this.scope = scope;
@@ -36,6 +38,11 @@ public class DefaultObjectMetaEntry implements ObjectMetaEntry {
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public PermissionObject getOwner() {
+        throw new UnsupportedOperationException();//@Todo implement
     }
 
     @Override
@@ -85,7 +92,13 @@ public class DefaultObjectMetaEntry implements ObjectMetaEntry {
 
     @Override
     public Document getDocumentValue() {
-        return null;//Read from json / binary or?
+        return DocumentFileType.JSON.getReader().read(getValue());
+    }
+
+    @Override
+    public boolean equalsValue(Object value) {
+        //@Todo better implementation
+        return value.equals(value);
     }
 
     @Override

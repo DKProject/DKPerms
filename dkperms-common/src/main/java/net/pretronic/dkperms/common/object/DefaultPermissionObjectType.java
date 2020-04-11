@@ -10,25 +10,25 @@
 
 package net.pretronic.dkperms.common.object;
 
-import net.prematic.libraries.utility.concurrent.AsyncExecutor;
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.object.PermissionObjectFactory;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
-import net.pretronic.dkperms.api.storage.DKPermsStorage;
+import net.pretronic.dkperms.api.object.holder.PermissionHolderFactory;
+import net.pretronic.libraries.message.bml.variable.describer.VariableObjectToString;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-public class DefaultPermissionObjectType implements PermissionObjectType {
+public class DefaultPermissionObjectType implements PermissionObjectType, VariableObjectToString {
 
     private final int id;
+    private final boolean group;
     private String name;
+    private PermissionHolderFactory holderFactory;
 
-    private PermissionObjectFactory factory;
-
-    public DefaultPermissionObjectType(int id, String name) {
+    public DefaultPermissionObjectType(int id, String name, boolean group) {
         this.id = id;
         this.name = name;
+        this.group = group;
     }
 
     @Override
@@ -55,12 +55,22 @@ public class DefaultPermissionObjectType implements PermissionObjectType {
     }
 
     @Override
-    public PermissionObjectFactory getLocalFactory() {
-        return factory;
+    public boolean isGroup() {
+        return group;
     }
 
     @Override
-    public void setLocalFactory(PermissionObjectFactory factory) {
-        this.factory = factory;
+    public PermissionHolderFactory getLocalHolderFactory() {
+        return holderFactory;
+    }
+
+    @Override
+    public void setLocalHolderFactory(PermissionHolderFactory factory) {
+        holderFactory = factory;
+    }
+
+    @Override
+    public String toStringVariable() {
+        return name;
     }
 }

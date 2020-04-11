@@ -10,10 +10,11 @@
 
 package net.pretronic.dkperms.common.storage;
 
-import net.prematic.databasequery.api.Database;
-import net.prematic.databasequery.api.DatabaseCollection;
-import net.prematic.databasequery.api.query.Query;
-import net.prematic.databasequery.api.query.result.QueryResult;
+import net.pretronic.databasequery.api.collection.DatabaseCollection;
+import net.pretronic.databasequery.api.query.Query;
+import net.pretronic.databasequery.api.query.result.QueryResult;
+import net.pretronic.databasequery.api.query.result.QueryResultEntry;
+import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.storage.ScopeStorage;
 import net.pretronic.dkperms.common.scope.DefaultPermissionScope;
@@ -30,7 +31,7 @@ public class PDQScopeStorage implements ScopeStorage {
         List<PermissionScope> scopes = new ArrayList<>();
 
         QueryResult result;
-        if(parent == null) result = this.scope.find().whereNull("ParentId").execute();
+        if(parent == null) result = this.scope.find().whereIsNull("ParentId").execute();
         else result = this.scope.find().where("ParentId",parent.getId()).execute();
 
         result.loadIn(scopes, entry
@@ -40,11 +41,32 @@ public class PDQScopeStorage implements ScopeStorage {
     }
 
     @Override
+    public PermissionScope getScope(int id) {
+        QueryResult result = this.scope.find().where("Id",id).onlyOne().execute();
+        if(!result.isEmpty()){
+            QueryResultEntry entry = result.first();
+            PermissionScope parent = DKPerms.getInstance().getScopeManager().getScope(entry.getInt("ParentId"));
+            if(parent != null){
+                if(parent.areChildrenLoaded()) throw new IllegalArgumentException("Scope loading and cache mismatch");
+                else{
+                    if(parent instanceof DefaultPermissionScope){
+                        ((DefaultPermissionScope)parent).provideReversedLoadedScope(new DefaultPermissionScope(
+                                entry.getInt("Id"),entry.getString("Key"),entry.getString("Name"),parent));
+                    }else throw new UnsupportedOperationException("Unsupported scope reverse loading operation");
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
     public int insertScope(int parentId, String key, String name) {
         return this.scope.insert()
                 .set("Key",key)
                 .set("Name",name)
-                .set("ParentId",parentId==-1? Query.NULL:parentId).executeAndGetGeneratedKeys("id").first().getInt("id");
+                .set("ParentId",parentId==-1? null : parentId)
+                .executeAndGetGeneratedKeys("id")
+                .first().getInt("id");
     }
 
     @Override

@@ -10,7 +10,8 @@
 
 package net.pretronic.dkperms.api.object.meta;
 
-import net.prematic.libraries.document.Document;
+import net.pretronic.libraries.document.Document;
+import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 
 import java.util.concurrent.CompletableFuture;
@@ -19,9 +20,12 @@ public interface ObjectMetaEntry {
 
     int getId();
 
+    PermissionObject getOwner();
+
     String getKey();
 
     PermissionScope getScope();
+
 
     String getValue();
 
@@ -39,9 +43,13 @@ public interface ObjectMetaEntry {
 
     Document getDocumentValue();
 
+    boolean equalsValue(Object value);
+
+
     void setValue(Object value);
 
     CompletableFuture<Void> setValueAsync(Object value);
+
 
     void delete();
 

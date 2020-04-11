@@ -17,8 +17,8 @@
         <groupId>net.pretronic.dkperms</groupId>
         <version>1.0.0</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>dkperms-api</artifactId>
 
     <build>
@@ -26,6 +26,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${plugin.compiler}</version>
                 <configuration>
                     <source>8</source>
                     <target>8</target>
@@ -36,14 +37,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>net.prematic.libraries</groupId>
-            <artifactId>prematiclibraries-logging</artifactId>
+            <groupId>net.pretronic.libraries</groupId>
+            <artifactId>pretroniclibraries-logging</artifactId>
             <version>${dependency.pretronic.libraries}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.prematic.libraries</groupId>
-            <artifactId>prematiclibraries-document</artifactId>
+            <groupId>net.pretronic.libraries</groupId>
+            <artifactId>pretroniclibraries-document</artifactId>
             <version>${dependency.pretronic.libraries}</version>
             <scope>provided</scope>
         </dependency>

@@ -10,93 +10,55 @@
 
 package net.pretronic.dkperms.common.object.meta;
 
-import net.prematic.libraries.utility.Iterators;
+import net.pretronic.libraries.utility.Iterators;
+import net.pretronic.libraries.utility.Validate;
 import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.graph.Graph;
+import net.pretronic.dkperms.api.graph.ObjectMetaGraph;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.meta.ObjectMeta;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import net.pretronic.dkperms.api.scope.PermissionScope;
+import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
+import net.pretronic.dkperms.common.cache.ObjectMetaCache;
+import net.pretronic.dkperms.common.graph.EmptyGraph;
+import net.pretronic.dkperms.common.graph.meta.MetaInheritanceGraph;
 
 import java.util.*;
 
-
-//@Todo implement effective entries
 public class DefaultObjectMeta implements ObjectMeta {
 
     private final PermissionObject object;
-    private final Collection<CacheEntry> entries;
-    private boolean loadedAll;
+    private final ObjectMetaCache cache;
 
     public DefaultObjectMeta(PermissionObject object) {
         this.object = object;
-        this.entries = new ArrayList<>();
-        this.loadedAll = false;
+        this.cache = new ObjectMetaCache(object);
     }
 
     @Override
     public ObjectMetaEntry get(String key) {
-        return get(DKPerms.getInstance().getScopeManager().getRoot(),key);
+        return get(key,object.getScope());
     }
 
     @Override
-    public ObjectMetaEntry get(PermissionScope scope, String key) {
+    public ObjectMetaEntry get(String key,PermissionScope scope) {
         return Iterators.findOne(getEntries(scope), entry -> entry.getKey().equalsIgnoreCase(key));
     }
 
     @Override
-    public ObjectMetaEntry getInheritance(PermissionScope scope, String key) {
-        List<PermissionScope> scopes = DKPerms.getInstance().getScopeManager().getValidScopes(scope);
-        loadScopes(scopes);
-        for (int i = 0; i < scopes.size(); i++) {
-            ObjectMetaEntry result = get(scope,key);
-            if(result != null) return result;
-        }
-        return null;
+    public ScopeBasedDataList<ObjectMetaEntry> getEntries() {
+        return cache.getAll();
     }
 
     @Override
-    public ObjectMeta getEffective(PermissionScope scope, String key) {
-        return null;
-    }
-
-    @Override
-    public Collection<ObjectMetaEntry> getEntries() {
-        loadAll();
-        List<ObjectMetaEntry> entries = new ArrayList<>();
-        this.entries.forEach(entry -> entries.addAll(entry.entries));
-        return entries;
+    public ScopeBasedDataList<ObjectMetaEntry> getEntries(Graph<PermissionScope> scopes) {
+        return cache.get(scopes);
     }
 
     @Override
     public Collection<ObjectMetaEntry> getEntries(PermissionScope scope) {
-        if(scope.isSaved()){
-            CacheEntry entry = Iterators.findOne(this.entries, entry1 -> entry1.scopeId == scope.getId());
-            if(entry == null){
-                if(!loadedAll){
-                    Collection<ObjectMetaEntry> result = DKPerms.getInstance().getStorage().getObjectStorage().getMetas(object.getId(),scope);
-                    entry = new CacheEntry(scope.getId(),result);
-                    this.entries.add(entry);
-                }else return Collections.emptyList();
-            }
-            return entry.entries;
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<ObjectMetaEntry> getInheritanceEntries(PermissionScope scope) {
-        List<PermissionScope> scopes = DKPerms.getInstance().getScopeManager().getValidScopes(scope);
-        loadScopes(scopes);
-        List<ObjectMetaEntry> entries = new ArrayList<>();
-        scopes.forEach(scope1 -> {
-            if(scope1.isSaved()) entries.addAll(getEntries(scope1));
-        });
-        return entries;
-    }
-
-    @Override
-    public Collection<ObjectMetaEntry> getEffectiveEntries(PermissionScope scope, String key) {
-        return null;
+        return cache.get(scope);
     }
 
     @Override
@@ -105,95 +67,78 @@ public class DefaultObjectMeta implements ObjectMeta {
     }
 
     @Override
-    public boolean contains(PermissionScope scope, String key) {
-        return get(scope,key) != null;
+    public boolean contains(String key, PermissionScope scope) {
+        return get(key,scope) != null;
     }
 
     @Override
-    public boolean containsInheritance(PermissionScope scope, String key) {
-        return getInheritance(scope, key) != null;
+    public ObjectMetaGraph newGraph(Graph<PermissionScope> scopes) {
+        return new MetaInheritanceGraph(object,scopes, EmptyGraph.newEmptyGraph());
     }
 
     @Override
-    public boolean containsEffective(PermissionScope scope, String key) {
-        return getEffectiveEntries(scope, key) != null;
+    public ObjectMetaGraph newInheritanceGraph(Graph<PermissionScope> scopes) {
+        return new MetaInheritanceGraph(object,scopes,object.newGroupInheritanceGraph(scopes));
     }
 
     @Override
-    public ObjectMetaEntry set(String key, Object value) {
-        return set(key,value, DKPerms.getInstance().getScopeManager().getRoot());
+    public boolean isSet(String key, Object value) {
+        ObjectMetaEntry entry = get(key);
+        return entry != null && entry.equalsValue(value);
     }
 
     @Override
-    public ObjectMetaEntry set(String key, Object value, PermissionScope scope) {
-        Objects.requireNonNull(key,"Key can't be null");
-        Objects.requireNonNull(value,"Value can't be null");
-        Objects.requireNonNull(scope,"Scope can't be null");
-        ObjectMetaEntry entry = get(scope,key);
+    public boolean isSet(PermissionScope scope, String key, Object value) {
+        ObjectMetaEntry entry = get(key,scope);
+        return entry != null && entry.equalsValue(value);
+    }
+
+    @Override
+    public ObjectMetaEntry set(PermissionObject executor,String key, Object value) {
+        return set(executor,key,value,object.getScope());
+    }
+
+    @Override
+    public ObjectMetaEntry set(PermissionObject executor,String key, Object value, PermissionScope scope) {
+        Validate.notNull(key,value,scope);
+        ObjectMetaEntry entry = get(key,scope);
         if(entry == null){
-            int id = DKPerms.getInstance().getStorage().getObjectStorage().insertMeta(scope.getId(),object.getId(),key,value.toString());
+            if(!scope.isSaved()) scope.insert();
+            int id = DKPerms.getInstance().getStorage().getObjectStorage().insertMeta(object.getId(),scope.getId(),key,value.toString());
             entry = new DefaultObjectMetaEntry(scope,id,key,value);
-            CacheEntry cache = Iterators.findOne(this.entries, entry1 -> entry1.scopeId == scope.getId());
-            if(cache == null){
-                cache = new CacheEntry(scope.getId(),new ArrayList<>());
-                this.entries.add(cache);
-            }
-            cache.entries.add(entry);
+            cache.insert(scope,entry);
         }else entry.setValue(value);
         return entry;
     }
 
     @Override
-    public void unset(String key) {
-        unset(key, DKPerms.getInstance().getScopeManager().getRoot());
+    public void unset(PermissionObject executor,String key) {
+        unset(executor,key, object.getScope());
     }
 
     @Override
-    public void unset(String key, PermissionScope scope) {
-        ObjectMetaEntry entry = get(scope, key);
+    public void unset(PermissionObject executor,String key, PermissionScope scope) {
+        ObjectMetaEntry entry = get(key,scope);
         if(entry != null){
-            DKPerms.getInstance().getStorage().getObjectStorage().deleteMeta(entry.getId());
-            CacheEntry cache = Iterators.findOne(this.entries, entry1 -> entry1.scopeId == scope.getId());
-            if(cache != null) Iterators.removeOne(cache.entries, entry2 -> entry2.getKey().equalsIgnoreCase(key));
+            DKPerms.getInstance().getStorage().getObjectStorage().deleteMetaEntry(entry.getId());
+            cache.remove(scope,entry);
         }
     }
 
     @Override
-    public void clear() {
-        DKPerms.getInstance().getStorage().getObjectStorage().clearMetas(object.getId());
-        this.entries.clear();
-        this.loadedAll = true;
+    public void clear(PermissionObject executor) {
+        DKPerms.getInstance().getStorage().getObjectStorage().clearMeta(object.getId());
+        this.cache.clear();
     }
 
     @Override
-    public void clear(PermissionScope scope) {
-        DKPerms.getInstance().getStorage().getObjectStorage().clearMetas(object.getId(),scope.getId());
-        CacheEntry result = Iterators.findOne(this.entries, entry -> entry.scopeId == scope.getId());
-        if(result == null) this.entries.add(new CacheEntry(scope.getId(),new ArrayList<>()));
-        else result.entries.clear();
+    public void clear(PermissionObject executor,PermissionScope scope) {
+        DKPerms.getInstance().getStorage().getObjectStorage().clearMeta(object.getId(),scope.getId());
+        cache.clear(scope);
     }
 
     @Override
     public Iterator<ObjectMetaEntry> iterator() {
-        return getEntries().iterator();
-    }
-
-    private void loadScopes(Collection<PermissionScope> scopes){
-
-    }
-
-    private void loadAll(){
-        loadedAll = true;
-    }
-
-    private static class CacheEntry {
-
-        private final int scopeId;
-        private Collection<ObjectMetaEntry> entries;
-
-        private CacheEntry(int scopeId, Collection<ObjectMetaEntry> entries) {
-            this.scopeId = scopeId;
-            this.entries = entries;
-        }
+        return getEntries().getAll().iterator();//@Todo add better iterator
     }
 }

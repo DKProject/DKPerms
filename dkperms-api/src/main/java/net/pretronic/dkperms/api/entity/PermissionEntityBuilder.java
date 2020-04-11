@@ -10,7 +10,6 @@
 
 package net.pretronic.dkperms.api.entity;
 
-import net.pretronic.dkperms.api.context.PermissionContext;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 
@@ -23,8 +22,6 @@ public interface PermissionEntityBuilder {
     PermissionAction action(PermissionAction action);
 
     PermissionEntityBuilder scope(PermissionScope scope);
-
-    PermissionEntityBuilder context(PermissionContext context, Object value);
 
     PermissionEntityBuilder timeout(long timeout);
 

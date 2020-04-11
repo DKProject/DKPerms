@@ -10,7 +10,11 @@
 
 package net.pretronic.dkperms.api.object.meta;
 
+import net.pretronic.dkperms.api.graph.Graph;
+import net.pretronic.dkperms.api.graph.ObjectMetaGraph;
+import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.scope.PermissionScope;
+import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 
 import java.util.Collection;
 
@@ -18,42 +22,41 @@ public interface ObjectMeta extends Iterable<ObjectMetaEntry> {
 
     ObjectMetaEntry get(String key);//From root
 
-    ObjectMetaEntry get(PermissionScope scope, String key);
+    ObjectMetaEntry get(String key,PermissionScope scope);
 
-    ObjectMetaEntry getInheritance(PermissionScope scope, String key);//
+    ScopeBasedDataList<ObjectMetaEntry> getEntries();
 
-    ObjectMeta getEffective(PermissionScope scope, String key);
-
-
-    Collection<ObjectMetaEntry> getEntries();
+    ScopeBasedDataList<ObjectMetaEntry> getEntries(Graph<PermissionScope> scopes);
 
     Collection<ObjectMetaEntry> getEntries(PermissionScope scope);
 
-    Collection<ObjectMetaEntry> getInheritanceEntries(PermissionScope scope);
 
-    Collection<ObjectMetaEntry> getEffectiveEntries(PermissionScope scope, String key);
+    ObjectMetaGraph newGraph(Graph<PermissionScope> scopes);
+
+    ObjectMetaGraph newInheritanceGraph(Graph<PermissionScope> scopes);
 
 
     boolean contains(String key);
 
-    boolean contains(PermissionScope scope,String key);
-
-    boolean containsInheritance(PermissionScope scope, String key);
-
-    boolean containsEffective(PermissionScope scope,String key);
+    boolean contains(String key,PermissionScope scope);
 
 
-    ObjectMetaEntry set(String key, Object value);//to root
+    boolean isSet(String key, Object value);
 
-    ObjectMetaEntry set(String key, Object value,PermissionScope scope);
-
-    void unset(String key);//from root
-
-    void unset(String key,PermissionScope scope);
+    boolean isSet(PermissionScope scope,String key, Object value);
 
 
-    void clear();
+    ObjectMetaEntry set(PermissionObject executor,String key, Object value);//to root
 
-    void clear(PermissionScope scope);
+    ObjectMetaEntry set(PermissionObject executor,String key, Object value,PermissionScope scope);
+
+    void unset(PermissionObject executor,String key);//from root
+
+    void unset(PermissionObject executor,String key,PermissionScope scope);
+
+
+    void clear(PermissionObject executor);
+
+    void clear(PermissionObject executor,PermissionScope scope);
 
 }

@@ -20,25 +20,103 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dkperms-minecraft</artifactId>
-    <version>1.0.0</version>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${plugin.compiler}</version>
                 <configuration>
                     <source>8</source>
                     <target>8</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.mcnative</groupId>
+                <artifactId>mcnative-buildtool-maven</artifactId>
+                <version>${dependency.mcnative.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>McNative-Build</goal>
+                            <goal>McNative-Package</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mcnative-loader-version>${dependency.mcnative.version}</mcnative-loader-version>
+                    <resource-loader-version>${dependency.pretronic.libraries}</resource-loader-version>
+
+                    <manifest>
+                        <name>DKPerms</name>
+                        <id>edda82b3-344b-418a-a935-e507a1f9a9fc</id>
+                        <category>Network Management</category>
+                        <version>${project.version}</version>
+                        <main>net.pretronic.dkperms.minecraft.DKPermsPlugin</main>
+                        <website>https://pretronic.net</website>
+                        <author>Davide Wietlisbach</author>
+                        <messageModule>DKPerms</messageModule>
+                    </manifest>
+
+                    <loader>
+                        <version>${project.version}</version>
+                        <versionUrl>https://mirror.pretronic.net/v1/{plugin.id}/versions/latest?plain=true&amp;qualifier={qualifier}</versionUrl>
+                        <downloadUrl>https://mirror.pretronic.net/v1/{plugin.id}/versions/{version.build}/download</downloadUrl>
+                    </loader>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
     <dependencies>
         <dependency>
+            <groupId>net.pretronic.dkperms</groupId>
+            <artifactId>dkperms-api</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.pretronic.dkperms</groupId>
+            <artifactId>dkperms-api-minecraft</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.pretronic.dkperms</groupId>
+            <artifactId>dkperms-common</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.mcnative</groupId>
-            <artifactId>mcnative-common</artifactId>
-            <version>1.0.0</version>
+            <artifactId>mcnative-build</artifactId>
+            <version>${dependency.mcnative.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.pretronic.dkperms</groupId>
+            <artifactId>dkperms-legacy</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

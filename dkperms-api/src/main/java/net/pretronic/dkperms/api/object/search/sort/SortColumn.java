@@ -10,13 +10,15 @@
 
 package net.pretronic.dkperms.api.object.search.sort;
 
-public enum SortColumn {
+public class SortColumn {
 
-    ID(),
-    NAME(),
-    PRIORITY(),
-    META(),
-    CONTEXT(),
-    MEMBER_COUNT();
+    public static final String ID = "id";
+
+    public static final String NAME = "name";
+
+    public static final String PRIORITY = "priority";
+
+    public static final String MEMBER_COUNT = "member_count";
+
 
 }

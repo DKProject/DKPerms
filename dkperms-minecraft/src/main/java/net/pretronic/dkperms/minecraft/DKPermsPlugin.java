@@ -10,18 +10,198 @@
 
 package net.pretronic.dkperms.minecraft;
 
-import net.prematic.libraries.plugin.lifecycle.Lifecycle;
-import net.prematic.libraries.plugin.lifecycle.LifecycleState;
+import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.minecraft.player.PermissionPlayer;
+import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.holder.PermissionHolderFactory;
+import net.pretronic.dkperms.api.object.holder.PermissionObjectHolder;
+import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
+import net.pretronic.dkperms.api.scope.PermissionScopeManager;
+import net.pretronic.dkperms.common.DefaultDKPerms;
+import net.pretronic.dkperms.common.DefaultMigrationAssistant;
+import net.pretronic.dkperms.common.entity.DefaultPermissionEntity;
+import net.pretronic.dkperms.common.entity.DefaultPermissionGroupEntity;
+import net.pretronic.dkperms.common.logging.DefaultAuditLog;
+import net.pretronic.dkperms.common.object.DefaultPermissionObject;
+import net.pretronic.dkperms.common.object.DefaultPermissionObjectManager;
+import net.pretronic.dkperms.common.object.meta.DefaultObjectMetaEntry;
+import net.pretronic.dkperms.common.scope.DefaultPermissionScope;
+import net.pretronic.dkperms.common.scope.DefaultPermissionScopeManager;
+import net.pretronic.dkperms.common.storage.PDQStorage;
+import net.pretronic.dkperms.minecraft.commands.permission.PermissionCommand;
+import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
+import net.pretronic.dkperms.minecraft.migration.DKPermsLegacyMigration;
+import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
+import net.pretronic.libraries.document.Document;
+import net.pretronic.libraries.document.type.DocumentFileType;
+import net.pretronic.libraries.message.bml.variable.describer.VariableDescriber;
+import net.pretronic.libraries.message.bml.variable.describer.VariableDescriberRegistry;
+import net.pretronic.libraries.plugin.description.PluginVersion;
+import net.pretronic.libraries.plugin.lifecycle.Lifecycle;
+import net.pretronic.libraries.plugin.lifecycle.LifecycleState;
+import net.pretronic.libraries.plugin.service.ServicePriority;
+import net.pretronic.libraries.utility.GeneralUtil;
+import net.pretronic.libraries.utility.concurrent.AsyncExecutor;
+import net.pretronic.libraries.utility.io.FileUtil;
+import net.pretronic.libraries.utility.io.IORuntimeException;
+import org.mcnative.common.event.player.login.MinecraftPlayerLoginEvent;
+import org.mcnative.common.player.MinecraftPlayer;
 import org.mcnative.common.plugin.MinecraftPlugin;
+import org.mcnative.common.plugin.configuration.Configuration;
+import org.mcnative.common.serviceprovider.permission.PermissionProvider;
+
+import java.io.File;
+import java.util.function.Function;
 
 public class DKPermsPlugin extends MinecraftPlugin {
 
-    @Lifecycle(state = LifecycleState.BOOTSTRAP)
-    public void onBootstrap(LifecycleState state){
+    @Lifecycle(state = LifecycleState.LOAD)
+    public void onLoad(LifecycleState state){
+        Configuration config = getConfiguration();
+        //@Todo add setup
+        internalBootstrap(config);
+
+    }
+
+
+    private void internalBootstrap(Configuration config){
         getLogger().info("DKPerms is starting, please wait..");
+        copyLegacyConfig();
 
+        config.load(DKPermsConfig.class);
 
+        PluginVersion version = getDescription().getVersion();
 
+        DefaultPermissionScopeManager scopeManager = new DefaultPermissionScopeManager();
+        DefaultPermissionObjectManager objectManager = new DefaultPermissionObjectManager();
+
+        DKPerms dkPerms = new DefaultDKPerms(version.getName()
+                ,version.getBuild(),getLogger()
+                ,new DefaultMigrationAssistant()
+                ,new PDQStorage(getDatabase())
+                ,new DefaultAuditLog()
+                ,scopeManager
+                ,objectManager
+                ,new AsyncExecutor(GeneralUtil.getDefaultExecutorService()));
+
+        DKPerms.setInstance(dkPerms);
+
+        scopeManager.initialise(dkPerms);
+        objectManager.initialise(dkPerms);
+
+        objectManager.getTypeOrCreate(DKPermsConfig.OBJECT_PLAYER_TYPE_NAME,false).setLocalHolderFactory(new UserFactory());
+        objectManager.getTypeOrCreate(DKPermsConfig.OBJECT_GROUP_TYPE_NAME,true).setLocalHolderFactory(new GroupFactory());
+
+        DKPermsConfig.load();
+
+        findCurrentInstanceScope(scopeManager);
+
+        getRuntime().getRegistry().registerService(this,PermissionProvider.class,new DKPermsPermissionProvider(),ServicePriority.HIGHEST);
+        getRuntime().getPlayerManager().registerPlayerAdapter(PermissionPlayer.class,new PlayerAdapter());
+
+        getRuntime().getLocal().getEventBus().subscribe(this, MinecraftPlayerLoginEvent.class
+                ,event -> event.getPlayer().getPermissionHandler());
+
+        registerCommands();
+        registerDescribers();
+
+        dkPerms.getMigrationAssistant().registerMigration(new DKPermsLegacyMigration());
+
+        getLogger().info("DKPerms successfully started");
+    }
+
+    private void copyLegacyConfig(){
+        File configLocation = new File("plugins/DKPerms/config.yml");
+
+        if(configLocation.exists()) {
+            Document oldConfig = DocumentFileType.YAML.getReader().read(configLocation);
+
+            if(oldConfig.contains("storage.mysql")) {
+                getLogger().info("DKPerms Legacy detected");
+
+                File legacyConfigLocation = new File("plugins/DKPerms/legacy-config.yml");
+                try{
+                    FileUtil.copyFile(configLocation, legacyConfigLocation);
+                    boolean success = configLocation.delete();
+                    if(success) {
+                        getLogger().info("DKPerms Legacy config successfully copied to legacy-config.yml");
+                        return;
+                    }
+                }catch (IORuntimeException e){
+                    e.printStackTrace();
+                }
+                getLogger().error("DKPerms Legacy config could not be copied to legacy-config.yml");
+            }
+        }
+    }
+
+    private void findCurrentInstanceScope(PermissionScopeManager scopeManager){
+        if(DKPermsConfig.SCOPE_CURRENT_INSTANCE_DYNAMIC){
+            //@Todo find current scope
+            scopeManager.setCurrentInstanceScope(scopeManager.getNamespace(DKPermsConfig.SCOPE_NAMESPACE));
+        }else{
+            String path = DKPermsConfig.SCOPE_NAMESPACE+"\\"+DKPermsConfig.SCOPE_CURRENT_INSTANCE_SCOPE;
+            scopeManager.setCurrentInstanceScope(scopeManager.get(path));
+        }
+
+    }
+
+    private void registerCommands(){
+        getRuntime().getLocal().getCommandManager().registerCommand(new PermissionCommand(this
+                ,CommandConfiguration.newBuilder()
+                .name("dkperms")
+                .aliases("perm","perms","permission")
+                .permission("dkperms.admin").create()));
+    }
+
+    private void registerDescribers(){
+        VariableDescriber<DefaultPermissionObject> objectDescriber = VariableDescriberRegistry.registerDescriber(DefaultPermissionObject.class);
+        objectDescriber.registerFunction("uniqueId", DefaultPermissionObject::getAssignmentId);
+        objectDescriber.registerParameterFunction("property", (object, key) ->{
+           ObjectMetaEntry entry =  object.getMeta().get(key);
+           return entry != null ?entry.getValue() : "NOT SET";
+        });
+        objectDescriber.registerFunction("globalGroups", PermissionObject::getGroups);
+
+        VariableDescriberRegistry.registerDescriber(DefaultPermissionScope.class);
+        VariableDescriberRegistry.registerDescriber(DefaultObjectMetaEntry.class);
+        VariableDescriberRegistry.registerDescriber(DefaultPermissionGroupEntity.class);
+        VariableDescriberRegistry.registerDescriber(DefaultPermissionEntity.class);
+    }
+
+    private static class PlayerAdapter implements Function<MinecraftPlayer, PermissionPlayer> {
+
+        private PlayerAdapter(){}
+
+        @Override
+        public PermissionPlayer apply(MinecraftPlayer player) {
+            PermissionObject object = DKPerms.getInstance().getObjectManager().getObjectByAssignment(player.getUniqueId());
+            if(object == null){
+                object = DKPerms.getInstance().getObjectManager().createObject(
+                        DKPermsConfig.OBJECT_PLAYER_SCOPE
+                        ,DKPermsConfig.OBJECT_PLAYER_TYPE
+                        ,player.getName(),player.getUniqueId());
+            }else if(!object.getName().equalsIgnoreCase(player.getName())){
+                //@Todo update name
+            }
+            return object.getHolder(PermissionPlayer.class);
+        }
+    }
+
+    private static class UserFactory implements PermissionHolderFactory {
+
+        @Override
+        public PermissionObjectHolder create(PermissionObject object) {
+            return new DKPermsPermissionPlayer(object);
+        }
+    }
+
+    private static class GroupFactory implements PermissionHolderFactory {
+
+        @Override
+        public PermissionObjectHolder create(PermissionObject object) {
+            return new DKPermsPermissionGroup(object);
+        }
     }
 
 }
