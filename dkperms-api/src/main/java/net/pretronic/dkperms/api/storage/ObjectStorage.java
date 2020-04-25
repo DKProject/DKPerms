@@ -61,19 +61,20 @@ public interface ObjectStorage {
 
     void updateObjectScope(int objectId, PermissionScope scope);
 
+    void updateObjectPriority(int objectId, int priority);
+
     void updateObjectDisabled(int objectId, boolean disabled);
 
     void deleteObject(int objectId);
 
 
-    ObjectMetaEntry getMetaEntry(int metaId);
 
 
-    Collection<ObjectMetaEntry> getMetaEntries(int objectId, PermissionScope scopes);
+    Collection<ObjectMetaEntry> getMetaEntries(PermissionObject object, PermissionScope scopes);
 
-    ScopeBasedDataList<ObjectMetaEntry> getMetaEntries(int objectId, Collection<PermissionScope> scopes);
+    ScopeBasedDataList<ObjectMetaEntry> getMetaEntries(PermissionObject object, Collection<PermissionScope> scopes);
 
-    ScopeBasedDataList<ObjectMetaEntry> getAllMetaEntries(int objectId, Collection<PermissionScope> skipped);
+    ScopeBasedDataList<ObjectMetaEntry> getAllMetaEntries(PermissionObject object, Collection<PermissionScope> skipped);
 
 
     int insertMeta(int objectId,int scopeId, String key, String value);

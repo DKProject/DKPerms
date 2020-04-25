@@ -11,12 +11,15 @@
 package net.pretronic.dkperms.api.graph;
 
 import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.SyncAction;
+import net.pretronic.libraries.synchronisation.observer.Observable;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public interface Graph<T> extends Iterable<T>{
+public interface Graph<T> extends Iterable<T>, Observable<PermissionObject, SyncAction> {
 
     List<T> traverse();
 
@@ -46,9 +49,7 @@ public interface Graph<T> extends Iterable<T>{
         return traverse().iterator();
     }
 
-    default void subscribeObservers(){//@Todo implement
-        //Unused throw new UnsupportedOperationException("Implement");
-    }
+    default void subscribeObservers(){/*Optional*/}
 
-    //void clearCache();
+    default void unsubscribeObservers(){/*Optional*/}
 }

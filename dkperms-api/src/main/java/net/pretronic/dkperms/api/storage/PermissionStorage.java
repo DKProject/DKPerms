@@ -21,11 +21,11 @@ import java.util.Collection;
 
 public interface PermissionStorage {
 
-    Collection<PermissionEntity> getPermissions(int objectId,PermissionScope scope);
+    Collection<PermissionEntity> getPermissions(PermissionObject object,PermissionScope scope);
 
-    ScopeBasedDataList<PermissionEntity> getPermissions(int objectId, Collection<PermissionScope> scope);
+    ScopeBasedDataList<PermissionEntity> getPermissions(PermissionObject object, Collection<PermissionScope> scope);
 
-    ScopeBasedDataList<PermissionEntity> getAllPermissions(int objectId, Collection<PermissionScope> skipped);
+    ScopeBasedDataList<PermissionEntity> getAllPermissions(PermissionObject object, Collection<PermissionScope> skipped);
 
     int addPermission(int objectId, int scopeId, String permission, PermissionAction action, long timeout);
 
@@ -35,4 +35,12 @@ public interface PermissionStorage {
 
     void clearPermissions(int objectId);
 
+
+    void updatePermission(int entityId, int scopeId,PermissionAction action, long timeout);
+
+    void updatePermissionAction(int entityId, PermissionAction action);
+
+    void updatePermissionScope(int entityId, int scopeId);
+
+    void updatePermissionTimeout(int entityId, long timeout);
 }

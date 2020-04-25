@@ -46,12 +46,8 @@ public interface ObjectMetaEntry {
     boolean equalsValue(Object value);
 
 
-    void setValue(Object value);
+    void setValue(PermissionObject executor,Object value);
 
-    CompletableFuture<Void> setValueAsync(Object value);
+    CompletableFuture<Void> setValueAsync(PermissionObject executor,Object value);
 
-
-    void delete();
-
-    CompletableFuture<Void> deleteAsync();
 }

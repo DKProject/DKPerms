@@ -13,11 +13,9 @@ package net.pretronic.dkperms.minecraft.commands.permission.object.meta;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
-import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.api.object.meta.ObjectMeta;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.common.tree.TreeListBuilder;
@@ -25,7 +23,6 @@ import net.pretronic.dkperms.minecraft.commands.CommandUtil;
 import net.pretronic.dkperms.minecraft.config.Messages;
 
 import java.util.Arrays;
-import java.util.function.BiConsumer;
 
 public class TreeCommand extends ObjectCommand<PermissionObject> {
 
@@ -37,12 +34,14 @@ public class TreeCommand extends ObjectCommand<PermissionObject> {
     public void execute(CommandSender sender, PermissionObject object, String[] arguments) {
         PermissionScope root = CommandUtil.readScope(sender,object,arguments,0);
         if(root == null) return;
-
-        final int rootLevel = root.getLevel();
         TreeListBuilder<ObjectMetaEntry> builder = new TreeListBuilder<>(root,object.getMeta().getEntries());
 
+        sender.sendMessage(Messages.OBJECT_META_TREE_HEADER, new DescribedHashVariableSet()
+                .add("type",object.getType().getName().toLowerCase())
+                .add("object",object));
+
         builder.setHeaderPrinter(scope1
-                -> sender.sendMessage(Messages.OBJECT_META_TREE_HEADER, new DescribedHashVariableSet()
+                -> sender.sendMessage(Messages.OBJECT_META_TREE_SCOPE, new DescribedHashVariableSet()
                 .add("scope", scope1)
                 .add("spaces",buildSpaced(scope1.getLevel()))));
 
@@ -54,7 +53,6 @@ public class TreeCommand extends ObjectCommand<PermissionObject> {
     }
 
     private String buildSpaced(int amount){
-        System.out.println(amount);
         if(amount < 1) return "";
         char[] result = new char[amount*2];
         Arrays.fill(result,' ');

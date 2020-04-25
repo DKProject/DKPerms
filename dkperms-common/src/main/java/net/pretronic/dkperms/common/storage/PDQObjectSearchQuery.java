@@ -26,9 +26,8 @@ import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.dkperms.common.object.DefaultPermissionObjectManager;
 import net.pretronic.dkperms.common.object.search.DirectObjectSearchResult;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
 
 public class PDQObjectSearchQuery implements ObjectSearchQuery {
 
@@ -65,7 +64,6 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
         query.where("ScopeId",scope.getId());
         return this;
     }
-
 
     @Override
     public ObjectSearchQuery inScope(Graph<PermissionScope> scopeRange) {
@@ -111,24 +109,45 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
 
     @Override
     public ObjectSearchQuery hasMeta(String key) {
-        return null;
+        query.join(metaCollection).on(objectCollection,"Id",metaCollection,"ObjectId")
+                .where("Key",key);
+        return this;
     }
 
     @Override
     public ObjectSearchQuery hasMeta(String key, PermissionScope scope) {
-        return null;
+        query.join(metaCollection).on(objectCollection,"Id",metaCollection,"ObjectId")
+                .where("Key",key);
+        return this;
     }
 
     @Override
     public ObjectSearchQuery hasMeta(String key, Object value) {
         query.join(metaCollection).on(objectCollection,"Id",metaCollection,"ObjectId")
-                .where("Key",key).where("Value",value);
+                .where("Key",key)
+                .where("Value",value.toString());
         return this;
     }
 
     @Override
     public ObjectSearchQuery hasMeta(String key, Object value, PermissionScope scope) {
-        return null;
+        query.join(metaCollection).on(objectCollection,"Id",metaCollection,"ObjectId")
+                .where("Key",key).where("Value",value.toString())
+                .where(metaCollection.getName()+".ScopeId",scope.getId());
+        return this;
+    }
+
+    @Override
+    public ObjectSearchQuery hasMeta(String key, Object value, Graph<PermissionScope> scope) {
+        return hasMeta(key, value, scope.traverse());
+    }
+
+    @Override
+    public ObjectSearchQuery hasMeta(String key, Object value, Collection<PermissionScope> scope) {
+        query.join(metaCollection).on(objectCollection,"Id",metaCollection,"ObjectId")
+                .where("Key",key).where("Value",value.toString())
+                .whereIn(metaCollection.getName() + ".ScopeId", scope,PermissionScope::getId);
+        return this;
     }
 
     @Override
@@ -144,24 +163,32 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
 
     @Override
     public ObjectSearchResult execute() {
-        ObjectSearchResult cached = getObjectManager().getSearchResults().get("NyQuery",this);
+        ObjectSearchResult cached = getObjectManager().getSearchResults().get("ByQuery",this);
         if(cached != null) return cached;
         if(directLoading){
+            query.get(objectCollection.getName()+".Id");
+            query.get(objectCollection.getName()+".AssignmentId");
+            query.get(objectCollection.getName()+".Name");
+            query.get(objectCollection.getName()+".Disabled");
+            query.get(objectCollection.getName()+".Deleted");
+            query.get(objectCollection.getName()+".TypeId");
+            query.get(objectCollection.getName()+".ScopeId");
+
             QueryResult result = query.execute();
             if(result.isEmpty()){
                 return new DirectObjectSearchResult(this, Collections.emptyList());
             }
             List<PermissionObject> data = new ArrayList<>();
             for (QueryResultEntry entry : result) {
-                int id = entry.getInt("id");
-                PermissionObject object = getObjectManager().getObjects().get("ById",id);
+                int id = entry.getInt("Id");
+                PermissionObject object = getObjectManager().getObjects().get("ByIdOnlyCached",id);
                 if(object == null) {
-                    object = new DefaultPermissionObject(entry.getInt("Id")
+                    object = new DefaultPermissionObject(id
                             ,entry.getUniqueId("AssignmentId")
                             ,entry.getString("Name")
                             ,entry.getBoolean("Disabled")
-                            ,entry.getBoolean("Deleted")
-                            ,DKPerms.getInstance().getObjectManager().getType(entry.getInt("Type"))
+                            ,entry.getInt("Priority")
+                            ,DKPerms.getInstance().getObjectManager().getType(entry.getInt("TypeId"))
                             ,DKPerms.getInstance().getScopeManager().getScope(entry.getInt("ScopeId")));
                 }
                 data.add(object);

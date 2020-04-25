@@ -11,6 +11,7 @@
 package net.pretronic.dkperms.api.object.meta;
 
 import net.pretronic.dkperms.api.graph.Graph;
+import net.pretronic.dkperms.api.graph.ObjectGraph;
 import net.pretronic.dkperms.api.graph.ObjectMetaGraph;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.scope.PermissionScope;

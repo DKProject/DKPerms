@@ -10,20 +10,25 @@
 
 package net.pretronic.dkperms.common.scope;
 
-import net.pretronic.libraries.message.bml.variable.describer.VariableObjectToString;
-import net.pretronic.libraries.utility.Iterators;
-import net.pretronic.libraries.utility.annonations.Internal;
-import net.pretronic.libraries.utility.annonations.Nullable;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.scope.PermissionScope;
+import net.pretronic.libraries.document.Document;
+import net.pretronic.libraries.message.bml.variable.describer.VariableObjectToString;
+import net.pretronic.libraries.synchronisation.SynchronisationCaller;
+import net.pretronic.libraries.synchronisation.UnconnectedSynchronisationCaller;
+import net.pretronic.libraries.utility.Iterators;
+import net.pretronic.libraries.utility.Validate;
+import net.pretronic.libraries.utility.annonations.Internal;
+import net.pretronic.libraries.utility.annonations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 
 public class DefaultPermissionScope implements PermissionScope, VariableObjectToString {
+
+    public static SynchronisationCaller<Integer> SYNCHRONISATION_CALLER = new UnconnectedSynchronisationCaller<>(true);
 
     private final int UNSAVED_ID = -1;
 
@@ -36,6 +41,7 @@ public class DefaultPermissionScope implements PermissionScope, VariableObjectTo
     private List<PermissionScope> children;
 
     public DefaultPermissionScope(int id, String key, String name,@Nullable PermissionScope parent) {
+        Validate.notNull(key,name);
         this.id = id;
         this.key = key;
         this.name = name;
@@ -44,6 +50,7 @@ public class DefaultPermissionScope implements PermissionScope, VariableObjectTo
     }
 
     public DefaultPermissionScope(int id, String key, String name, int level, PermissionScope parent, List<PermissionScope> children) {
+        Validate.notNull(parent,key,name,children);
         this.id = id;
         this.key = key;
         this.name = name;
@@ -128,7 +135,17 @@ public class DefaultPermissionScope implements PermissionScope, VariableObjectTo
 
     @Override
     public boolean isSaved() {
-        return id != UNSAVED_ID;
+        boolean saved = id != UNSAVED_ID;
+        if(!saved && !SYNCHRONISATION_CALLER.isConnected()){
+            if(getParent() == null) return id != UNSAVED_ID;
+            else if(!getParent().isSaved()) return false;
+            else {
+                this.id = DKPerms.getInstance().getStorage().getScopeStorage().getScopeId(getParent().getId(),key,name);
+                if(this.id == 0) this.id = UNSAVED_ID;
+                return this.id != UNSAVED_ID;
+            }
+        }
+        return saved;
     }
 
     @Override
@@ -136,6 +153,12 @@ public class DefaultPermissionScope implements PermissionScope, VariableObjectTo
         if(isSaved()) throw new IllegalArgumentException("The Scope is already inserted.");
         if(parent != null && !parent.isSaved()) parent.insert();
         this.id = DKPerms.getInstance().getStorage().getScopeStorage().insertScope(parent!=null?parent.getId():UNSAVED_ID,this.key,this.name);
+        if(getParent() != null){
+            SYNCHRONISATION_CALLER.create(this.id, Document.newDocument()
+                    .add("parent",getParent().getId())
+                    .add("key",this.key)
+                    .add("name",this.name));
+        }
     }
 
     @Override
@@ -156,6 +179,7 @@ public class DefaultPermissionScope implements PermissionScope, VariableObjectTo
     public void delete() {
         this.children.forEach(PermissionScope::delete);
         DKPerms.getInstance().getStorage().getScopeStorage().deleteScope(this.id);
+        SYNCHRONISATION_CALLER.delete(this.id, Document.newDocument());
         this.id = UNSAVED_ID;
     }
 
@@ -195,6 +219,16 @@ public class DefaultPermissionScope implements PermissionScope, VariableObjectTo
         loadChildren();
         this.children.remove(scope);
         this.children.add(scope);
+    }
+
+    @Internal
+    public void scopeDeleted(){
+        this.id = UNSAVED_ID;
+    }
+
+    @Internal
+    public void scopeInserted(int id){
+        this.id = id;
     }
 
     @Override

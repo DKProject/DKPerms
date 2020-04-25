@@ -13,17 +13,14 @@ package net.pretronic.dkperms.minecraft.commands.permission.object.meta;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
-import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import net.pretronic.dkperms.api.scope.PermissionScope;
-import net.pretronic.dkperms.common.tree.TreeListBuilder;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
 import net.pretronic.dkperms.minecraft.config.Messages;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 public class ListCommand extends ObjectCommand<PermissionObject> {
@@ -40,14 +37,9 @@ public class ListCommand extends ObjectCommand<PermissionObject> {
         Collection<ObjectMetaEntry> entries = object.getMeta().getEntries(scope);
 
         sender.sendMessage(Messages.OBJECT_META_LIST,new DescribedHashVariableSet()
+                .add("type",object.getType().getName().toLowerCase())
                 .add("object",object)
                 .add("scope",scope)
                 .add("entries",entries));
-    }
-
-    private String buildSpaced(int amount){
-        char[] result = new char[amount*2];
-        Arrays.fill(result,' ');
-        return new String(result);
     }
 }

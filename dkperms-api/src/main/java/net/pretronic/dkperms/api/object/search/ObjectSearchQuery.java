@@ -16,6 +16,8 @@ import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.object.search.sort.SortOrder;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 
+import java.util.Collection;
+
 public interface ObjectSearchQuery {
 
     ObjectSearchQuery withName(String name);
@@ -50,6 +52,10 @@ public interface ObjectSearchQuery {
     ObjectSearchQuery hasMeta(String key, Object value);
 
     ObjectSearchQuery hasMeta(String key, Object value, PermissionScope scope);
+
+    ObjectSearchQuery hasMeta(String key, Object value, Graph<PermissionScope> scope);
+
+    ObjectSearchQuery hasMeta(String key, Object value, Collection<PermissionScope> scope);
 
 
     ObjectSearchQuery sortBy(String column, SortOrder order);

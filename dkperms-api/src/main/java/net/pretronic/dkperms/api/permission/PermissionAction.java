@@ -18,7 +18,7 @@ public enum PermissionAction {
     REJECT("-"),
     REJECT_ALWAYS("--");
 
-    private String symbol;
+    private final String symbol;
 
     PermissionAction(String symbol) {
         this.symbol = symbol;
@@ -49,12 +49,16 @@ public enum PermissionAction {
     }
 
     public static PermissionAction of(String nameOrSymbol){
-        for (PermissionAction value : values()) if(value.name().equalsIgnoreCase(nameOrSymbol) && value.symbol.equalsIgnoreCase(nameOrSymbol)) return value;
+        for (PermissionAction value : values()){
+            if(value.name().equalsIgnoreCase(nameOrSymbol) || value.symbol.equalsIgnoreCase(nameOrSymbol)) return value;
+        }
         throw new IllegalArgumentException("Invalid permission action ("+nameOrSymbol+")");
     }
 
     public static PermissionAction ofOrNull(String nameOrSymbol){
-        for (PermissionAction value : values()) if(value.name().equalsIgnoreCase(nameOrSymbol) && value.symbol.equalsIgnoreCase(nameOrSymbol)) return value;
+        for (PermissionAction value : values()){
+            if(value.name().equalsIgnoreCase(nameOrSymbol) || value.symbol.equalsIgnoreCase(nameOrSymbol)) return value;
+        }
         return null;
     }
 

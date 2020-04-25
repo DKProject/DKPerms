@@ -19,6 +19,6 @@ public interface ObjectGraph extends Graph<PermissionObject> {
 
     PermissionAction calculate(PermissionObject group);
 
-
+    PermissionObject getHighest();
 
 }

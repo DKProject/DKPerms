@@ -21,6 +21,7 @@ import org.mcnative.common.serviceprovider.permission.PermissionHandler;
 import org.mcnative.common.serviceprovider.permission.PermissionProvider;
 
 import java.util.Collection;
+import java.util.Collections;
 
 public class DKPermsPermissionProvider implements PermissionProvider {
 
@@ -42,13 +43,13 @@ public class DKPermsPermissionProvider implements PermissionProvider {
         return Iterators.map(objectManager.search().type(userType).hasMeta("operator", true)
                 .search().getAllHolders(PermissionPlayer.class), player -> player);
          */
-        return null;
+        return Collections.emptyList();//@Todo implement
     }
 
     @Override
     public Collection<String> getGroups() {
         //objectManager.get
-        return null;
+        return Collections.emptyList();//@Todo implement
     }
 
     @Override

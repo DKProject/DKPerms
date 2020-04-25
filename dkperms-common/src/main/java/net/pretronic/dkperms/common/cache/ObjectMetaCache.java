@@ -29,16 +29,16 @@ public class ObjectMetaCache extends ScopeBasedCache<ObjectMetaEntry> {
 
     @Override
     protected Collection<ObjectMetaEntry> load(PermissionScope scope) {
-        return DKPerms.getInstance().getStorage().getObjectStorage().getMetaEntries(object.getId(),scope);
+        return DKPerms.getInstance().getStorage().getObjectStorage().getMetaEntries(object,scope);
     }
 
     @Override
     protected ScopeBasedDataList<ObjectMetaEntry> load(Collection<PermissionScope> scopes) {
-        return DKPerms.getInstance().getStorage().getObjectStorage().getMetaEntries(object.getId(),scopes);
+        return DKPerms.getInstance().getStorage().getObjectStorage().getMetaEntries(object,scopes);
     }
 
     @Override
     protected ScopeBasedDataList<ObjectMetaEntry> loadAll(Collection<PermissionScope> skipped) {
-        return DKPerms.getInstance().getStorage().getObjectStorage().getAllMetaEntries(object.getId(),skipped);
+        return DKPerms.getInstance().getStorage().getObjectStorage().getAllMetaEntries(object,skipped);
     }
 }

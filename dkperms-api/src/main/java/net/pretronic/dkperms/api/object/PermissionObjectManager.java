@@ -10,6 +10,7 @@
 
 package net.pretronic.dkperms.api.object;
 
+import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
 import net.pretronic.dkperms.api.object.search.ObjectSearchQuery;
 import net.pretronic.dkperms.api.scope.PermissionScope;
@@ -58,6 +59,14 @@ public interface PermissionObjectManager {
 
     ObjectSearchResult getObjects(PermissionScope scope);
 
+
+    default Collection<PermissionObject> getDefaultGroups(Graph<PermissionScope> range){
+        return getDefaultGroups(range.traverse());
+    }
+
+    Collection<PermissionObject> getDefaultGroups(Collection<PermissionScope> range);
+
+
     ObjectSearchQuery search();
 
     default PermissionObject createObject(PermissionScope scope, PermissionObjectType type,String name){
@@ -81,7 +90,7 @@ public interface PermissionObjectManager {
     void deleteObject(PermissionObject executor,int id);
 
     default void deleteObject(PermissionObject object){
-        deleteObject(object);
+        deleteObject(getSuperAdministrator(),object);
     }
 
     void deleteObject(PermissionObject executor,PermissionObject object);

@@ -73,6 +73,13 @@
         </dependency>
 
         <dependency>
+            <groupId>net.pretronic.libraries</groupId>
+            <artifactId>pretroniclibraries-synchronisation</artifactId>
+            <version>${dependency.pretronic.libraries}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${test.junit.jupiter}</version>

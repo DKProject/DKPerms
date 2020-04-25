@@ -10,6 +10,7 @@
 
 package net.pretronic.dkperms.common;
 
+import net.pretronic.dkperms.api.DKPermsFormatter;
 import net.pretronic.dkperms.api.logging.AuditLog;
 import net.pretronic.dkperms.api.migration.MigrationAssistant;
 import net.pretronic.dkperms.api.storage.DKPermsStorage;
@@ -19,6 +20,8 @@ import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.object.PermissionObjectManager;
 import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyse;
 import net.pretronic.dkperms.api.scope.PermissionScopeManager;
+
+import java.text.SimpleDateFormat;
 
 public class DefaultDKPerms extends DKPerms {
 
@@ -31,9 +34,10 @@ public class DefaultDKPerms extends DKPerms {
     private final PermissionScopeManager scopeManager;
     private final PermissionObjectManager objectManager;
     private final AsyncExecutor executor;
+    private final DKPermsFormatter formatter;
 
     public DefaultDKPerms(String version, int build, PretronicLogger logger,MigrationAssistant migrationAssistant,DKPermsStorage storage,AuditLog auditLog
-            , PermissionScopeManager scopeManager,PermissionObjectManager objectManager, AsyncExecutor executor) {
+            , PermissionScopeManager scopeManager,PermissionObjectManager objectManager, AsyncExecutor executor,DKPermsFormatter formatter) {
         this.version = version;
         this.build = build;
         this.logger = logger;
@@ -43,6 +47,7 @@ public class DefaultDKPerms extends DKPerms {
         this.scopeManager = scopeManager;
         this.objectManager = objectManager;
         this.executor = executor;
+        this.formatter = formatter;
     }
 
     @Override
@@ -88,6 +93,11 @@ public class DefaultDKPerms extends DKPerms {
     @Override
     public AsyncExecutor getExecutor() {
         return executor;
+    }
+
+    @Override
+    public DKPermsFormatter getFormatter() {
+        return formatter;
     }
 
     @Override

@@ -14,32 +14,36 @@ import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.entity.PermissionEntity;
 import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
+import net.pretronic.dkperms.api.graph.GroupGraph;
+import net.pretronic.dkperms.api.graph.ObjectGraph;
 import net.pretronic.dkperms.api.graph.PermissionGraph;
 import net.pretronic.dkperms.api.object.holder.PermissionObjectHolder;
 import net.pretronic.dkperms.api.object.meta.ObjectMeta;
+import net.pretronic.dkperms.api.object.snapshot.PermissionObjectSnapshot;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyse;
 import net.pretronic.dkperms.api.permission.analyse.track.PermissionTrackResult;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
+import net.pretronic.libraries.synchronisation.observer.Observable;
+import net.pretronic.libraries.utility.annonations.Nullable;
 
+import java.security.Permissions;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-public interface PermissionObject{
+public interface PermissionObject extends Observable<PermissionObject,SyncAction> {
 
     int getId();
 
     UUID getAssignmentId();
 
-    boolean isDeleted();
-
 
     String getName();
 
-    void updateName(PermissionObject executor,String name);
+    void setName(PermissionObject executor,String name);
 
 
     String getPath();
@@ -47,20 +51,46 @@ public interface PermissionObject{
 
     PermissionObjectType getType();
 
-    void updateType(PermissionObject executor,PermissionObjectType type);
+    void setType(PermissionObject executor,PermissionObjectType type);
+
+
+    int getPriority();
+
+    void setPriority(PermissionObject executor,int priority);
 
 
     boolean isDisabled();
 
-    void updateDisabled(PermissionObject executor,boolean disabled);
+    void setDisabled(PermissionObject executor,boolean disabled);
 
 
     PermissionScope getScope();
 
-    void updateScope(PermissionObject executor,PermissionScope scope);
+    void setScope(PermissionObject executor,PermissionScope scope);
 
+
+    // ----- Current location data -----
 
     PermissionObjectHolder getHolder();
+
+    @Nullable
+    PermissionObjectSnapshot getCurrentSnapshot();
+
+    void setCurrentSnapshot(PermissionObjectSnapshot snapshot);
+
+    PermissionObjectSnapshot newSnapshot(PermissionScope scope);
+
+    default void setCurrentScope(PermissionScope scope){
+        PermissionObjectSnapshot snapshot = getCurrentSnapshot();
+        if(snapshot == null){
+            snapshot = newSnapshot(scope);
+            setCurrentSnapshot(snapshot);
+        }else{
+            snapshot.setScope(scope);
+        }
+    }
+
+
 
     ObjectMeta getMeta();
 
@@ -68,7 +98,7 @@ public interface PermissionObject{
     // ----- Groups -----
 
 
-    Collection<PermissionGroupEntity> getAllGroups();//Returns all groups
+    ScopeBasedDataList<PermissionGroupEntity> getAllGroups();//Returns all groups
 
     default Collection<PermissionGroupEntity> getGroups(){//Returns all root groups
         return getGroups(getScope());
@@ -79,14 +109,14 @@ public interface PermissionObject{
     ScopeBasedDataList<PermissionGroupEntity> getGroups(Graph<PermissionScope> range);
 
 
-    Graph<PermissionGroupEntity> newGroupEntityGraph(Graph<PermissionScope> range);
+    GroupGraph newGroupGraph(Graph<PermissionScope> range);
 
-    Graph<PermissionGroupEntity> newGroupEntityInheritanceGraph(Graph<PermissionScope> range);
+    GroupGraph newGroupInheritanceGraph(Graph<PermissionScope> range);
 
 
-    Graph<PermissionObject> newGroupGraph(Graph<PermissionScope> range);
+    ObjectGraph newEffectedGroupGraph(Graph<PermissionScope> range);
 
-    Graph<PermissionObject> newGroupInheritanceGraph(Graph<PermissionScope> range);
+    ObjectGraph newEffectedGroupInheritanceGraph(Graph<PermissionScope> range);
 
 
     default PermissionGroupEntity getGroup(PermissionObject object){
@@ -94,6 +124,13 @@ public interface PermissionObject{
     }
 
     PermissionGroupEntity getGroup(PermissionScope scope, PermissionObject object);
+
+
+    PermissionGroupEntity setGroup(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, long timeout);
+
+    default PermissionGroupEntity setGroup(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, long duration, TimeUnit unit){
+        return addGroup(executor,scope, group,action,duration>0?unit.toMillis(duration):duration);
+    }
 
 
     PermissionGroupEntity addGroup(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, long timeout);
@@ -140,7 +177,7 @@ public interface PermissionObject{
     // ----- Permissions -----
 
 
-    Collection<PermissionEntity> getAllPermissions();
+    ScopeBasedDataList<PermissionEntity> getAllPermissions();
 
     default Collection<PermissionEntity> getPermissions(){
         return getPermissions(getScope());
@@ -170,11 +207,11 @@ public interface PermissionObject{
     PermissionAction hasPermission(PermissionScope scope, String permission);
 
 
-    PermissionEntity addPermission(PermissionScope scope, String permission,PermissionAction action, long timeout);
+    PermissionEntity addPermission(PermissionObject executor,PermissionScope scope, String permission,PermissionAction action, long timeout);
 
 
-    default PermissionEntity addPermission(PermissionScope scope, String permission,PermissionAction action, long duration, TimeUnit unit){
-        return addPermission(scope, permission,action, duration>0?unit.toMillis(duration):duration);
+    default PermissionEntity addPermission(PermissionObject executor,PermissionScope scope, String permission,PermissionAction action, long duration, TimeUnit unit){
+        return addPermission(executor,scope, permission,action, duration>0?unit.toMillis(duration):duration);
     }
 
 
@@ -202,8 +239,6 @@ public interface PermissionObject{
 
 
     void delete(PermissionObject executor);
-
-    void restore(PermissionObject executor);
 
 
     default CompletableFuture<Void> deleteAsync(PermissionObject executor){

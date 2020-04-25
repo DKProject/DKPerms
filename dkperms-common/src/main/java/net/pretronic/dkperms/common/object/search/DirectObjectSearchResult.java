@@ -48,6 +48,18 @@ public class DirectObjectSearchResult implements ObjectSearchResult {
     }
 
     @Override
+    public PermissionObject getFirstOrNull() {
+        if(objects.isEmpty()) return null;
+        return getFirst();
+    }
+
+    @Override
+    public PermissionObject getLastOrNull() {
+        if(objects.isEmpty()) return null;
+        return getLast();
+    }
+
+    @Override
     public PermissionObject getLast() {
         return objects.get(objects.size()-1);
     }

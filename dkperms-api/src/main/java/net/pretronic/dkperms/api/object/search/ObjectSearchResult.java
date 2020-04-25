@@ -23,7 +23,11 @@ public interface ObjectSearchResult extends Iterable<PermissionObject> {
 
     PermissionObject getFirst();
 
+    PermissionObject getFirstOrNull();
+
     PermissionObject getLast();
+
+    PermissionObject getLastOrNull();
 
     PermissionObject get(int index);
 

@@ -2,7 +2,7 @@
  * (C) Copyright 2020 The DKPerms Project (Davide Wietlisbach & Philipp Elvin Friedhoff)
  *
  * @author Davide Wietlisbach
- * @since 07.04.20, 15:06
+ * @since 19.04.20, 13:31
  * @website %web%
  *
  * %license%
@@ -15,9 +15,9 @@ import net.pretronic.libraries.command.command.configuration.CommandConfiguratio
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
-public class InfoSubCommand extends BasicCommand {
+public class InfoCommand extends BasicCommand {
 
-    public InfoSubCommand(ObjectOwner owner) {
+    public InfoCommand(ObjectOwner owner) {
         super(owner, CommandConfiguration.name("info","i","information","version","v"));
     }
 

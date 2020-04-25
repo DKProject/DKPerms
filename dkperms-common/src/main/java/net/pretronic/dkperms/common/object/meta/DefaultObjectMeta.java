@@ -10,6 +10,9 @@
 
 package net.pretronic.dkperms.common.object.meta;
 
+import net.pretronic.dkperms.api.object.SyncAction;
+import net.pretronic.dkperms.common.object.DefaultPermissionObject;
+import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.Validate;
 import net.pretronic.dkperms.api.DKPerms;
@@ -22,16 +25,16 @@ import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 import net.pretronic.dkperms.common.cache.ObjectMetaCache;
 import net.pretronic.dkperms.common.graph.EmptyGraph;
-import net.pretronic.dkperms.common.graph.meta.MetaInheritanceGraph;
+import net.pretronic.dkperms.common.graph.DefaultObjectMetaGraph;
 
 import java.util.*;
 
 public class DefaultObjectMeta implements ObjectMeta {
 
-    private final PermissionObject object;
+    private final DefaultPermissionObject object;
     private final ObjectMetaCache cache;
 
-    public DefaultObjectMeta(PermissionObject object) {
+    public DefaultObjectMeta(DefaultPermissionObject object) {
         this.object = object;
         this.cache = new ObjectMetaCache(object);
     }
@@ -73,12 +76,12 @@ public class DefaultObjectMeta implements ObjectMeta {
 
     @Override
     public ObjectMetaGraph newGraph(Graph<PermissionScope> scopes) {
-        return new MetaInheritanceGraph(object,scopes, EmptyGraph.newEmptyGraph());
+        return new DefaultObjectMetaGraph(object,scopes, EmptyGraph.newEmptyGraph());
     }
 
     @Override
     public ObjectMetaGraph newInheritanceGraph(Graph<PermissionScope> scopes) {
-        return new MetaInheritanceGraph(object,scopes,object.newGroupInheritanceGraph(scopes));
+        return new DefaultObjectMetaGraph(object,scopes,object.newEffectedGroupInheritanceGraph(scopes));
     }
 
     @Override
@@ -105,9 +108,10 @@ public class DefaultObjectMeta implements ObjectMeta {
         if(entry == null){
             if(!scope.isSaved()) scope.insert();
             int id = DKPerms.getInstance().getStorage().getObjectStorage().insertMeta(object.getId(),scope.getId(),key,value.toString());
-            entry = new DefaultObjectMetaEntry(scope,id,key,value);
+            entry = new DefaultObjectMetaEntry(object,scope,id,key,value);
             cache.insert(scope,entry);
-        }else entry.setValue(value);
+        }else entry.setValue(executor,value);
+        synchronizeMeta(scope);
         return entry;
     }
 
@@ -122,6 +126,7 @@ public class DefaultObjectMeta implements ObjectMeta {
         if(entry != null){
             DKPerms.getInstance().getStorage().getObjectStorage().deleteMetaEntry(entry.getId());
             cache.remove(scope,entry);
+            synchronizeMeta(scope);
         }
     }
 
@@ -129,16 +134,24 @@ public class DefaultObjectMeta implements ObjectMeta {
     public void clear(PermissionObject executor) {
         DKPerms.getInstance().getStorage().getObjectStorage().clearMeta(object.getId());
         this.cache.clear();
+        synchronizeMeta(null);
     }
 
     @Override
     public void clear(PermissionObject executor,PermissionScope scope) {
         DKPerms.getInstance().getStorage().getObjectStorage().clearMeta(object.getId(),scope.getId());
         cache.clear(scope);
+        synchronizeMeta(scope);
     }
 
     @Override
     public Iterator<ObjectMetaEntry> iterator() {
-        return getEntries().getAll().iterator();//@Todo add better iterator
+        return getEntries().getAll().iterator();
+    }
+
+    private void synchronizeMeta(PermissionScope scope){
+        Document data = Document.newDocument();
+        if(scope != null) data.set("scope",scope.getId());
+        object.executeSynchronisationUpdate(SyncAction.OBJECT_META_UPDATE,data);
     }
 }

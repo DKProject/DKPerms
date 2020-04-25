@@ -29,16 +29,16 @@ public class PermissionCache extends ScopeBasedCache<PermissionEntity> {
 
     @Override
     protected Collection<PermissionEntity> load(PermissionScope scope) {
-        return DKPerms.getInstance().getStorage().getPermissionStorage().getPermissions(object.getId(),scope);
+        return DKPerms.getInstance().getStorage().getPermissionStorage().getPermissions(object,scope);
     }
 
     @Override
     protected ScopeBasedDataList<PermissionEntity> load(Collection<PermissionScope> scopes) {
-        return DKPerms.getInstance().getStorage().getPermissionStorage().getPermissions(object.getId(),scopes);
+        return DKPerms.getInstance().getStorage().getPermissionStorage().getPermissions(object,scopes);
     }
 
     @Override
     protected ScopeBasedDataList<PermissionEntity> loadAll(Collection<PermissionScope> scopes) {
-        return DKPerms.getInstance().getStorage().getPermissionStorage().getAllPermissions(object.getId(),scopes);
+        return DKPerms.getInstance().getStorage().getPermissionStorage().getAllPermissions(object,scopes);
     }
 }

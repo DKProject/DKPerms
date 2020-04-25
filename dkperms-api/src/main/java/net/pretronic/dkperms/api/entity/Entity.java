@@ -10,6 +10,7 @@
 
 package net.pretronic.dkperms.api.entity;
 
+import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
@@ -27,23 +28,26 @@ public interface Entity {
 
     int getId();
 
+    PermissionObject getOwner();
+
+
     PermissionAction getAction();
 
-    void updateAction(PermissionObject executor,PermissionAction action);
+    void setAction(PermissionObject executor,PermissionAction action);
 
 
     PermissionScope getScope();
 
-    void updateScope(PermissionObject executor,PermissionScope scope);
+    void setScope(PermissionObject executor,PermissionScope scope);
 
 
     long getTimeout();
 
-    void updateTimeout(PermissionObject executor,long timeout);
+    void setTimeout(PermissionObject executor,long timeout);
 
 
-    default void updateDuration(PermissionObject executor,long duration, TimeUnit unit){
-        updateTimeout(executor,System.currentTimeMillis()+unit.toMillis(duration));
+    default void setDuration(PermissionObject executor,long duration, TimeUnit unit){
+        setTimeout(executor,System.currentTimeMillis()+unit.toMillis(duration));
     }
 
     default long getRemainingDuration(){
@@ -55,6 +59,17 @@ public interface Entity {
         return getTimeout() > 0 && getTimeout() < System.currentTimeMillis();
     }
 
+    default String getTimeoutFormatted(){
+        return DKPerms.getInstance().getFormatter().formatDateTime(getTimeout());
+    }
 
-    void remove(PermissionObject executor);
+    default String getRemainingDurationFormatted(){
+        return DKPerms.getInstance().getFormatter().formatRemainingDuration(getTimeout());
+    }
+
+    void update(PermissionObject executor,PermissionAction action,PermissionScope scope,long timeout);
+
+    default void update(PermissionObject executor,PermissionAction action,PermissionScope scope,long duration,TimeUnit unit){
+        update(executor, action, scope, duration>0?unit.toMillis(duration):duration);
+    }
 }

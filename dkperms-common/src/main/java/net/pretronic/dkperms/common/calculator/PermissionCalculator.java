@@ -21,23 +21,34 @@ import java.util.List;
 
 public class PermissionCalculator {
 
+    public static PermissionEntity findBestPermissionEntity(Graph<PermissionEntity> permissions,String permission){
+        return findBestPermissionEntity(permissions.traverse(),permission);
+    }
+
+    public static PermissionEntity findBestPermissionEntity(Collection<PermissionEntity> permissions, String permission){
+        String[] nodes = StringUtil.split(permission,'.');
+        PermissionEntity result = null;
+        for (PermissionEntity entity : permissions) {
+            PermissionAction action = entity.check(nodes);
+            if(action != PermissionAction.NEUTRAL){
+                if(action == PermissionAction.REJECT_ALWAYS) return entity;
+                else if(action == PermissionAction.ALLOW && result != null && result.getAction() != PermissionAction.REJECT){
+                    result = entity;
+                } else if(action == PermissionAction.REJECT && result != null && result.getAction() != PermissionAction.ALLOW_ALWAYS){
+                    result = entity;
+                } else result = entity;
+            }
+        }
+        return result;
+    }
+
     public static PermissionAction calculate(Graph<PermissionEntity> permissions,String permission){
         return calculate(permissions.traverse(),permission);
     }
 
     public static PermissionAction calculate(Collection<PermissionEntity> permissions, String permission){
-        String[] nodes = StringUtil.split(permission,'.');
-        PermissionAction result = PermissionAction.NEUTRAL;
-        for (PermissionEntity entity : permissions) {
-            PermissionAction action = entity.check(nodes);
-            if(action != PermissionAction.NEUTRAL){
-                if(action == PermissionAction.REJECT_ALWAYS) return action;
-                else if(action == PermissionAction.ALLOW && result != PermissionAction.REJECT) result = action;
-                else if(action == PermissionAction.REJECT && result != PermissionAction.ALLOW_ALWAYS) result = action;
-                else result = action;
-            }
-        }
-        return result;
+        PermissionEntity entity = findBestPermissionEntity(permissions,permission);
+        return entity != null ? entity.getAction() : PermissionAction.NEUTRAL;
     }
 
     public static boolean containsPermission(Graph<PermissionEntity> permissions,String permission){

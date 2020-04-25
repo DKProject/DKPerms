@@ -41,7 +41,7 @@ public class UnsetCommand extends ObjectCommand<PermissionObject> {
             variables.add("type",object.getType().getName().toLowerCase());
             variables.add("object",object);
             variables.add("key",key);
-            variables.add("value","NULL");
+            variables.add("value","Undefined");
             variables.add("scope",scope);
             sender.sendMessage(Messages.OBJECT_META_UNSET,variables);
         }else{
