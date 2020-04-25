@@ -22,6 +22,7 @@ import java.util.function.BiFunction;
 
 public class DKPermsPermissionGroup implements PermissionObjectHolder {
 
+
     private final PermissionObject object;
 
     public DKPermsPermissionGroup(PermissionObject object) {
@@ -32,6 +33,5 @@ public class DKPermsPermissionGroup implements PermissionObjectHolder {
     public PermissionObject getObject() {
         return object;
     }
-
 
 }
