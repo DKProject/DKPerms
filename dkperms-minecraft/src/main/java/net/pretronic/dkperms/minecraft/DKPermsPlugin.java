@@ -50,7 +50,6 @@ import org.mcnative.common.McNative;
 import org.mcnative.common.event.player.login.MinecraftPlayerLoginEvent;
 import org.mcnative.common.player.MinecraftPlayer;
 import org.mcnative.common.plugin.MinecraftPlugin;
-import org.mcnative.common.plugin.configuration.Configuration;
 import org.mcnative.common.serviceprovider.permission.PermissionProvider;
 
 import java.io.File;
@@ -58,17 +57,12 @@ import java.util.function.Function;
 
 public class DKPermsPlugin extends MinecraftPlugin {
 
-    @Lifecycle(state = LifecycleState.LOAD)
-    public void onLoad(LifecycleState state){
-        Configuration config = getConfiguration();
-        internalBootstrap(config);
-    }
-
-    private void internalBootstrap(Configuration config){
+    @Lifecycle(state = LifecycleState.BOOTSTRAP)
+    public void onBootstrap(LifecycleState state){
         getLogger().info("DKPerms is starting, please wait..");
         copyLegacyConfig();
 
-        config.load(DKPermsConfig.class);
+        getConfiguration().load(DKPermsConfig.class);
 
         PluginVersion version = getDescription().getVersion();
 
@@ -120,6 +114,13 @@ public class DKPermsPlugin extends MinecraftPlugin {
         dkPerms.getMigrationAssistant().registerMigration(new DKPermsLegacyMigration());
 
         getLogger().info("DKPerms successfully started");
+    }
+
+    @Lifecycle(state = LifecycleState.SHUTDOWN)
+    public void onShutdown(LifecycleState state){
+        getLogger().info("DKPerms is shutting down, please wait..");
+        DKPerms.setInstance(null);
+        getLogger().info("DKPerms successfully shutted down");
     }
 
     private void copyLegacyConfig(){

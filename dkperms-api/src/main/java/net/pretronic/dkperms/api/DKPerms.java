@@ -51,7 +51,7 @@ public abstract class DKPerms {
     }
 
     public static void setInstance(DKPerms instance){
-        if(INSTANCE != null) throw new IllegalArgumentException("DKPerms instance is already set.");
+        if(INSTANCE != null && instance != null) throw new IllegalArgumentException("DKPerms instance is already set.");
         INSTANCE = instance;
     }
 }
