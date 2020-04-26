@@ -20,6 +20,8 @@ public interface ScopeStorage {
 
     PermissionScope getScope(int id);
 
+    int getScopeId(int parentId,String key, String name);
+
     int insertScope(int parentId, String key, String name);
 
     void updateScopeName(int scopeId, String key, String name);

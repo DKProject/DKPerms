@@ -113,12 +113,15 @@ public class DKPermsLegacyMigration implements PermissionMigration {
                         .createObject(DKPermsConfig.OBJECT_GROUP_SCOPE
                                 ,DKPermsConfig.OBJECT_GROUP_TYPE,group.getName());
             }
+            object.setPriority(admin,group.getPriority());
 
             if(group.getDescription() != null && group.getDescription().isEmpty()){
                 object.getMeta().set(admin,"description",group.getDescription());
             }
 
-            if(group.getJoinPower() > 0) object.getMeta().set(admin,"joinPower",group.getJoinPower());
+            if(group.getJoinPower() > 0){
+                object.getMeta().set(admin,"joinPower",group.getJoinPower());
+            }
 
             object.getMeta().set(admin,"team",group.isTeam());
             object.getMeta().set(admin,"default",group.isDefault());
@@ -128,7 +131,7 @@ public class DKPermsLegacyMigration implements PermissionMigration {
                 object.getMeta().set(admin,"chat",group.getPlayerDesign().getDisplay());
                 object.getMeta().set(admin,"prefix",group.getPlayerDesign().getPrefix());
                 object.getMeta().set(admin,"suffix",group.getPlayerDesign().getSuffix());
-            }//@Todo migrate priority and default
+            }
             this.migratedGroups.put(group.getUUID(),object);
         }
     }
@@ -165,7 +168,7 @@ public class DKPermsLegacyMigration implements PermissionMigration {
             if(!permission.hasTimeOut()){
                 PermissionAction action = permission.isNegative() ? PermissionAction.REJECT : PermissionAction.ALLOW;
                 if(object.getPermission(scope,permission.getRawPermission()) == null){
-                    object.addPermission(scope,permission.getRawPermission(),action,permission.getTimeOut());
+                    object.addPermission(admin,scope,permission.getRawPermission(),action,permission.getTimeOut());
                 }
             }
         }
@@ -176,7 +179,7 @@ public class DKPermsLegacyMigration implements PermissionMigration {
                     if(!permission.hasTimeOut()){
                         PermissionAction action = permission.isNegative() ? PermissionAction.REJECT : PermissionAction.ALLOW;
                         if(object.getPermission(worldScope,permission.getRawPermission()) == null){
-                            object.addPermission(worldScope,permission.getRawPermission(),action,permission.getTimeOut());
+                            object.addPermission(admin,worldScope,permission.getRawPermission(),action,permission.getTimeOut());
                         }
                     }
                 }

@@ -14,6 +14,7 @@ import net.pretronic.databasequery.api.collection.DatabaseCollection;
 import net.pretronic.databasequery.api.query.SearchOrder;
 import net.pretronic.databasequery.api.query.result.QueryResult;
 import net.pretronic.databasequery.api.query.result.QueryResultEntry;
+import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 import net.pretronic.dkperms.common.object.meta.DefaultObjectMetaEntry;
@@ -35,39 +36,39 @@ public class PDQGroupStorage implements GroupStorage {
     private DatabaseCollection group_entities;
 
     @Override
-    public Collection<PermissionGroupEntity> getGroupReferences(int objectId, PermissionScope scope) {
+    public Collection<PermissionGroupEntity> getGroupReferences(PermissionObject object, PermissionScope scope) {
         List<PermissionGroupEntity> entities = new ArrayList<>();
         group_entities.find()
-                .where("ObjectId",objectId)
+                .where("ObjectId",object.getId())
                 .where("ScopeId",scope.getId())
                 .execute()
                 .loadIn(entities, entry
-                -> new DefaultPermissionGroupEntity(entry.getInt("Id")
+                -> new DefaultPermissionGroupEntity(object,entry.getInt("Id")
                 ,DKPerms.getInstance().getObjectManager().getObject(entry.getInt("GroupId"))
                 ,PermissionAction.of(entry.getInt("Action")),scope,entry.getLong("Timeout")));
         return entities;
     }
 
     @Override
-    public ScopeBasedDataList<PermissionGroupEntity> getGroupReferences(int objectId, Collection<PermissionScope> scope) {
+    public ScopeBasedDataList<PermissionGroupEntity> getGroupReferences(PermissionObject object, Collection<PermissionScope> scope) {
         QueryResult result = group_entities.find()
-                .where("ObjectId",objectId)
+                .where("ObjectId",object.getId())
                 .orderBy("ScopeId", SearchOrder.ASC)
                 .execute();
-        return getGroupReferences(result,scope);
+        return getGroupReferences(object,result,scope);
     }
 
     @Override
-    public ScopeBasedDataList<PermissionGroupEntity> getAllGroupReferences(int objectId, Collection<PermissionScope> skipped) {
+    public ScopeBasedDataList<PermissionGroupEntity> getAllGroupReferences(PermissionObject object, Collection<PermissionScope> skipped) {
         QueryResult result = group_entities.find()
-                .where("ObjectId",objectId)
+                .where("ObjectId",object.getId())
                 .not(query -> query.whereIn("ScopeId", skipped, PermissionScope::getId))
                 .orderBy("ScopeId", SearchOrder.ASC)
                 .execute();
-        return getGroupReferences(result,null);
+        return getGroupReferences(object,result,null);
     }
 
-    private ScopeBasedDataList<PermissionGroupEntity> getGroupReferences(QueryResult result, Collection<PermissionScope> scopes) {
+    private ScopeBasedDataList<PermissionGroupEntity> getGroupReferences(PermissionObject object,QueryResult result, Collection<PermissionScope> scopes) {
         ScopeBasedDataList<PermissionGroupEntity> response = new ArrayScopeBasedDataList<>();
         PermissionScope last = null;
         Collection<PermissionGroupEntity> entities = null;
@@ -80,7 +81,7 @@ public class PDQGroupStorage implements GroupStorage {
                 entities = new ArrayList<>();
                 response.put(last,entities);
             }
-            entities.add(new DefaultPermissionGroupEntity(entry.getInt("Id")
+            entities.add(new DefaultPermissionGroupEntity(object,entry.getInt("Id")
                     ,DKPerms.getInstance().getObjectManager().getObject(entry.getInt("GroupId"))
                     ,PermissionAction.of(entry.getInt("Action"))
                     ,last,entry.getLong("Timeout")));
@@ -118,6 +119,40 @@ public class PDQGroupStorage implements GroupStorage {
         this.group_entities.delete()
                 .where("ObjectId",objectId)
                 .where("ScopeId",scopeId)
+                .execute();
+    }
+
+    @Override
+    public void updateGroupReference(int entityId, int scopeId, PermissionAction action, long timeout) {
+        this.group_entities.update()
+                .set("ScopeId",scopeId)
+                .set("Action",action.ordinal())
+                .set("Timeout",timeout)
+                .where("Id",entityId)
+                .execute();
+    }
+
+    @Override
+    public void updateGroupReferenceScope(int entityId, int scopeId) {
+        this.group_entities.update()
+                .set("ScopeId",scopeId)
+                .where("Id",entityId)
+                .execute();
+    }
+
+    @Override
+    public void updateGroupReferenceAction(int entityId, PermissionAction action) {
+        this.group_entities.update()
+                .set("Action",action.ordinal())
+                .where("Id",entityId)
+                .execute();
+    }
+
+    @Override
+    public void updateGroupReferenceTimeout(int entityId, long timeout) {
+        this.group_entities.update()
+                .set("Timeout",timeout)
+                .where("Id",entityId)
                 .execute();
     }
 

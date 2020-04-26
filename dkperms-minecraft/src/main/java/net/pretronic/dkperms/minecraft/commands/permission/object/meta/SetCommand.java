@@ -10,6 +10,7 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.object.meta;
 
+import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
@@ -31,14 +32,15 @@ public class SetCommand extends ObjectCommand<PermissionObject> {
     public void execute(CommandSender sender, PermissionObject object, String[] arguments) {
         if(arguments.length >= 2){
             String key = arguments[0];
-            String value = arguments[1];
+            String value = arguments[1].replace("__"," ");
 
             PermissionScope scope = CommandUtil.readScope(sender,object,arguments,2);
             if(scope == null) return;
 
-            object.getMeta().set(null,key,value,scope);
+            ObjectMetaEntry entry = object.getMeta().set(null,key,value,scope);
 
             VariableSet variables = new DescribedHashVariableSet();
+            variables.add("entry",entry);
             variables.add("type",object.getType().getName().toLowerCase());
             variables.add("object",object);
             variables.add("key",key);

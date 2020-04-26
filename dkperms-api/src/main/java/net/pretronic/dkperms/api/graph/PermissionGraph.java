@@ -17,6 +17,8 @@ import java.util.List;
 
 public interface PermissionGraph extends Graph<PermissionEntity> {
 
+    PermissionEntity getPermission(String permission);
+
     boolean containsPermission(String permission);
 
     PermissionAction calculatePermission(String permission);

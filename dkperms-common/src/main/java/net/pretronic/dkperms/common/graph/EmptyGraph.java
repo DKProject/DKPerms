@@ -11,11 +11,14 @@
 package net.pretronic.dkperms.common.graph;
 
 import net.pretronic.dkperms.api.graph.Graph;
+import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.SyncAction;
+import net.pretronic.libraries.synchronisation.observer.UnusedObservable;
 
 import java.util.Collections;
 import java.util.List;
 
-public class EmptyGraph<T> implements Graph<T> {
+public class EmptyGraph<T> extends UnusedObservable<PermissionObject, SyncAction> implements Graph<T> {
 
     private static Graph EMPTY = new EmptyGraph();
 

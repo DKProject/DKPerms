@@ -49,14 +49,28 @@ public class PDQScopeStorage implements ScopeStorage {
             if(parent != null){
                 if(parent.areChildrenLoaded()) throw new IllegalArgumentException("Scope loading and cache mismatch");
                 else{
+                    PermissionScope scope = new DefaultPermissionScope(
+                            entry.getInt("Id"),entry.getString("Key"),entry.getString("Name"),parent);
                     if(parent instanceof DefaultPermissionScope){
-                        ((DefaultPermissionScope)parent).provideReversedLoadedScope(new DefaultPermissionScope(
-                                entry.getInt("Id"),entry.getString("Key"),entry.getString("Name"),parent));
+                        ((DefaultPermissionScope)parent).provideReversedLoadedScope(scope);
                     }else throw new UnsupportedOperationException("Unsupported scope reverse loading operation");
+                    return scope;
                 }
             }
         }
         return null;
+    }
+
+    @Override
+    public int getScopeId(int parentId, String key, String name) {
+        QueryResult result = this.scope.find().where("ParentId",parentId)
+                .where("Key",key)
+                .where("Name",name)
+                .onlyOne().execute();
+        if(!result.isEmpty()){
+            return result.first().getInt("Id");
+        }
+        return -1;
     }
 
     @Override

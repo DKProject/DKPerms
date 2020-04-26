@@ -10,13 +10,16 @@
 
 package net.pretronic.dkperms.common.scope;
 
+import net.pretronic.libraries.document.Document;
+import net.pretronic.libraries.synchronisation.SynchronisationCaller;
+import net.pretronic.libraries.synchronisation.SynchronisationHandler;
 import net.pretronic.libraries.utility.interfaces.Initializable;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.PermissionScopeBuilder;
 import net.pretronic.dkperms.api.scope.PermissionScopeManager;
-import net.pretronic.dkperms.common.graph.scope.ScopeGraph;
+import net.pretronic.dkperms.common.graph.ScopeGraph;
 
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +28,16 @@ public class DefaultPermissionScopeManager implements PermissionScopeManager, In
 
     private PermissionScope root;
     private PermissionScope current;
+
+    private final ScopeSynchronizer scopeSynchronizer;
+
+    public DefaultPermissionScopeManager() {
+        this.scopeSynchronizer = new ScopeSynchronizer();
+    }
+
+    public ScopeSynchronizer getScopeSynchronizer() {
+        return scopeSynchronizer;
+    }
 
     @Override
     public PermissionScope getCurrentInstanceScope() {
@@ -63,10 +76,9 @@ public class DefaultPermissionScopeManager implements PermissionScopeManager, In
     public PermissionScope getScope(int id) {
         PermissionScope result = findScope(root,id);
         if(result == null){
-            return DKPerms.getInstance().getStorage().getScopeStorage().getScope(id);
-        }else{
-            return result;
+            result = DKPerms.getInstance().getStorage().getScopeStorage().getScope(id);
         }
+        return result;
     }
 
     private PermissionScope findScope(PermissionScope scope, int id){
@@ -100,6 +112,48 @@ public class DefaultPermissionScopeManager implements PermissionScopeManager, In
         }else{
             this.root = result.get(0);
             if(result.size() > 1) dkPerms.getLogger().warn("Found more then one root scopes, please fix your tree");
+        }
+    }
+
+    public class ScopeSynchronizer implements SynchronisationHandler<PermissionScope,Integer> {
+
+        @Override
+        public SynchronisationCaller<Integer> getCaller() {
+            return DefaultPermissionScope.SYNCHRONISATION_CALLER;
+        }
+
+        @Override
+        public void onDelete(Integer identifier, Document data) {
+            PermissionScope result = findScope(root,identifier);
+            if(result instanceof DefaultPermissionScope) ((DefaultPermissionScope) result).scopeDeleted();
+        }
+
+        @Override
+        public void onCreate(Integer identifier, Document data) {
+            int parent = data.getInt("parent");
+            if(parent > 0){
+                PermissionScope result = findScope(root,parent);
+                if(result != null && result.areChildrenLoaded()){
+                    for (PermissionScope child : result.getChildren()) {
+                        if(child.getKey().equalsIgnoreCase(data.getString("key"))
+                                && child.getName().equalsIgnoreCase(data.getString("name"))){
+                            if(child instanceof  DefaultPermissionScope){
+                                ((DefaultPermissionScope) child).scopeInserted(identifier);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onUpdate(Integer identifier, Document data) {
+            throw new UnsupportedOperationException("It is not possible to update a scope");
+        }
+
+        @Override
+        public void init(SynchronisationCaller<Integer> caller) {
+            DefaultPermissionScope.SYNCHRONISATION_CALLER = caller;
         }
     }
 }

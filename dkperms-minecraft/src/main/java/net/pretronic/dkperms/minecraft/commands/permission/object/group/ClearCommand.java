@@ -14,6 +14,7 @@ import net.pretronic.libraries.command.command.configuration.CommandConfiguratio
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
+import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.scope.PermissionScope;
@@ -33,9 +34,9 @@ public class ClearCommand extends ObjectCommand<PermissionObject> {
 
         object.clearGroups(null,scope);
 
-        VariableSet variables = VariableSet.create();
-        variables.add("object",object.getName());
-        variables.add("scope",scope.getPath());
+        VariableSet variables = new DescribedHashVariableSet()
+                .add("object",object)
+                .add("scope",scope);
         sender.sendMessage(Messages.OBJECT_GROUP_CLEAR,variables);
     }
 }

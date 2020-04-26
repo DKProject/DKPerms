@@ -42,6 +42,8 @@ public abstract class DKPerms {
 
     public abstract AsyncExecutor getExecutor();
 
+    public abstract DKPermsFormatter getFormatter();
+
     public abstract PermissionAnalyse startAnalyse();
 
     public static DKPerms getInstance(){

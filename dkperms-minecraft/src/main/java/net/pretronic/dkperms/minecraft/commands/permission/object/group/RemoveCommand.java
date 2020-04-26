@@ -10,10 +10,12 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.object.group;
 
+import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
+import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.object.PermissionObject;
@@ -29,7 +31,7 @@ public class RemoveCommand extends ObjectCommand<PermissionObject> {
 
     public RemoveCommand(ObjectOwner owner) {
         super(owner, CommandConfiguration.name("remove","r"));
-    }//add <>name> {action} {time} {unit} {scope}
+    }
 
     @Override
     public void execute(CommandSender sender, PermissionObject object, String[] arguments) {
@@ -52,16 +54,17 @@ public class RemoveCommand extends ObjectCommand<PermissionObject> {
 
             object.removeGroup(null,scope,group);
 
-            VariableSet variables = VariableSet.create();
-            variables.add("type",object.getType().getName().toLowerCase());
-            variables.add("object",object.getName());
-            variables.add("scope",scope.getPath());
+            VariableSet variables = new DescribedHashVariableSet()
+                    .add("type",object.getType().getName().toLowerCase())
+                    .add("object",object.getName())
+                    .add("group",group)
+                    .add("action", PermissionAction.NEUTRAL)
+                    .add("timeout",DKPermsConfig.FORMAT_DATE_ENDLESSLY)
+                    .add("remaining",DKPermsConfig.FORMAT_DATE_ENDLESSLY)
+                    .add("scope",scope.getPath());
             sender.sendMessage(Messages.OBJECT_GROUP_REMOVE,variables);
         }else{
-            VariableSet variables = VariableSet.create();
-            variables.add("command",getConfiguration().getName());
-            variables.add("usage","/perms <user/group> <object> group remove <name> <scope>");
-            sender.sendMessage(Messages.COMMAND_INVALID_SYNTAX,variables);
+            CommandUtil.sendInvalidSyntax(sender,"group set","/perms <user/group> <object> meta set <key> <value> [scope]");
         }
     }
 }

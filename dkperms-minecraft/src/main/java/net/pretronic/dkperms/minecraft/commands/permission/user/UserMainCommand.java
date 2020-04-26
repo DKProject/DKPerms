@@ -2,13 +2,13 @@
  * (C) Copyright 2020 The DKPerms Project (Davide Wietlisbach & Philipp Elvin Friedhoff)
  *
  * @author Davide Wietlisbach
- * @since 26.02.20, 19:51
+ * @since 15.04.20, 17:32
  * @website %web%
  *
  * %license%
  */
 
-package net.pretronic.dkperms.minecraft.commands.permission.object;
+package net.pretronic.dkperms.minecraft.commands.permission.user;
 
 import net.pretronic.dkperms.api.minecraft.player.PermissionPlayer;
 import net.pretronic.dkperms.api.object.PermissionObject;
@@ -27,9 +27,9 @@ import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import org.mcnative.common.McNative;
 import org.mcnative.common.player.MinecraftPlayer;
 
-public class UserCommand extends MainObjectCommand<PermissionObject> implements ObjectNotFindable, DefinedNotFindable<PermissionObject> {
+public class UserMainCommand extends MainObjectCommand<PermissionObject> implements ObjectNotFindable, DefinedNotFindable<PermissionObject> {
 
-    public UserCommand(ObjectOwner owner) {
+    public UserMainCommand(ObjectOwner owner) {
         super(owner, CommandConfiguration.name("user","u","player","p"));
 
         registerCommand(new GroupCommand(owner));
@@ -47,18 +47,19 @@ public class UserCommand extends MainObjectCommand<PermissionObject> implements 
     @Override
     public void objectNotFound(CommandSender sender, String value, String[] strings) {
         if(value == null){
-            System.out.println("VALUE NULL");
-            return;
+            sender.sendMessage(Messages.COMMAND_PERMS_HELP);
+        }else{
+            sender.sendMessage(Messages.USER_NOTFOUND,VariableSet.create()
+                    .add("user",value).add("player",value));
         }
-        sender.sendMessage(Messages.USER_NOTFOUND,VariableSet.create().add("player",value));
     }
 
     @Override
-    public void commandNotFound(CommandSender sender, PermissionObject object, String command, String[] strings) {
-        if(command == null | object != null) {
-            sender.sendMessage(Messages.OBJECT_USER_INFO, new DescribedHashVariableSet().add("user", object));
+    public void commandNotFound(CommandSender sender, PermissionObject object, String command, String[] arguments) {
+        if(command == null && object != null) {
+            sender.sendMessage(Messages.USER_INFO, new DescribedHashVariableSet().add("user", object));
         }else{
-            sender.sendMessage("HRLP");
+            sender.sendMessage(Messages.USER_HELP);
         }
     }
 }

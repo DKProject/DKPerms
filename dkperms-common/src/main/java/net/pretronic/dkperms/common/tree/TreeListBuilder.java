@@ -55,7 +55,6 @@ public class TreeListBuilder<T> {
             for (T obj : data.getData()) {
                 dataPrinter.accept(scope,obj);
             }
-            return true;
         }
         if(scope.areChildrenLoaded()){
             for (PermissionScope child : scope.getChildren()) {

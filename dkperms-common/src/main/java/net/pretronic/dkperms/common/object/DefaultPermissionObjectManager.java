@@ -13,6 +13,9 @@ package net.pretronic.dkperms.common.object;
 import net.pretronic.libraries.caching.ArrayCache;
 import net.pretronic.libraries.caching.Cache;
 import net.pretronic.libraries.caching.CacheQuery;
+import net.pretronic.libraries.caching.synchronisation.ArraySynchronizableCache;
+import net.pretronic.libraries.caching.synchronisation.SynchronizableCache;
+import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.Validate;
 import net.pretronic.libraries.utility.interfaces.Initializable;
@@ -25,8 +28,10 @@ import net.pretronic.dkperms.api.object.search.ObjectSearchQuery;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 public class DefaultPermissionObjectManager implements PermissionObjectManager, Initializable<DKPerms> {
 
@@ -34,24 +39,28 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
     private static final String SUPER_ADMINISTRATOR_ACCOUNT_NAME = "Super Administrator";
     private static final String SERVICE_ACCOUNT_NAME = "SERVICE_ACCOUNT";
 
-    private final Cache<PermissionObject> objects;
+    private final SynchronizableCache<PermissionObject,Integer> objects;
     private final Cache<ObjectSearchResult> searchResults;
     private PermissionObject superAdministrator;
     private Collection<PermissionObjectType> types;
 
     public DefaultPermissionObjectManager() {
-        this.objects = new ArrayCache<>(1000);
+        this.objects = new ArraySynchronizableCache<>(1000);
+        //this.objects.setClearOnDisconnect(true);
+        //this.objects.setExpireAfterAccess(1,TimeUnit.HOURS);
+
         this.objects.registerQuery("ByName",new ObjectNameLoader());
-        this.objects.registerQuery("ById",new ObjectIdLoader());
+        this.objects.registerQuery("ById",new ObjectIdLoader(false));
+        this.objects.registerQuery("ByIdOnlyCached",new ObjectIdLoader(true));
         this.objects.registerQuery("ByAssignment",new ObjectAssignmentLoader());
         //@Todo remove listener
 
-        this.searchResults = new ArrayCache<>(20);
-        this.searchResults.setExpireAfterAccess(1, TimeUnit.HOURS);
+        this.searchResults = new ArrayCache<>(100);
+        this.searchResults.setExpireAfterAccess(2, TimeUnit.HOURS);
         this.searchResults.registerQuery("ByQuery",new ObjectQueryLoader());
     }
 
-    public Cache<PermissionObject> getObjects() {
+    public SynchronizableCache<PermissionObject,Integer> getObjects() {
         return objects;
     }
 
@@ -145,12 +154,17 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
 
     @Override
     public ObjectSearchResult getObjects(PermissionObjectType type, PermissionScope scope) {
-        return search().withType(type).withScope(scope).execute();
+        return search().directLoading().withType(type).withScope(scope).execute();//@Todo remove direct loading
     }
 
     @Override
     public ObjectSearchResult getObjects(PermissionScope scope) {
         return search().withScope(scope).execute();
+    }
+
+    @Override
+    public Collection<PermissionObject> getDefaultGroups(Collection<PermissionScope> range) {
+        return search().hasMeta("default",true,range).directLoading().execute().getAll();//@Todo maybe optimize
     }
 
     @Override
@@ -176,12 +190,14 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
     public void deleteObject(PermissionObject executor,int id) {
         this.objects.remove("ById",id);
         DKPerms.getInstance().getStorage().getObjectStorage().deleteObject(id);
+        this.objects.getCaller().createAndIgnore(id, Document.newDocument());
     }
 
     @Override
     public void deleteObject(PermissionObject executor,PermissionObject object) {
         this.objects.remove(object);
         DKPerms.getInstance().getStorage().getObjectStorage().deleteObject(object.getId());
+        this.objects.getCaller().createAndIgnore(object.getId(), Document.newDocument());
     }
 
     @Override
@@ -218,6 +234,12 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
 
     private final static class ObjectIdLoader implements CacheQuery<PermissionObject> {
 
+        private final boolean onlyCached;
+
+        public ObjectIdLoader(boolean onlyCached) {
+            this.onlyCached = onlyCached;
+        }
+
         @Override
         public boolean check(PermissionObject o, Object[] objects) {
             return o.getId() == (int)objects[0];
@@ -230,11 +252,12 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
 
         @Override
         public PermissionObject load(Object[] identifiers) {
+            if(onlyCached) return null;
             return DKPerms.getInstance().getStorage().getObjectStorage().getObject((int) identifiers[0]);
         }
     }
 
-    private final static class ObjectAssignmentLoader implements CacheQuery<PermissionObject> {
+    private final class ObjectAssignmentLoader implements CacheQuery<PermissionObject> {
 
         @Override
         public boolean check(PermissionObject o, Object[] objects) {

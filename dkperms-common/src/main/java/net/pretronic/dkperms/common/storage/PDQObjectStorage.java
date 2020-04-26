@@ -103,27 +103,23 @@ public class PDQObjectStorage implements ObjectStorage {
     @Override
     public PermissionObject getObject(int id) {
         QueryResult result = this.object.find().where("Id",id).limit(1).execute();
-        if(!result.isEmpty()) return result.first().to((Function<QueryResultEntry, PermissionObject>) entry
-                -> new DefaultPermissionObject(entry.getInt("Id")
-                ,entry.getUniqueId("AssignmentId")
-                ,entry.getString("Name")
-                ,entry.getBoolean("Disabled")
-                ,entry.getBoolean("Deleted")
-                ,DKPerms.getInstance().getObjectManager().getType(entry.getInt("Type"))
-                ,DKPerms.getInstance().getScopeManager().getScope(entry.getInt("ScopeId"))));
-        return null;
+        return readPermissionObject(result);
     }
 
     @Override
     public PermissionObject getObjectByAssignment(UUID id) {
         QueryResult result = this.object.find().where("AssignmentId",id).limit(1).execute();
+        return readPermissionObject(result);
+    }
+
+    private PermissionObject readPermissionObject(QueryResult result) {
         if(!result.isEmpty()) return result.first().to((Function<QueryResultEntry, PermissionObject>) entry
                 -> new DefaultPermissionObject(entry.getInt("Id")
                 ,entry.getUniqueId("AssignmentId")
                 ,entry.getString("Name")
                 ,entry.getBoolean("Disabled")
-                ,entry.getBoolean("Deleted")
-                ,DKPerms.getInstance().getObjectManager().getType(entry.getInt("TypeId"))
+                ,entry.getInt("Priority")
+                , DKPerms.getInstance().getObjectManager().getType(entry.getInt("TypeId"))
                 ,DKPerms.getInstance().getScopeManager().getScope(entry.getInt("ScopeId"))));
         return null;
     }
@@ -141,7 +137,7 @@ public class PDQObjectStorage implements ObjectStorage {
                 ,entry.getUniqueId("AssignmentId")
                 ,entry.getString("Name")
                 ,entry.getBoolean("Disabled")
-                ,entry.getBoolean("Deleted")
+                ,entry.getInt("Priority")
                 ,type,scope));
         return null;
     }
@@ -163,7 +159,7 @@ public class PDQObjectStorage implements ObjectStorage {
                 ,entry.getUniqueId("AssignmentId")
                 ,entry.getString("Name")
                 ,entry.getBoolean("Disabled")
-                ,entry.getBoolean("Deleted")
+                ,entry.getInt("Priority")
                 ,DKPerms.getInstance().getObjectManager().getType(entry.getInt("TypeId"))
                 ,DKPerms.getInstance().getScopeManager().getScope(entry.getInt("ScopeId"))));
         return response;
@@ -176,13 +172,14 @@ public class PDQObjectStorage implements ObjectStorage {
                 .set("TypeId",type.getId())
                 .set("ScopeId",scope.getId())
                 .set("Name",name)
+                .set("Priority",0)
                 .set("AssignmentId",assignmentId)
                 .set("Disabled",false)
                 .set("Deleted",false)
                 .set("DisplayName",name)
                 .set("Description","")
                 .executeAndGetGeneratedKeys("id").first().getInt("id");
-        return new DefaultPermissionObject(id,assignmentId,name,false,false,type,scope);
+        return new DefaultPermissionObject(id,assignmentId,name,false,0,type,scope);
     }
 
     @Override
@@ -210,6 +207,14 @@ public class PDQObjectStorage implements ObjectStorage {
     }
 
     @Override
+    public void updateObjectPriority(int objectId, int priority) {
+        this.object.update()
+                .set("Priority",priority)
+                .where("Id",objectId)
+                .execute();
+    }
+
+    @Override
     public void updateObjectDisabled(int objectId, boolean disabled) {
         this.object.update()
                 .set("Disabled",disabled)
@@ -220,58 +225,43 @@ public class PDQObjectStorage implements ObjectStorage {
     @Override
     public void deleteObject(int objectId) {
         this.object.delete()
-                .where("Id",objectId).limit(1)
+                .where("Id",objectId)
                 .execute();
     }
 
     @Override
-    public ObjectMetaEntry getMetaEntry(int metaId) {
-        QueryResult result = object_meta.find().where("Id",metaId).limit(1).execute();
-        if(!result.isEmpty()){
-            QueryResultEntry entry = result.first();
-            return new DefaultObjectMetaEntry(
-                    DKPerms.getInstance().getScopeManager().getScope(entry.getInt("ScopeId"))
-                    ,entry.getInt("Id")
-                    ,entry.getString("Key")
-                    ,entry.getString("Value"));
-        }
-        return null;
-    }
-
-    @Override
-    public Collection<ObjectMetaEntry> getMetaEntries(int objectId, PermissionScope scope) {
+    public Collection<ObjectMetaEntry> getMetaEntries(PermissionObject object, PermissionScope scope) {
         Collection<ObjectMetaEntry> result = new ArrayList<>();
         this.object_meta.find()
-                .where("ObjectId",objectId)
+                .where("ObjectId",object.getId())
                 .where("ScopeId",scope.getId())
                 .execute().loadIn(result, entry
-                -> new DefaultObjectMetaEntry(scope,entry.getInt("Id")
+                -> new DefaultObjectMetaEntry(object,scope,entry.getInt("Id")
                 ,entry.getString("Key"),entry.getString("Value")));
         return result;
     }
 
     @Override
-    public ScopeBasedDataList<ObjectMetaEntry> getMetaEntries(int objectId, Collection<PermissionScope> scopes) {
+    public ScopeBasedDataList<ObjectMetaEntry> getMetaEntries(PermissionObject object, Collection<PermissionScope> scopes) {
         QueryResult result = object_meta.find()
-                .where("ObjectId",objectId)
+                .where("ObjectId",object.getId())
                 .whereIn("ScopeId", scopes, PermissionScope::getId)
                 .orderBy("ScopeId", SearchOrder.ASC)
                 .execute();
-        return getMetaEntries(result,scopes);
+        return getMetaEntries(object,result,scopes);
     }
 
     @Override
-    public ScopeBasedDataList<ObjectMetaEntry> getAllMetaEntries(int objectId, Collection<PermissionScope> skipped) {
-        System.out.println("SKIPPED: "+skipped);
+    public ScopeBasedDataList<ObjectMetaEntry> getAllMetaEntries(PermissionObject object, Collection<PermissionScope> skipped) {
         QueryResult result = object_meta.find()
-                .where("ObjectId",objectId)
+                .where("ObjectId",object.getId())
                 .not(query -> query.whereIn("ScopeId", skipped, PermissionScope::getId))
                 .orderBy("ScopeId", SearchOrder.ASC)
                 .execute();
-        return getMetaEntries(result,null);
+        return getMetaEntries(object,result,null);
     }
 
-    private ScopeBasedDataList<ObjectMetaEntry> getMetaEntries(QueryResult result, Collection<PermissionScope> scopes) {
+    private ScopeBasedDataList<ObjectMetaEntry> getMetaEntries(PermissionObject object,QueryResult result, Collection<PermissionScope> scopes) {
         ScopeBasedDataList<ObjectMetaEntry> response = new ArrayScopeBasedDataList<>();
         PermissionScope last = null;
         Collection<ObjectMetaEntry> entities = null;
@@ -284,7 +274,7 @@ public class PDQObjectStorage implements ObjectStorage {
                 entities = new ArrayList<>();
                 response.put(last,entities);
             }
-            entities.add(new DefaultObjectMetaEntry(last,entry.getInt("Id")
+            entities.add(new DefaultObjectMetaEntry(object,last,entry.getInt("Id")
                     ,entry.getString("Key"),entry.getString("Value")));
         }
         return response;

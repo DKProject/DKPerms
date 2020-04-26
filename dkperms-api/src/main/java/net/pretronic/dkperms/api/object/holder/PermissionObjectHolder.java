@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2019 The DKPerms Project (Davide Wietlisbach & Philipp Elvin Friedhoff)
+ * (C) Copyright 2020 The DKPerms Project (Davide Wietlisbach & Philipp Elvin Friedhoff)
  *
  * @author Davide Wietlisbach
- * @since 07.12.19, 16:30
+ * @since 24.04.20, 21:15
  * @website %web%
  *
  * %license%

@@ -10,29 +10,22 @@
 
 package net.pretronic.dkperms.api.object.snapshot;
 
-import net.pretronic.dkperms.api.entity.PermissionEntity;
-import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
-import net.pretronic.dkperms.api.graph.Graph;
-import net.pretronic.dkperms.api.graph.ObjectGraph;
-import net.pretronic.dkperms.api.graph.ObjectMetaGraph;
-import net.pretronic.dkperms.api.graph.PermissionGraph;
+import net.pretronic.dkperms.api.graph.*;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
-
-import java.util.Collection;
 
 public interface PermissionObjectSnapshot {
 
     PermissionObject getObject();
 
 
-    PermissionScope getCurrentScope();
+    PermissionScope getScope();
 
     Graph<PermissionScope> getScopeRange();
 
-    void setCurrentScope(PermissionScope scope);
+    void setScope(PermissionScope scope);
 
 
     PermissionGraph getPermissionGraph();
@@ -40,64 +33,55 @@ public interface PermissionObjectSnapshot {
     PermissionGraph getPermissionInheritanceGraph();
 
 
+    GroupGraph getGroupGraph();
+
+    GroupGraph getGroupInheritanceGraph();
+
+
+    ObjectGraph getEffectedGroupGraph();
+
+    ObjectGraph getEffectedGroupInheritanceGraph();
+
+
     ObjectMetaGraph getMetaGraph();
 
     ObjectMetaGraph getMetaInheritanceGraph();
 
-    ObjectMetaGraph getGroupGraph();
 
-    ObjectGraph getGroupInheritanceGraph();
-
+    default PermissionAction isGroupSet(PermissionObject object){
+        return getGroupInheritanceGraph().calculateGroup(object);
+    }
 
     default PermissionAction isInGroup(PermissionObject object){
-        return getGroupInheritanceGraph().calculate(object);
-    }
-
-    default boolean isGroupSet(PermissionObject object){
-        return getGroupInheritanceGraph().contains(object);
+        return getGroupInheritanceGraph().calculateGroup(object);
     }
 
 
-    default boolean isInInheritanceGroup(PermissionObject object){
-        return false;
+    default PermissionObject getHighestGroup(){
+        return getEffectedGroupGraph().getHighest();
     }
 
-
-
-    PermissionObject getHighestGroup();
-
-    Collection<PermissionGroupEntity> getGroupEntities();
-
-    Collection<PermissionObject> getGroups();
-
-
-
-
-    default Collection<PermissionEntity> getPermissionsEntities(){
-        return getPermissionGraph().traverse();
-    }
-
-    default Collection<String> getPermissions(){
-        return getPermissionGraph().toStringList();
-    }
 
     default boolean isPermissionSet(String permission){
         return getPermissionInheritanceGraph().containsPermission(permission);
     }
+
 
     default PermissionAction hasPermission(String permission){
         return getPermissionInheritanceGraph().calculatePermission(permission);
     }
 
 
+    default ObjectMetaEntry getMeta(String key){
+        return getMetaInheritanceGraph().calculate(key);
+    }
 
+    default boolean isMetaSet(String key){
+        return getMetaInheritanceGraph().isSet(key);
+    }
 
-    ObjectMetaEntry getMetaEntries();
-
-    ObjectMetaEntry getMeta(String key);
-
-    boolean containsMeta(String key);
-
-    boolean isMetaSet(String key,Object value);
+    default boolean isMetaSet(String key,Object value){
+        return getMetaInheritanceGraph().isSet(key,value);
+    }
 
 }

@@ -10,6 +10,8 @@
 
 package net.pretronic.dkperms.common.object.meta;
 
+import net.pretronic.dkperms.api.object.SyncAction;
+import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.document.type.DocumentFileType;
 import net.pretronic.libraries.utility.Convert;
@@ -17,18 +19,23 @@ import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import net.pretronic.dkperms.api.scope.PermissionScope;
+import net.pretronic.libraries.utility.GeneralUtil;
+import net.pretronic.libraries.utility.Validate;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 public class DefaultObjectMetaEntry implements ObjectMetaEntry {
 
+    private final PermissionObject owner;
     private final int id;
     private final String key;
     private final PermissionScope scope;
     private Object value;
 
-    public DefaultObjectMetaEntry(PermissionScope scope,int id, String key, Object value) {
+    public DefaultObjectMetaEntry(PermissionObject owner,PermissionScope scope,int id, String key, Object value) {
+        Validate.notNull(owner,scope,id,key,value);
+        this.owner = owner;
         this.id = id;
         this.key = key;
         this.scope = scope;
@@ -42,7 +49,7 @@ public class DefaultObjectMetaEntry implements ObjectMetaEntry {
 
     @Override
     public PermissionObject getOwner() {
-        throw new UnsupportedOperationException();//@Todo implement
+        return owner;
     }
 
     @Override
@@ -97,29 +104,41 @@ public class DefaultObjectMetaEntry implements ObjectMetaEntry {
 
     @Override
     public boolean equalsValue(Object value) {
-        //@Todo better implementation
-        return value.equals(value);
+        if(this.value == value) return true;
+        if(this.value.equals(value)) return true;
+        else if(this.value instanceof String){
+            String stringValue = this.value.toString();
+            if(value instanceof Byte){
+                return GeneralUtil.isNaturalNumber(stringValue) && Byte.parseByte(stringValue) == (byte)value;
+            }else if(value instanceof Integer){
+                return GeneralUtil.isNaturalNumber(stringValue) && Integer.parseInt(stringValue) == (int)value;
+            }else if(value instanceof Long){
+                return GeneralUtil.isNaturalNumber(stringValue) && Long.parseLong(stringValue) == (long)value;
+            }else if(value instanceof Double){
+                return GeneralUtil.isNumber(stringValue) && Double.parseDouble(stringValue) == (double)value;
+            }else if(value instanceof Boolean){
+                return (stringValue.equalsIgnoreCase("true") && (boolean)value)
+                        || (stringValue.equalsIgnoreCase("false") && !(boolean) value);
+            }
+        }
+        return false;
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(PermissionObject executor,Object value) {
         Objects.requireNonNull(value,"Value can't be null");
         DKPerms.getInstance().getStorage().getObjectStorage().updateMeta(id,value.toString());
         this.value = value;
+
+        if(owner instanceof DefaultPermissionObject){
+            Document data = Document.newDocument();
+            if(scope != null) data.set("scope",scope.getId());
+            ((DefaultPermissionObject)owner).executeSynchronisationUpdate(SyncAction.OBJECT_META_UPDATE,data);
+        }
     }
 
     @Override
-    public CompletableFuture<Void> setValueAsync(Object value) {
-        return DKPerms.getInstance().getExecutor().executeVoid(() -> setValue(value));
-    }
-
-    @Override
-    public void delete() {
-
-    }
-
-    @Override
-    public CompletableFuture<Void> deleteAsync() {
-        return null;
+    public CompletableFuture<Void> setValueAsync(PermissionObject executor,Object value) {
+        return DKPerms.getInstance().getExecutor().executeVoid(() -> setValue(executor,value));
     }
 }

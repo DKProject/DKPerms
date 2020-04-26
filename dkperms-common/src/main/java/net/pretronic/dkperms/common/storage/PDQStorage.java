@@ -91,6 +91,7 @@ public class PDQStorage implements DKPermsStorage {
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL,FieldOption.INDEX)
                 .field("AssignmentId", DataType.UUID,FieldOption.INDEX)
                 .field("Name",DataType.STRING,64,FieldOption.NOT_NULL,FieldOption.INDEX)
+                .field("Priority",DataType.INTEGER,FieldOption.NOT_NULL)
                 .field("TypeId",DataType.INTEGER,ForeignKey.of(object_type,"Id"),FieldOption.NOT_NULL)
                 .field("ScopeId",DataType.INTEGER,ForeignKey.of(scope,"Id"),FieldOption.NOT_NULL)
                 .field("Disabled",DataType.BOOLEAN,FieldOption.NOT_NULL)

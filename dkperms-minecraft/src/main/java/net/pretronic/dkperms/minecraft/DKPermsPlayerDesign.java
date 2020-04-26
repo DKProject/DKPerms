@@ -10,63 +10,52 @@
 
 package net.pretronic.dkperms.minecraft;
 
-import net.pretronic.dkperms.api.graph.ObjectMetaGraph;
+import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import org.mcnative.common.player.PlayerDesign;
 
 public class DKPermsPlayerDesign implements PlayerDesign {
     
-    private String color;
-    private String prefix;
-    private String suffix;
-    private String display;
-    private int priority;
+    private final PermissionObject object;
+
+    public DKPermsPlayerDesign(PermissionObject object) {
+        this.object = object;
+    }
 
     @Override
     public String getColor() {
-        return color;
+        ObjectMetaEntry entry = object.getCurrentSnapshot().getMeta("color");
+        return entry != null?entry.getValue():"";
     }
 
     @Override
     public String getPrefix() {
-        return prefix;
+        ObjectMetaEntry entry = object.getCurrentSnapshot().getMeta("prefix");
+        return entry != null?entry.getValue():"";
     }
 
     @Override
     public String getSuffix() {
-        return suffix;
+        ObjectMetaEntry entry = object.getCurrentSnapshot().getMeta("suffix");
+        return entry != null?entry.getValue():"";
     }
 
     @Override
     public String getChat() {
-        return null;
+        ObjectMetaEntry entry = object.getCurrentSnapshot().getMeta("chat");
+        return entry != null?entry.getValue():"";
     }
 
     @Override
     public String getDisplayName() {
-        return null;
+        return "{name}";//@Todo implements
     }
 
     @Override
     public int getPriority() {
-        return priority;
-    }
-
-    public void update(ObjectMetaGraph meta){
-        ObjectMetaEntry entry = meta.calculate("color");
-        this.color = entry != null?entry.getValue():"";
-
-        entry = meta.calculate("prefix");
-        this.prefix = entry != null?entry.getValue():"";
-
-        entry = meta.calculate("suffix");
-        this.suffix = entry != null?entry.getValue():"";
-
-        entry = meta.calculate("display");
-        this.display = entry != null?entry.getValue():"";
-
-        entry = meta.calculate("priority");
-        this.priority = entry != null?entry.getIntValue():Integer.MAX_VALUE;
+        ObjectMetaEntry entry = object.getCurrentSnapshot().getMeta("priority");
+        return entry != null?entry.getIntValue():0;
     }
 
 }
+

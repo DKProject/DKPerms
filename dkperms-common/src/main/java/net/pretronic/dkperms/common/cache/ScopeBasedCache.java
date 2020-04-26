@@ -16,6 +16,7 @@ import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedData;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 import net.pretronic.dkperms.common.scope.data.ArrayScopeBasedDataList;
+import net.pretronic.libraries.utility.Validate;
 
 import java.util.*;
 
@@ -95,6 +96,22 @@ public abstract class ScopeBasedCache<T> {
 
     private ScopeBasedData<T> getEntry(PermissionScope scope){
         return Iterators.findOne(this.entries, entry -> entry.getScope().equals(scope));
+    }
+
+    public void reset(){
+        this.entries.clear();
+        loadedAll = false;
+    }
+
+    public void reset(PermissionScope scope){
+        Validate.notNull(scope);
+        reset(scope.getId());
+        loadedAll = false;
+    }
+
+    public void reset(int scopeId){
+        Iterators.removeOne(this.entries, entry -> entry.getScope().getId() == scopeId);
+        loadedAll = false;
     }
 
     public void clear(PermissionScope scope){

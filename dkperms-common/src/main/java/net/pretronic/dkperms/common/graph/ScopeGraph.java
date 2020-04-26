@@ -2,22 +2,26 @@
  * (C) Copyright 2020 The DKPerms Project (Davide Wietlisbach & Philipp Elvin Friedhoff)
  *
  * @author Davide Wietlisbach
- * @since 29.02.20, 20:47
+ * @since 24.04.20, 20:22
  * @website %web%
  *
  * %license%
  */
 
-package net.pretronic.dkperms.common.graph.scope;
+package net.pretronic.dkperms.common.graph;
 
+import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.SyncAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.graph.Graph;
+import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
+import net.pretronic.libraries.synchronisation.observer.UnusedObservable;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ScopeGraph implements Graph<PermissionScope> {
+public class ScopeGraph extends UnusedObservable<PermissionObject,SyncAction> implements Graph<PermissionScope> {
 
     private final PermissionScope start;
     private final PermissionScope end;

@@ -12,6 +12,7 @@ package net.pretronic.dkperms.common.scope.data;
 
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedData;
+import net.pretronic.libraries.utility.Validate;
 
 import java.util.Collection;
 
@@ -21,6 +22,7 @@ public class DefaultScopeBasedData<T> implements ScopeBasedData<T> {
     private final Collection<T> data;
 
     public DefaultScopeBasedData(PermissionScope scope, Collection<T> data) {
+        Validate.notNull(scope,data);
         this.scope = scope;
         this.data = data;
     }
