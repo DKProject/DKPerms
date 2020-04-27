@@ -17,7 +17,7 @@
     <groupId>net.pretronic.dkperms</groupId>
     <artifactId>DKPerms</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.4.10-SNAPSHOT</version>
+    <version>1.1.4.10-SNAPSHOT</version>
 
     <modules>
         <module>dkperms-api</module>
@@ -62,6 +62,8 @@
 
         <!-- Maven plugins -->
         <plugin.compiler>3.8.1</plugin.compiler>
+        <plugin.maven.shade>3.2.2</plugin.maven.shade>
+        <plugin.maven.deploy>3.0.0-M1</plugin.maven.deploy>
 
         <!-- Test dependencies -->
         <test.junit.jupiter>5.5.2</test.junit.jupiter>
