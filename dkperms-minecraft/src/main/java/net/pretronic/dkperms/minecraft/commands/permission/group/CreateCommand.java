@@ -20,7 +20,6 @@ import net.pretronic.libraries.command.command.configuration.CommandConfiguratio
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
-import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
 public class CreateCommand extends ObjectCommand<String> {
@@ -42,8 +41,8 @@ public class CreateCommand extends ObjectCommand<String> {
 
         object = DKPerms.getInstance().getObjectManager().createObject(scope,DKPermsConfig.OBJECT_GROUP_TYPE,name);
 
-        sender.sendMessage(Messages.GROUP_CREATED, new DescribedHashVariableSet()
-                .add("group",object)
-                .add("object",object));
+        sender.sendMessage(Messages.GROUP_CREATED, VariableSet.create()
+                .addDescribed("group",object)
+                .addDescribed("object",object));
     }
 }

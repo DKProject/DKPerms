@@ -218,7 +218,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
 
     @Override
     public ScopeBasedDataList<PermissionGroupEntity> getGroups(Graph<PermissionScope> range) {
-        return new ArrayScopeBasedDataList<>();
+        return groupCache.get(range);
     }
 
     @Override
@@ -244,7 +244,9 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     @Override
     public PermissionGroupEntity getGroup(PermissionScope scope, PermissionObject object) {
         Validate.notNull(scope,object);
-        for (PermissionGroupEntity entity : getGroups(scope)) if(entity.getGroup().equals(object)) return entity;
+        for (PermissionGroupEntity entity : getGroups(scope)){
+            if(entity.getGroup().equals(object)) return entity;
+        }
         return null;
     }
 

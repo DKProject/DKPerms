@@ -10,16 +10,15 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.object.meta;
 
-import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
-import net.pretronic.libraries.command.command.object.ObjectCommand;
-import net.pretronic.libraries.command.sender.CommandSender;
-import net.pretronic.libraries.message.bml.variable.VariableSet;
-import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
-import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
 import net.pretronic.dkperms.minecraft.config.Messages;
+import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
+import net.pretronic.libraries.command.command.object.ObjectCommand;
+import net.pretronic.libraries.command.sender.CommandSender;
+import net.pretronic.libraries.message.bml.variable.VariableSet;
+import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
 public class UnsetCommand extends ObjectCommand<PermissionObject> {
 
@@ -37,12 +36,12 @@ public class UnsetCommand extends ObjectCommand<PermissionObject> {
 
             object.getMeta().unset(null,key,scope);
 
-            VariableSet variables = new DescribedHashVariableSet();
+            VariableSet variables = VariableSet.create();
             variables.add("type",object.getType().getName().toLowerCase());
-            variables.add("object",object);
+            variables.addDescribed("object",object);
             variables.add("key",key);
             variables.add("value","Undefined");
-            variables.add("scope",scope);
+            variables.addDescribed("scope",scope);
             sender.sendMessage(Messages.OBJECT_META_UNSET,variables);
         }else{
             CommandUtil.sendInvalidSyntax(sender,"meta unset","/perms <user/group> <object> meta unset <key> [scope]");

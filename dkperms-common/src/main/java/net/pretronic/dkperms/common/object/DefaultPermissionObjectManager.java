@@ -214,7 +214,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
     private final static class ObjectNameLoader implements CacheQuery<PermissionObject> {
 
         @Override
-        public boolean check(PermissionObject o, Object[] objects) {
+        public boolean check(PermissionObject o, Object[] objects) {//name,scope,type
             return o.getScope().getId() == ((PermissionScope) objects[1]).getId()
                     && o.getType().getId() == ((PermissionObjectType) objects[2]).getId()
                     && o.getName().equalsIgnoreCase((String) objects[0]);
@@ -257,7 +257,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         }
     }
 
-    private final class ObjectAssignmentLoader implements CacheQuery<PermissionObject> {
+    private static final class ObjectAssignmentLoader implements CacheQuery<PermissionObject> {
 
         @Override
         public boolean check(PermissionObject o, Object[] objects) {

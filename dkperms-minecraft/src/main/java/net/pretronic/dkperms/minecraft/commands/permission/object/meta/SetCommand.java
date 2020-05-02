@@ -10,17 +10,16 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.object.meta;
 
+import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
+import net.pretronic.dkperms.api.scope.PermissionScope;
+import net.pretronic.dkperms.minecraft.commands.CommandUtil;
+import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
-import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
-import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.api.scope.PermissionScope;
-import net.pretronic.dkperms.minecraft.commands.CommandUtil;
-import net.pretronic.dkperms.minecraft.config.Messages;
 
 public class SetCommand extends ObjectCommand<PermissionObject> {
 
@@ -39,10 +38,10 @@ public class SetCommand extends ObjectCommand<PermissionObject> {
 
             ObjectMetaEntry entry = object.getMeta().set(null,key,value,scope);
 
-            VariableSet variables = new DescribedHashVariableSet();
-            variables.add("entry",entry);
-            variables.add("type",object.getType().getName().toLowerCase());
-            variables.add("object",object);
+            VariableSet variables = VariableSet.create();
+            variables.addDescribed("entry",entry);
+            variables.addDescribed("type",object.getType().getName().toLowerCase());
+            variables.addDescribed("object",object);
             variables.add("key",key);
             variables.add("value",value);
             variables.add("scope",scope);

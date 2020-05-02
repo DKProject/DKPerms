@@ -10,17 +10,16 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.object.meta;
 
-import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
-import net.pretronic.libraries.command.command.object.ObjectCommand;
-import net.pretronic.libraries.command.sender.CommandSender;
-import net.pretronic.libraries.message.bml.variable.VariableSet;
-import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
-import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
 import net.pretronic.dkperms.minecraft.config.Messages;
+import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
+import net.pretronic.libraries.command.command.object.ObjectCommand;
+import net.pretronic.libraries.command.sender.CommandSender;
+import net.pretronic.libraries.message.bml.variable.VariableSet;
+import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
 public class ShowCommand extends ObjectCommand<PermissionObject> {
 
@@ -38,12 +37,12 @@ public class ShowCommand extends ObjectCommand<PermissionObject> {
 
             ObjectMetaEntry entry = object.getMeta().get(key,scope);
 
-            VariableSet variables = new DescribedHashVariableSet();
+            VariableSet variables = VariableSet.create();
             variables.add("type",object.getType().getName().toLowerCase());
-            variables.add("object",object);
+            variables.addDescribed("object",object);
             variables.add("key",key);
             variables.add("value",entry != null ? entry.getValue() : "Undefined");
-            variables.add("scope",scope);
+            variables.addDescribed("scope",scope);
             sender.sendMessage(Messages.OBJECT_META_SHOW,variables);
         }else{
             CommandUtil.sendInvalidSyntax(sender,"meta show","/perms <user/group> <object> meta show <key> [scope]");

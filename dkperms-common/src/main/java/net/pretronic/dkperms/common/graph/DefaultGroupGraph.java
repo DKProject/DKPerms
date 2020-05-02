@@ -27,6 +27,7 @@ import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
 import net.pretronic.libraries.utility.Validate;
 
 import java.util.*;
+import java.util.function.ToIntFunction;
 
 public final class DefaultGroupGraph extends AbstractObservable<PermissionObject, SyncAction> implements GroupGraph, ObserveCallback<PermissionObject, SyncAction> {
 
@@ -35,7 +36,7 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
     private final boolean subGroups;
 
     private final List<PermissionGroupEntity> entities;
-    private final Map<PermissionObject,Integer> objectPriority;
+    private final Map<PermissionGroupEntity,Integer> objectPriority;
 
     private boolean subscribe;
 
@@ -56,19 +57,21 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
     }
 
     private void traverse0(){
-        this.objectPriority.put(owner,0);
+       // this.objectPriority.put(owner,0);
         findNextGroups(owner,1);
 
         for (PermissionObject defaultGroup : DKPerms.getInstance().getObjectManager().getDefaultGroups(scopes)) {
-            this.objectPriority.put(defaultGroup,Integer.MAX_VALUE);
-            this.entities.add(new DefaultPermissionGroupEntity(owner,-1,defaultGroup,PermissionAction.ALLOW
-                    ,defaultGroup.getScope(),-1));  //@Todo maybe add scope
+            DefaultPermissionGroupEntity defaultEntity =
+                    new DefaultPermissionGroupEntity(owner,-1,defaultGroup,PermissionAction.ALLOW,defaultGroup.getScope(),-1);
+
+            this.objectPriority.put(defaultEntity,Integer.MAX_VALUE);
+            this.entities.add(defaultEntity);  //@Todo maybe add scope
         }
 
         entities.sort(Comparator
                 .comparingInt((PermissionGroupEntity o) -> o.getScope().getLevel())
-                .thenComparingInt(o -> objectPriority.get(o.getGroup()))
-                .thenComparingInt(o -> o.getGroup().getPriority()));
+                .thenComparing(((Comparator<PermissionGroupEntity>) (o1, o2) -> Integer.compare(objectPriority.get(o1), objectPriority.get(o2))).reversed())
+                .thenComparing(Comparator.comparingInt((ToIntFunction<PermissionGroupEntity>) entity -> entity.getGroup().getPriority()).reversed()));
 
         trySubscribe();
     }
@@ -79,7 +82,7 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
             for (PermissionGroupEntity group : groupData.getData()) {
                 if(!entities.contains(group)){
                     entities.add(group);
-                    objectPriority.put(group.getGroup(),level);
+                    objectPriority.put(group,level);
                     if(subGroups) findNextGroups(group.getGroup(),level+1);
                 }
             }
@@ -97,9 +100,11 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
         subscribe = false;
         owner.unsubscribeObserver(this);
         if(subGroups){
+           /*
             for (PermissionObject object : objectPriority.keySet()) {
                 object.unsubscribeObserver(this);
             }
+            */
         }
     }
 
@@ -109,11 +114,13 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
             owner.subscribeObserver(this);
         }
         if(subGroups){
+          /*
             for (PermissionObject object : objectPriority.keySet()) {
                 if(!object.isObserverSubscribed(this)){
                     object.subscribeObserver(this);
                 }
             }
+           */
         }
     }
 

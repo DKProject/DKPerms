@@ -111,6 +111,10 @@ public class DKPermsPlugin extends MinecraftPlugin {
         getRuntime().getRegistry().registerService(this,PermissionProvider.class,new DKPermsPermissionProvider(),ServicePriority.HIGHEST);
         getRuntime().getPlayerManager().registerPlayerAdapter(PermissionPlayer.class,new PlayerAdapter());
 
+        if(getRuntime().getPlatform().isService()){
+            getRuntime().getLocal().getEventBus().subscribe(this,new MinecraftServiceListener());
+        }
+
         getRuntime().getLocal().getEventBus().subscribe(this, MinecraftPlayerLoginEvent.class
                 ,event -> event.getPlayer().getPermissionHandler());
 
@@ -192,8 +196,12 @@ public class DKPermsPlugin extends MinecraftPlugin {
         VariableDescriber<DefaultPermissionObject> objectDescriber = VariableDescriberRegistry.registerDescriber(DefaultPermissionObject.class);
         objectDescriber.registerFunction("uniqueId", DefaultPermissionObject::getAssignmentId);
         objectDescriber.registerParameterFunction("property", (object, key) ->{
-           ObjectMetaEntry entry =  object.getMeta().get(key);
-           return entry != null ?entry.getValue() : "";
+            ObjectMetaEntry entry =  object.getMeta().get(key);
+            String result =  entry != null ?entry.getValue() : "";
+            if(result.length() == 2 && result.charAt(0) == '&'){
+                result += "█";//Add for showing colors
+            }
+            return result;
         });
 
         objectDescriber.registerParameterFunction("boolProperty", (object, key) ->{

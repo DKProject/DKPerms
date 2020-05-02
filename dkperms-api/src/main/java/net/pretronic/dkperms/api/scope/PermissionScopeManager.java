@@ -22,6 +22,8 @@ public interface PermissionScopeManager {
 
     PermissionScope getNamespace(String name);
 
+    PermissionScope get(PermissionScope root,String scopeOrder);
+
     PermissionScope get(String scopeOrder);
 
     PermissionScope getScope(int id);

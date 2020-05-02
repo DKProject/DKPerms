@@ -51,8 +51,10 @@ public class PDQGroupStorage implements GroupStorage {
 
     @Override
     public ScopeBasedDataList<PermissionGroupEntity> getGroupReferences(PermissionObject object, Collection<PermissionScope> scope) {
+        if(scope.isEmpty()) return new ArrayScopeBasedDataList<>();
         QueryResult result = group_entities.find()
                 .where("ObjectId",object.getId())
+                .whereIn("ScopeId", scope, PermissionScope::getId)
                 .orderBy("ScopeId", SearchOrder.ASC)
                 .execute();
         return getGroupReferences(object,result,scope);
@@ -70,6 +72,7 @@ public class PDQGroupStorage implements GroupStorage {
 
     private ScopeBasedDataList<PermissionGroupEntity> getGroupReferences(PermissionObject object,QueryResult result, Collection<PermissionScope> scopes) {
         ScopeBasedDataList<PermissionGroupEntity> response = new ArrayScopeBasedDataList<>();
+
         PermissionScope last = null;
         Collection<PermissionGroupEntity> entities = null;
         for (QueryResultEntry entry : result) {

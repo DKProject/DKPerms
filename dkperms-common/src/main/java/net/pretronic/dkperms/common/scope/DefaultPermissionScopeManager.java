@@ -62,7 +62,7 @@ public class DefaultPermissionScopeManager implements PermissionScopeManager, In
     }
 
     @Override
-    public PermissionScope get(String scopeOrder) {
+    public PermissionScope get(PermissionScope root, String scopeOrder) {
         Objects.requireNonNull(scopeOrder,"Scope order can't be null");
         if(scopeOrder.startsWith("\\\\")) scopeOrder = scopeOrder.substring(2);
         String[] scopes = scopeOrder.split("[\\\\;=/]");
@@ -70,6 +70,11 @@ public class DefaultPermissionScopeManager implements PermissionScopeManager, In
         if(scopes.length %2 != 0) throw new IllegalArgumentException("Invalid length of conditions");
         for (int i = 0; i < scopes.length; i+=2) last = last.getChild(scopes[i],scopes[i+1]);
         return last;
+    }
+
+    @Override
+    public PermissionScope get(String scopeOrder) {
+        return get(root,scopeOrder);
     }
 
     @Override

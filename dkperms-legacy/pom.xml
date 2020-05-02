@@ -38,7 +38,7 @@
             <groupId>net.pretronic.libraries</groupId>
             <artifactId>pretroniclibraries-document</artifactId>
             <version>${dependency.pretronic.libraries}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>

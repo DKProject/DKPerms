@@ -130,15 +130,16 @@ public class PDQObjectStorage implements ObjectStorage {
                 .where("Name",name)
                 .where("ScopeId",scope.getId())
                 .where("TypeId",type.getId())
-                .where("Deleted",false)
                 .limit(1).execute();
-        if(!result.isEmpty()) return result.first().to((Function<QueryResultEntry, PermissionObject>) entry
-                -> new DefaultPermissionObject(entry.getInt("Id")
-                ,entry.getUniqueId("AssignmentId")
-                ,entry.getString("Name")
-                ,entry.getBoolean("Disabled")
-                ,entry.getInt("Priority")
-                ,type,scope));
+        if(!result.isEmpty()){
+            QueryResultEntry entry = result.first();
+            return new DefaultPermissionObject(entry.getInt("Id")
+                    ,entry.getUniqueId("AssignmentId")
+                    ,entry.getString("Name")
+                    ,entry.getBoolean("Disabled")
+                    ,entry.getInt("Priority")
+                    ,type,scope);
+        }
         return null;
     }
 

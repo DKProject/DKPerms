@@ -22,7 +22,6 @@ import net.pretronic.libraries.command.command.object.MainObjectCommand;
 import net.pretronic.libraries.command.command.object.ObjectNotFindable;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
-import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import org.mcnative.common.McNative;
 import org.mcnative.common.player.MinecraftPlayer;
@@ -57,7 +56,7 @@ public class UserMainCommand extends MainObjectCommand<PermissionObject> impleme
     @Override
     public void commandNotFound(CommandSender sender, PermissionObject object, String command, String[] arguments) {
         if(command == null && object != null) {
-            sender.sendMessage(Messages.USER_INFO, new DescribedHashVariableSet().add("user", object));
+            sender.sendMessage(Messages.USER_INFO, VariableSet.create().addDescribed("user", object));
         }else{
             sender.sendMessage(Messages.USER_HELP);
         }

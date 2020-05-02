@@ -10,22 +10,22 @@
 
 package net.pretronic.dkperms.minecraft.commands;
 
+import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
+import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
 import net.pretronic.dkperms.api.permission.PermissionAction;
+import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
+import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
-import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.api.scope.PermissionScope;
-import net.pretronic.dkperms.minecraft.config.Messages;
-import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
 import net.pretronic.libraries.utility.GeneralUtil;
 
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
+//world=test;server=server-1;serverGroup=;
 public class CommandUtil {
 
     public static PermissionScope readScope(CommandSender sender, PermissionObject object, String[] arguments, int index){
@@ -35,7 +35,8 @@ public class CommandUtil {
     public static PermissionScope readScope(CommandSender sender, PermissionScope fallback, String[] arguments, int index){
         if(arguments.length >= index+1) {
             try{
-                PermissionScope scope = DKPerms.getInstance().getScopeManager().get(arguments[index]);
+                PermissionScope namespace = DKPerms.getInstance().getScopeManager().getNamespace(DKPermsConfig.SCOPE_NAMESPACE);
+                PermissionScope scope = DKPerms.getInstance().getScopeManager().get(namespace,arguments[index]);
                 if (scope == null) {
                     sender.sendMessage(Messages.SCOPE_NOTFOUND, VariableSet.create().add("scope", arguments[index]));
                     return null;
@@ -98,11 +99,11 @@ public class CommandUtil {
         else entity = object.addGroup(null,scope,group,action,time,unit);
 
         sender.sendMessage(set ? Messages.OBJECT_GROUP_SET: Messages.OBJECT_GROUP_ADD,
-                new DescribedHashVariableSet()
-                        .add("object",object)
-                        .add("scope",scope)
-                        .add("entity",entity)
-                        .add("group",group)
+                VariableSet.create()
+                        .addDescribed("object",object)
+                        .addDescribed("scope",scope)
+                        .addDescribed("entity",entity)
+                        .addDescribed("group",group)
                         .add("action",action)
                         .add("timeout",entity.getTimeoutFormatted())
                         .add("remaining",entity.getRemainingDuration())

@@ -112,7 +112,7 @@ messages:
   &8» &7Scope&8: &e{user.scope}
   &8
   &8» &7Team&8: &e{user.boolProperty.team}
-  &8» &7Color&8: &e{user.property.color}█
+  &8» &7Color&8: &e{user.property.color}
   &8» &7Chat&8: &e{user.property.chat} {user.name}
   &8» &7Tablist&8: &e{user.property.prefix}{user.name}{user.property.suffix}
   &8
@@ -136,7 +136,7 @@ messages:
   &8» &7Priority&8: &e{group.intProperty.priority}
   &8
   &8» &7Team&8: &e{group.boolProperty.team}
-  &8» &7Color&8: &e{group.property.color}█
+  &8» &7Color&8: &e{group.property.color}
   &8» &7Chat&8: &e{group.property.chat}Player
   &8» &7Tablist&8: &e{group.property.prefix}Player{group.property.suffix}
   &8

@@ -19,7 +19,7 @@ import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
-import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
+import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
 import java.util.Arrays;
@@ -36,19 +36,19 @@ public class TreeCommand extends ObjectCommand<PermissionObject> {
         if(root == null) return;
         TreeListBuilder<PermissionEntity> builder = new TreeListBuilder<>(root,object.getAllPermissions());
 
-        sender.sendMessage(Messages.OBJECT_PERMISSION_TREE_HEADER, new DescribedHashVariableSet()
+        sender.sendMessage(Messages.OBJECT_PERMISSION_TREE_HEADER, VariableSet.create()
                 .add("type",object.getType().getName().toLowerCase())
-                .add("object",object));
+                .addDescribed("object",object));
 
         builder.setHeaderPrinter(scope1
-                -> sender.sendMessage(Messages.OBJECT_PERMISSION_TREE_SCOPE, new DescribedHashVariableSet()
-                .add("scope", scope1)
+                -> sender.sendMessage(Messages.OBJECT_PERMISSION_TREE_SCOPE, VariableSet.create()
+                .addDescribed("scope", scope1)
                 .add("spaces",buildSpaced(scope1.getLevel()))));
 
-        builder.setDataPrinter((scope, entry) -> sender.sendMessage(Messages.OBJECT_PERMISSION_TREE_ENTRY, new DescribedHashVariableSet()
-                .add("entry", entry)
-                .add("entity", entry)
-                .add("scope", scope)
+        builder.setDataPrinter((scope, entry) -> sender.sendMessage(Messages.OBJECT_PERMISSION_TREE_ENTRY, VariableSet.create()
+                .addDescribed("entry", entry)
+                .addDescribed("entity", entry)
+                .addDescribed("scope", scope)
                 .add("spaces",buildSpaced(scope.getLevel()))));
         builder.process();
     }

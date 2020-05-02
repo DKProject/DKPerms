@@ -10,18 +10,17 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.object.permission;
 
+import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
+import net.pretronic.dkperms.api.scope.PermissionScope;
+import net.pretronic.dkperms.minecraft.commands.CommandUtil;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
+import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
-import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
-import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.api.scope.PermissionScope;
-import net.pretronic.dkperms.minecraft.commands.CommandUtil;
-import net.pretronic.dkperms.minecraft.config.Messages;
 
 public class UnsetCommand extends ObjectCommand<PermissionObject> {
 
@@ -39,12 +38,12 @@ public class UnsetCommand extends ObjectCommand<PermissionObject> {
 
             object.removePermission(null,permission);
 
-            VariableSet variables = new DescribedHashVariableSet();
+            VariableSet variables = VariableSet.create();
             variables.add("type",object.getType().getName().toLowerCase());
-            variables.add("object",object);
+            variables.addDescribed("object",object);
             variables.add("permission",permission);
             variables.add("action", PermissionAction.NEUTRAL);
-            variables.add("scope",scope);
+            variables.addDescribed("scope",scope);
             variables.add("timeout", DKPermsConfig.FORMAT_DATE_ENDLESSLY);
             variables.add("remaining", DKPermsConfig.FORMAT_DATE_ENDLESSLY);
             sender.sendMessage(Messages.OBJECT_PERMISSION_UNSET,variables);

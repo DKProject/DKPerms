@@ -19,7 +19,6 @@ import net.pretronic.libraries.command.command.configuration.CommandConfiguratio
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
-import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
 public class ShowCommand extends ObjectCommand<PermissionObject> {
@@ -37,12 +36,12 @@ public class ShowCommand extends ObjectCommand<PermissionObject> {
             if(scope == null) return;
 
             PermissionEntity entry = object.getPermission(scope,permission);
-            VariableSet variables = new DescribedHashVariableSet()
+            VariableSet variables = VariableSet.create()
                     .add("type", object.getType().getName().toLowerCase())
-                    .add("object", object)
-                    .add("scope", scope)
-                    .add("entry", entry)
-                    .add("entity", entry)
+                    .addDescribed("object", object)
+                    .addDescribed("scope", scope)
+                    .addDescribed("entry", entry)
+                    .addDescribed("entity", entry)
                     .add("permission", permission)
                     .add("action", entry.getAction())
                     .add("timeout", entry.getTimeoutFormatted())

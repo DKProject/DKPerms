@@ -31,12 +31,16 @@ public class DKPermsConfig {
 
     public static String SCOPE_NAMESPACE = "Minecraft";
 
+    @DocumentKey("scope.current.dynamic")
     public static boolean SCOPE_CURRENT_INSTANCE_DYNAMIC = true;
-    @DocumentKey("scope.current.instance.scope")
+    @DocumentKey("scope.current.instance")
     public static String SCOPE_CURRENT_INSTANCE_SCOPE_NAME = "\\ServerGroup@Server\\Server@Server-1";
-    @DocumentKey("scope.current.group.scope")
+    @DocumentKey("scope.current.group")
     public static String SCOPE_CURRENT_GROUP_SCOPE_NAME = "\\ServerGroup@Server";
+    @DocumentKey("scope.serverGroupSplit")
     public static String SCOPE_SERVER_GROUP_SPLIT = "-";
+    @DocumentKey("scope.worldKey")
+    public static String SCOPE_WORLD_KEY = "world";
 
     @DocumentKey("mcnative.managementScope.group")
     public static String MCNATIVE_MANAGEMENT_SCOPE_GROUP_NAME = "{global}";

@@ -19,7 +19,7 @@ import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.BasicCommand;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.sender.CommandSender;
-import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
+import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
 public class ListCommand extends BasicCommand {
@@ -36,8 +36,8 @@ public class ListCommand extends BasicCommand {
         ObjectSearchResult result = DKPerms.getInstance().getObjectManager()
                 .getObjects(DKPermsConfig.OBJECT_GROUP_TYPE,DKPermsConfig.OBJECT_GROUP_SCOPE);
 
-        sender.sendMessage(Messages.GROUP_LIST,new DescribedHashVariableSet()
+        sender.sendMessage(Messages.GROUP_LIST, VariableSet.create()
                 .add("groups",result.getAll())
-                .add("scope",scope));
+                .addDescribed("scope",scope));
     }
 }

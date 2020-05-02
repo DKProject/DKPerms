@@ -21,7 +21,6 @@ import net.pretronic.libraries.command.command.configuration.CommandConfiguratio
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
-import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
 import net.pretronic.libraries.utility.GeneralUtil;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
@@ -89,12 +88,12 @@ public class SetCommand extends ObjectCommand<PermissionObject> {
                 entity.update(null,action,scope,time,unit);
             }
 
-            sender.sendMessage(Messages.OBJECT_PERMISSION_SET, new DescribedHashVariableSet()
+            sender.sendMessage(Messages.OBJECT_PERMISSION_SET, VariableSet.create()
                     .add("type", object.getType().getName().toLowerCase())
-                    .add("object", object)
-                    .add("scope", scope)
-                    .add("entry", entity)
-                    .add("entity", entity)
+                    .addDescribed("object", object)
+                    .addDescribed("scope", scope)
+                    .addDescribed("entry", entity)
+                    .addDescribed("entity", entity)
                     .add("permission", permission)
                     .add("action", action)
                     .add("timeout", time)
