@@ -198,6 +198,7 @@ pipeline {
                             """
                         }
                     } else if (BRANCH == BRANCH_MASTER) {
+
                         String version = major + "." + minorVersion + "." + patchVersion + "." + BUILD_NUMBER
 
                         String commitMessage = COMMIT_MESSAGE.replace("%version%", version)
