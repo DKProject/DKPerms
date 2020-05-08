@@ -355,7 +355,11 @@ public class PDQObjectStorage implements ObjectStorage {
 
     @Override
     public void deleteMetaEntries(int objectId, int scopeId, String key) {
-
+        this.object_meta.delete()
+                .where("ObjectId",objectId)
+                .where("ScopeId",scopeId)
+                .where("Key",key)
+                .execute();
     }
 
     @Override

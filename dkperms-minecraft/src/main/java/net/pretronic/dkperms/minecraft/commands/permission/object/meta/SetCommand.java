@@ -40,7 +40,7 @@ public class SetCommand extends ObjectCommand<PermissionObject> {
             PermissionScope scope = object.getScope();
             Duration duration = Entity.PERMANENTLY;
 
-            for (int i = 1; i < arguments.length; i++) {
+            for (int i = 2; i < arguments.length; i++) {
                 String argument = arguments[i];
                 try{
                     duration = DurationProcessor.getStandard().parse(argument);

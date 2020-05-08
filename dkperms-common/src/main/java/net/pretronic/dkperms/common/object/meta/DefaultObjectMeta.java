@@ -103,6 +103,7 @@ public class DefaultObjectMeta implements ObjectMeta {
     @Override
     public ObjectMetaEntry set(PermissionObject executor, String key, Object value, int priority, PermissionScope scope, long timeout) {
         Validate.notNull(key,value,scope);
+        System.out.println("Set Met aTimeout: "+timeout);
         List<ObjectMetaEntry> entries = get(key,scope);
         if(entries.size() == 1){
             ObjectMetaEntry entry = entries.get(0);
