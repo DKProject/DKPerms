@@ -41,11 +41,12 @@ public class DescriberRegistrar {
         objectDescriber.registerFunction("uniqueId", DefaultPermissionObject::getAssignmentId);
         objectDescriber.registerParameterFunction("property", (object, key) ->{
             ObjectMetaEntry entry =  object.getMeta().getHighest(key);
-            String result =  entry != null ?entry.getValue() : "";
+            /*
             if(result.length() == 2 && result.charAt(0) == '&'){
                 result += "█";//Add for showing colors
             }
-            return result;
+ */
+            return entry != null ?entry.getValue() : "";
         });
 
         objectDescriber.registerParameterFunction("boolProperty", (object, key) ->{
@@ -65,11 +66,7 @@ public class DescriberRegistrar {
         VariableDescriber<DefaultPermissionObjectSnapshot> snapshotDescriber = VariableDescriberRegistry.registerDescriber(DefaultPermissionObjectSnapshot.class);
         snapshotDescriber.registerParameterFunction("property", (snapshot, key) ->{
             ObjectMetaEntry entry = snapshot.getMeta(key);
-            String result =  entry != null ?entry.getValue() : "";
-            if(result.length() == 2 && result.charAt(0) == '&'){
-                result += "█";//Add for showing colors
-            }
-            return result;
+            return entry != null ?entry.getValue() : "";
         });
 
         snapshotDescriber.registerParameterFunction("boolProperty", (snapshot, key) ->{
