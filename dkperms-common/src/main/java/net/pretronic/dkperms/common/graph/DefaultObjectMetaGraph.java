@@ -72,6 +72,11 @@ public class DefaultObjectMetaGraph extends AbstractObservable<PermissionObject,
                 result.addAll(entries);
             }
         }
+
+        System.out.println(" ------ [Meta] --------");
+        for (ObjectMetaEntry entry : result) {
+            System.out.println(entry.getKey()+" | "+entry.getValue());
+        }
     }
 
     public void traverseOne() {
