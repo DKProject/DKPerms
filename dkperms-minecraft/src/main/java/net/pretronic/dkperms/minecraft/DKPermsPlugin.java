@@ -187,6 +187,10 @@ public class DKPermsPlugin extends MinecraftPlugin {
         DKPermsConfig.MCNATIVE_MANAGEMENT_SCOPE_GROUP = setupManagementScope(scopeManager,DKPermsConfig.MCNATIVE_MANAGEMENT_SCOPE_GROUP_NAME);
         DKPermsConfig.MCNATIVE_MANAGEMENT_SCOPE_PERMISSION = setupManagementScope(scopeManager,DKPermsConfig.MCNATIVE_MANAGEMENT_SCOPE_PERMISSION_NAME);
         DKPermsConfig.MCNATIVE_MANAGEMENT_SCOPE_OPERATOR = setupManagementScope(scopeManager,DKPermsConfig.MCNATIVE_MANAGEMENT_SCOPE_OPERATOR_NAME);
+
+
+        System.out.println("Instance: "+DKPermsConfig.SCOPE_CURRENT_INSTANCE_SCOPE.getPath());
+        System.out.println("Group: "+DKPermsConfig.SCOPE_CURRENT_GROUP_SCOPE.getPath());
     }
 
     private PermissionScope setupManagementScope(PermissionScopeManager scopeManager,String path){
