@@ -375,7 +375,9 @@ public class PDQObjectStorage implements ObjectStorage {
 
     @Override
     public void deleteTimedOutMetaEntries() {
-        this.object_meta.delete().whereLower("Timeout",System.currentTimeMillis()).execute();
+        this.object_meta.delete()
+                .whereHigher("Timeout",0)
+                .whereLower("Timeout",System.currentTimeMillis()).execute();
     }
 
     public void setCollections(DatabaseCollection object, DatabaseCollection object_type, DatabaseCollection object_meta){

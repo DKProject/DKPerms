@@ -159,7 +159,9 @@ public class PDQGroupStorage implements GroupStorage {
 
     @Override
     public void deleteTimedOutGroupReferences() {
-        this.group_entities.delete().whereLower("Timeout",System.currentTimeMillis()).execute();
+        this.group_entities.delete()
+                .whereHigher("Timeout",0)
+                .whereLower("Timeout",System.currentTimeMillis()).execute();
     }
 
     public void setCollections(DatabaseCollection group_entities){
