@@ -11,20 +11,13 @@
 package net.pretronic.dkperms.common.entity;
 
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.object.SyncAction;
-import net.pretronic.dkperms.common.object.DefaultPermissionObject;
-import net.pretronic.dkperms.common.scope.DefaultPermissionScope;
-import net.pretronic.libraries.document.Document;
-import net.pretronic.libraries.synchronisation.SynchronisationCaller;
-import net.pretronic.libraries.synchronisation.UnconnectedSynchronisationCaller;
-import net.pretronic.libraries.utility.StringUtil;
 import net.pretronic.dkperms.api.entity.PermissionEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
+import net.pretronic.dkperms.common.object.DefaultPermissionObject;
+import net.pretronic.libraries.utility.StringUtil;
 import net.pretronic.libraries.utility.Validate;
-
-import java.util.concurrent.TimeUnit;
 
 public class DefaultPermissionEntity implements PermissionEntity {
 

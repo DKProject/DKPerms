@@ -16,7 +16,8 @@ messages:
   &7/perms group &8- &7For more group information
   &7/perms user &8- &7For more user information'
 
-  dkperms.command.invalid.syntax: '${dkperms.prefix} &cInvalid usage of &e{command} &ccommand.\n\n  &8» &7{usage} \n'
+  dkperms.command.invalid.syntax: '${dkperms.prefix} &cInvalid usage of &e{command} &ccommand.
+  &8» &7{usage}'
   dkperms.sender.only.console: '${dkperms.prefix} &cThis command can only be executed from console.'
   dkperms.scope.invalid: '${dkperms.prefix} &cThe scope &e{scope} &cis not valid.'
   dkperms.scope.notfound: '${dkperms.prefix} &cThe scope &e{scope} &cwas not found.'
@@ -49,7 +50,7 @@ messages:
 
   dkperms.object.permission.help: '${dkperms.prefix} &7Permission commands&8:
   &7/perms {type} <name>
-   &8- &7permission set <key> <value> [time] [unit] [scope]
+   &8- &7permission set <(action)perm> [duration] [modifier] [scope]
    &8- &7permission unset <key> [scope]
    &8- &7permission show <key> [scope]
    &8- &7permission clear [scope]
@@ -58,6 +59,7 @@ messages:
   dkperms.object.permission.set: '${dkperms.prefix} &7The permission of {type} &e{object} &7was changed&8: ${dkperms.object.permission.info}'
   dkperms.object.permission.unset: '${dkperms.prefix} &7The permission of {object.type} &e{object.name} &7was changed&8: ${dkperms.object.permission.info}'
   dkperms.object.permission.show: '${dkperms.prefix} &7The permission of {type} &e{object}&8: ${dkperms.object.permission.info}'
+  dkperms.object.permission.notSet: '${dkperms.object.permission.show}'
   dkperms.object.permission.info: '&8
   &8» &7Permission&8: &e{permission}
   &8» &7Action&8: &e{action}
@@ -75,10 +77,11 @@ messages:
 
   dkperms.object.group.help: '${dkperms.prefix} &7Group commands&8:
   &7/perms {type} <name>
-   &8- &7group set <group> [time] [unit] [scope]
+   &8- &7group set <group> [duration] [scope]
    &8- &7group add <group> [scope]
    &8- &7group remove <group> [scope]
-   &8- &77group clear [scope]
+   &8- &7group show <group> [scope]
+   &8- &7group clear [scope]
    &8- &7group list [scope]
    &8- &77group tree'
   dkperms.object.group.set: '${dkperms.prefix} &7The group of {object.type} &e{object} &7was set to&8: ${dkperms.object.group.info}'
@@ -90,14 +93,16 @@ messages:
   &8» &7Remaining&8: &e{remaining}
   &8» &7Scope&8: &e{scope}'
   dkperms.object.group.remove: '${dkperms.prefix} &7A group was removed from {object.type} &e{object}&8: ${dkperms.object.group.info}'
+  dkperms.object.group.show: '${dkperms.prefix} &7The group of {type} &e{object}&8: ${dkperms.object.group.info}'
+  dkperms.object.group.notSet: '${dkperms.object.group.show}'
   dkperms.object.group.clear: '${dkperms.prefix} &7The meta of {object.type.name} &e{object.name} &7was cleared.
   &8» &7Scope&8: &e{scope}'
   dkperms.object.group.list: '${dkperms.prefix} &7Groups of {object.type} &e{object.name}
-  &8» &7Scope&8: &e{scope} @for("entry" in {entries},${dkperms.object.permission.list.loop},"\n","\n")'
-  dkperms.object.group.list.loop: ' &8- &7{entry.group.name} &8(&e{entry.action}&8)'
+  &8» &7Scope&8: &e{scope} @for("entry" in {entries},${dkperms.object.group.list.loop},"\n","\n")'
+  dkperms.object.group.list.loop: ' &8- &7{entry.group.property.color}{entry.group.name} &8(&e{entry.action}&8)'
   dkperms.object.group.tree.header: '${dkperms.prefix} &7Group tree of {object.type} &e{object}'
   dkperms.object.group.tree.scope: '{spaces}&8» &9{scope.key}&8=&9{scope.name} &8(&7{scope.level}&8)'
-  dkperms.object.group.tree.entry: '{spaces}  &8- &7{entry.group.name} &8(&e{entry.action}&8)'
+  dkperms.object.group.tree.entry: '{spaces}  &8- {entry.group.property.color}&7{entry.group.name} &8(&e{entry.action}&8)'
 
   dkperms.user.help: '${dkperms.prefix} &7Group commands&8:
   &7/perms user <name>
@@ -106,25 +111,29 @@ messages:
    &8- &7group &8- &7Manage inheritance groups'
   dkperms.user.notfound: '${dkperms.prefix} &cThe user &c{user} &cwas not found.'
   dkperms.user.info: '${dkperms.prefix} &7Player information
-  &8» &7Id&8: &e{user.id}
-  &8» &7Name&8: &e{user.property.color}{user.name}
+  &8» &7Id&8: &e{snapshot.id}
+  &8» &7Name&8: &e{snapshot.property.color}{user.name}
   &8» &7UniqueId&8: &e{user.uniqueId}
   &8» &7Scope&8: &e{user.scope}
   &8
-  &8» &7Team&8: &e{user.boolProperty.team}
-  &8» &7Color&8: &e{user.property.color}
-  &8» &7Chat&8: &e{user.property.chat} {user.name}
-  &8» &7Tablist&8: &e{user.property.prefix}{user.name}{user.property.suffix}
+  &8» &7Team&8: &e{snapshot.boolProperty.team}
+  &8» &7Color&8: &e{snapshot.property.color}
+  &8» &7Chat&8: &e{snapshot.property.chat} {user.name}
+  &8» &7Tablist&8: &e{snapshot.property.prefix}{user.name}{snapshot.property.suffix}
   &8
   &8» &7Groups&8:
-  @for("group" in {user.globalGroups},${dkperms.user.info.groups.loop},"\n")'
+  @for("group" in {user.groups},${dkperms.user.info.groups.loop},"\n")'
   dkperms.user.info.groups.loop: '  &8- {group.property.color}{group.name}'
 
   dkperms.group.help: '${dkperms.prefix} &7Group commands&8:
   &7/perms group <name>
+   &8- &7create &8- &7Create a new group
+   &8- &7delete &8- &7Delete a existing group
+   &8- &7rename &8- &7Rename a existing group
    &8- &7permission &8- &7Manage group permissions
    &8- &7meta &8- &7Manage group metas
-   &8- &7group &8- &7Manage inheritance groups'
+   &8- &7group &8- &7Manage inheritance groups
+   &8- &7priority <priority>&8- &7Set the priority of the group'
   dkperms.group.notfound: '${dkperms.prefix} &cThe group &e{group} &cwas not found.'
   dkperms.group.info: '${dkperms.prefix} &7Group information
   &8» &7Id&8: &e{group.id}
@@ -147,6 +156,15 @@ messages:
   dkperms.group.created: '${dkperms.prefix} &7The group &e{group.name} &7was created'
   dkperms.group.delete.confirm: '${dkperms.prefix} &7Are you sure to delete the group &e{group.name}&7? !["&8[&eConfirm&8]"]("run://perms group delete confirm")'
   dkperms.group.deleted: '${dkperms.prefix} &7The group &e{group.name} &7was deleted'
+  dkperms.group.renamed: '${dkperms.prefix} &7The group &e{oldName} &7was renamed to &e{newName}&7.'
   dkperms.group.list: '${dkperms.prefix} &7Available permission groups&8:
   &8» &7Scope&8: &e{scope} @for("group" in {groups},${dkperms.group.list.loop},"\n","\n")'
   dkperms.group.list.loop: '&8- &7{group.property.color}{group.name}'
+
+  dkperms.rank.help: '${dkperms.prefix} &7Available commands
+  &7/rank <name>
+  &7/rank <name> set <group> [duration] [scope] [modifier]
+  &7/rank <name> add <group> [duration] [scope] [modifier]
+  &7/rank <name> remove <group>'
+  dkperms.rank.list: '${dkperms.prefix} &7Ranks of &e{object.name} @for("group" in {groups},${dkperms.rank.list.loop},"\n","\n")'
+  dkperms.rank.list.loop: ' &8- &7{group.property.color}{group.name}'

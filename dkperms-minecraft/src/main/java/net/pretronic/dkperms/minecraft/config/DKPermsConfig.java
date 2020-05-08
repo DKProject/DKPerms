@@ -63,8 +63,7 @@ public class DKPermsConfig {
 
     //Security Configuration
 
-    //@Todo fix
-    public static boolean SECURITY_COMMANDS_ENABLED = true;//McNative.getInstance().getPlatform().isProxy() || !McNative.getInstance().isNetworkAvailable();
+    public static boolean SECURITY_COMMANDS_ENABLED = McNative.getInstance().getPlatform().isProxy() || !McNative.getInstance().isNetworkAvailable();
     public static boolean SECURITY_OPERATOR_ENABLED = false;
     public static boolean SECURITY_RESTRICTED_ENABLED = false;
     public static Collection<String> SECURITY_RESTRICTED_USERS = Arrays.asList("Dkrieger","cb7f0812-1fbb-4715-976e-a81e52be4b67");
@@ -72,8 +71,13 @@ public class DKPermsConfig {
     //public static boolean SYNCHRONISATION_ENABLED = false;
     //public static int SYNCHRONISATION_ENABLED = false;
 
+    @DocumentKey("deleteTimedOutEntries.enabled")
+    public static boolean DELETE_TIMED_OUT_ENTRIES_ENABLED = true;
 
-    @DocumentKey("format.date.patter")
+    @DocumentKey("deleteTimedOutEntries.interval")
+    public static String DELETE_TIMED_OUT_ENTRIES_INTERVAL = "30m";
+
+    @DocumentKey("format.date.pattern")
     public static String FORMAT_DATE_PATTERN = "dd.MM.yyyy hh:mm";
 
     public static String FORMAT_DATE_ENDLESSLY = "-";
@@ -83,6 +87,13 @@ public class DKPermsConfig {
             .name("permissions")
             .aliases("perms","permission","perm","dkperms")
             .permission("dkperms.admin")
+            .create();
+
+    public static CommandConfiguration COMMAND_RANK = CommandConfiguration.newBuilder()
+            .enabled(true)
+            .name("rank")
+            .aliases("ranks")
+            .permission("dkperms.rank")
             .create();
 
     //Loaded Configuration

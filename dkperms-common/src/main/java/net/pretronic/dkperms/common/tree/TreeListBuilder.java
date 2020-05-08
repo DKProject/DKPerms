@@ -10,13 +10,12 @@
 
 package net.pretronic.dkperms.common.tree;
 
-import net.pretronic.libraries.utility.Validate;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedData;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
+import net.pretronic.libraries.utility.Validate;
 
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 public class TreeListBuilder<T> {
@@ -48,10 +47,9 @@ public class TreeListBuilder<T> {
 
     private boolean process(PermissionScope last, PermissionScope scope, boolean header){
         ScopeBasedData<T> data = dataList.get(scope);
+
         if(data != null && !data.getData().isEmpty()){
-            if(!header){
-                printHeader(last,scope);
-            }
+            if(!header) printHeader(last,scope);
             for (T obj : data.getData()) {
                 dataPrinter.accept(scope,obj);
             }

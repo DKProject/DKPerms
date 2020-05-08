@@ -44,7 +44,7 @@ public class UnsetCommand extends ObjectCommand<PermissionObject> {
             variables.addDescribed("scope",scope);
             sender.sendMessage(Messages.OBJECT_META_UNSET,variables);
         }else{
-            CommandUtil.sendInvalidSyntax(sender,"meta unset","/perms <user/group> <object> meta unset <key> [scope]");
+            CommandUtil.sendInvalidSyntax(sender,"meta unset","/perms <user/group> <name> meta unset <key> [scope]");
         }
     }
 }

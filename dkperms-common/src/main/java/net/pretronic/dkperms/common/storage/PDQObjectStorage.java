@@ -15,27 +15,23 @@ import net.pretronic.databasequery.api.query.SearchOrder;
 import net.pretronic.databasequery.api.query.result.QueryResult;
 import net.pretronic.databasequery.api.query.result.QueryResultEntry;
 import net.pretronic.databasequery.api.query.type.FindQuery;
-import net.pretronic.databasequery.api.query.type.SearchQuery;
-import net.pretronic.dkperms.api.object.search.ObjectSearchQuery;
-import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
-import net.pretronic.libraries.utility.Iterators;
-import net.pretronic.libraries.utility.map.Pair;
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
-import net.pretronic.dkperms.api.permission.PermissionAction;
+import net.pretronic.dkperms.api.object.search.ObjectSearchQuery;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 import net.pretronic.dkperms.api.storage.ObjectStorage;
-import net.pretronic.dkperms.common.entity.DefaultPermissionGroupEntity;
 import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.dkperms.common.object.DefaultPermissionObjectType;
 import net.pretronic.dkperms.common.object.meta.DefaultObjectMetaEntry;
 import net.pretronic.dkperms.common.scope.data.ArrayScopeBasedDataList;
+import net.pretronic.libraries.utility.Iterators;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.UUID;
 import java.util.function.Function;
 
 public class PDQObjectStorage implements ObjectStorage {
@@ -152,8 +148,7 @@ public class PDQObjectStorage implements ObjectStorage {
     public Collection<PermissionObject> getObjects(String name, PermissionObjectType type, Collection<PermissionObject> skipp) {
         Collection<PermissionObject> response = new ArrayList<>();
         FindQuery query = this.object.find()
-                .where("Name",name)
-                .where("Deleted",false);
+                .where("Name",name);
         if(type != null) query.where("TypeId",type.getId());
         if(!skipp.isEmpty()) query.not(query1 -> query1.whereIn("Id", skipp, (Function<PermissionObject, Object>) PermissionObject::getId));
         query.execute().loadIn(response, entry -> new DefaultPermissionObject(entry.getInt("Id")
@@ -176,7 +171,6 @@ public class PDQObjectStorage implements ObjectStorage {
                 .set("Priority",0)
                 .set("AssignmentId",assignmentId)
                 .set("Disabled",false)
-                .set("Deleted",false)
                 .set("DisplayName",name)
                 .set("Description","")
                 .executeAndGetGeneratedKeys("id").first().getInt("id");
@@ -224,6 +218,14 @@ public class PDQObjectStorage implements ObjectStorage {
     }
 
     @Override
+    public void updateMetaTimeout(int objectId, long timeout) {
+        this.object.update()
+                .set("Timeout",timeout)
+                .where("Id",objectId)
+                .execute();
+    }
+
+    @Override
     public void deleteObject(int objectId) {
         this.object.delete()
                 .where("Id",objectId)
@@ -237,8 +239,12 @@ public class PDQObjectStorage implements ObjectStorage {
                 .where("ObjectId",object.getId())
                 .where("ScopeId",scope.getId())
                 .execute().loadIn(result, entry
-                -> new DefaultObjectMetaEntry(object,scope,entry.getInt("Id")
-                ,entry.getString("Key"),entry.getString("Value")));
+                -> new DefaultObjectMetaEntry(object,scope
+                ,entry.getInt("Id")
+                ,entry.getString("Key")
+                ,entry.getString("Value")
+                ,entry.getInt("Priority")
+                ,entry.getLong("Timeout")));
         return result;
     }
 
@@ -262,7 +268,7 @@ public class PDQObjectStorage implements ObjectStorage {
         return getMetaEntries(object,result,null);
     }
 
-    private ScopeBasedDataList<ObjectMetaEntry> getMetaEntries(PermissionObject object,QueryResult result, Collection<PermissionScope> scopes) {
+    private ScopeBasedDataList<ObjectMetaEntry> getMetaEntries(PermissionObject object, QueryResult result, Collection<PermissionScope> scopes) {
         ScopeBasedDataList<ObjectMetaEntry> response = new ArrayScopeBasedDataList<>();
         PermissionScope last = null;
         Collection<ObjectMetaEntry> entities = null;
@@ -275,24 +281,56 @@ public class PDQObjectStorage implements ObjectStorage {
                 entities = new ArrayList<>();
                 response.put(last,entities);
             }
-            entities.add(new DefaultObjectMetaEntry(object,last,entry.getInt("Id")
-                    ,entry.getString("Key"),entry.getString("Value")));
+            entities.add(new DefaultObjectMetaEntry(object,last
+                    ,entry.getInt("Id")
+                    ,entry.getString("Key")
+                    ,entry.getString("Value")
+                    ,entry.getInt("Priority")
+                    ,entry.getLong("Timeout")));
         }
         return response;
     }
 
     @Override
-    public int insertMeta(int objectId, int scopeId, String key, String value) {
+    public int insertMeta(int objectId, int scopeId, String key, String value, int priority, long timeout) {
         return this.object_meta.insert()
                 .set("ScopeId",scopeId)
                 .set("ObjectId",objectId)
                 .set("Key",key)
                 .set("Value",value)
+                .set("Priority",priority)
+                .set("Timeout",timeout)
                 .executeAndGetGeneratedKeyAsInt("id");
     }
 
     @Override
-    public void updateMeta(int metaId, String value) {
+    public void updateMeta(int metaId, int scopeId, String value, int priority, long timeout) {
+        this.object_meta.update()
+                .set("Priority",priority)
+                .set("ScopeId",scopeId)
+                .set("Value",value)
+                .where("Id",metaId)
+                .execute();
+    }
+
+    @Override
+    public void updateMetaPriority(int metaId, int priority) {
+        this.object_meta.update()
+                .set("Priority",priority)
+                .where("Id",metaId)
+                .execute();
+    }
+
+    @Override
+    public void updateMetaScope(int metaId, int scopeId) {
+        this.object_meta.update()
+                .set("ScopeId",scopeId)
+                .where("Id",metaId)
+                .execute();
+    }
+
+    @Override
+    public void updateMetaValue(int metaId, String value) {
         this.object_meta.update()
                 .set("Value",value)
                 .where("Id",metaId)
@@ -316,6 +354,11 @@ public class PDQObjectStorage implements ObjectStorage {
     }
 
     @Override
+    public void deleteMetaEntries(int objectId, int scopeId, String key) {
+
+    }
+
+    @Override
     public void clearMeta(int objectId) {
         this.object_meta.delete()
                 .where("ObjectId",objectId)
@@ -328,6 +371,11 @@ public class PDQObjectStorage implements ObjectStorage {
                 .where("ObjectId",objectId)
                 .where("ScopeId",scopeId)
                 .execute();
+    }
+
+    @Override
+    public void deleteTimedOutMetaEntries() {
+        this.object_meta.delete().whereLower("Timeout",System.currentTimeMillis()).execute();
     }
 
     public void setCollections(DatabaseCollection object, DatabaseCollection object_type, DatabaseCollection object_meta){

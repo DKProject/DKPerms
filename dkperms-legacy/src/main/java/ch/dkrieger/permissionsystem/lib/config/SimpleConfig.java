@@ -12,7 +12,9 @@ import net.pretronic.libraries.document.type.DocumentFileType;
 import net.pretronic.libraries.utility.reflect.TypeReference;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public abstract class SimpleConfig {
 

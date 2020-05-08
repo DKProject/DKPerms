@@ -12,6 +12,7 @@ package net.pretronic.dkperms.minecraft.commands.permission.group;
 
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.minecraft.commands.permission.object.SetPriorityCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.object.group.GroupCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.object.meta.MetaCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.object.permission.PermissionCommand;
@@ -36,10 +37,12 @@ public class GroupMainCommand extends MainObjectCommand<PermissionObject> implem
         super(owner, CommandConfiguration.name("group","g"));
 
         registerCommand(new DeleteCommand(owner));
+        registerCommand(new RenameCommand(owner));
 
         registerCommand(new GroupCommand(owner));
         registerCommand(new MetaCommand(owner));
         registerCommand(new PermissionCommand(owner));
+        registerCommand(new SetPriorityCommand(owner));
 
         this.listCommand = new ListCommand(owner);
         this.createCommand = new CreateCommand(owner);

@@ -10,7 +10,6 @@
 
 package net.pretronic.dkperms.minecraft.migration;
 
-import ch.dkrieger.permissionsystem.lib.PermissionAdapter;
 import ch.dkrieger.permissionsystem.lib.PermissionSystem;
 import ch.dkrieger.permissionsystem.lib.PermissionType;
 import ch.dkrieger.permissionsystem.lib.entity.PermissionEntityStorage;
@@ -24,6 +23,7 @@ import ch.dkrieger.permissionsystem.lib.permission.data.SimplePermissionData;
 import ch.dkrieger.permissionsystem.lib.player.PermissionPlayer;
 import ch.dkrieger.permissionsystem.lib.player.PermissionPlayerStorage;
 import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.entity.Entity;
 import net.pretronic.dkperms.api.migration.PermissionMigration;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
@@ -116,21 +116,21 @@ public class DKPermsLegacyMigration implements PermissionMigration {
             object.setPriority(admin,group.getPriority());
 
             if(group.getDescription() != null && group.getDescription().isEmpty()){
-                object.getMeta().set(admin,"description",group.getDescription());
+                object.getMeta().set(admin,"description",group.getDescription(),0,object.getScope(), Entity.PERMANENTLY);
             }
 
             if(group.getJoinPower() > 0){
-                object.getMeta().set(admin,"joinPower",group.getJoinPower());
+                object.getMeta().set(admin,"joinPower",group.getJoinPower(),0,object.getScope(), Entity.PERMANENTLY);
             }
 
-            object.getMeta().set(admin,"team",group.isTeam());
-            object.getMeta().set(admin,"default",group.isDefault());
+            object.getMeta().set(admin,"team",group.isTeam(),0,object.getScope(), Entity.PERMANENTLY);
+            object.getMeta().set(admin,"default",group.isDefault(),0,object.getScope(), Entity.PERMANENTLY);
 
             if(group.getPlayerDesign() != null){
-                object.getMeta().set(admin,"color",group.getPlayerDesign().getColor());
-                object.getMeta().set(admin,"chat",group.getPlayerDesign().getDisplay());
-                object.getMeta().set(admin,"prefix",group.getPlayerDesign().getPrefix());
-                object.getMeta().set(admin,"suffix",group.getPlayerDesign().getSuffix());
+                object.getMeta().set(admin,"color",group.getPlayerDesign().getColor(),0,object.getScope(), Entity.PERMANENTLY);
+                object.getMeta().set(admin,"chat",group.getPlayerDesign().getDisplay(),0,object.getScope(), Entity.PERMANENTLY);
+                object.getMeta().set(admin,"prefix",group.getPlayerDesign().getPrefix(),0,object.getScope(), Entity.PERMANENTLY);
+                object.getMeta().set(admin,"suffix",group.getPlayerDesign().getSuffix(),0,object.getScope(), Entity.PERMANENTLY);
             }
             this.migratedGroups.put(group.getUUID(),object);
         }
@@ -168,7 +168,7 @@ public class DKPermsLegacyMigration implements PermissionMigration {
             if(!permission.hasTimeOut()){
                 PermissionAction action = permission.isNegative() ? PermissionAction.REJECT : PermissionAction.ALLOW;
                 if(object.getPermission(scope,permission.getRawPermission()) == null){
-                    object.addPermission(admin,scope,permission.getRawPermission(),action,permission.getTimeOut());
+                    object.setPermission(admin,scope,permission.getRawPermission(),action,permission.getTimeOut());
                 }
             }
         }
@@ -179,7 +179,7 @@ public class DKPermsLegacyMigration implements PermissionMigration {
                     if(!permission.hasTimeOut()){
                         PermissionAction action = permission.isNegative() ? PermissionAction.REJECT : PermissionAction.ALLOW;
                         if(object.getPermission(worldScope,permission.getRawPermission()) == null){
-                            object.addPermission(admin,worldScope,permission.getRawPermission(),action,permission.getTimeOut());
+                            object.setPermission(admin,worldScope,permission.getRawPermission(),action,permission.getTimeOut());
                         }
                     }
                 }

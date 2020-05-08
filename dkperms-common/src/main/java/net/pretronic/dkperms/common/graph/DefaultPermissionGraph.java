@@ -20,7 +20,6 @@ import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 import net.pretronic.dkperms.common.calculator.PermissionCalculator;
 import net.pretronic.libraries.synchronisation.observer.AbstractObservable;
-import net.pretronic.libraries.synchronisation.observer.Observable;
 import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
 import net.pretronic.libraries.utility.Validate;
 

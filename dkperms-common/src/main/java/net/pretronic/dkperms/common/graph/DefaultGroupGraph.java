@@ -12,13 +12,12 @@ package net.pretronic.dkperms.common.graph;
 
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
+import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.graph.GroupGraph;
-import net.pretronic.dkperms.api.graph.ObjectGraph;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.SyncAction;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
-import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedData;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 import net.pretronic.dkperms.common.entity.DefaultPermissionGroupEntity;
@@ -57,7 +56,6 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
     }
 
     private void traverse0(){
-       // this.objectPriority.put(owner,0);
         findNextGroups(owner,1);
 
         for (PermissionObject defaultGroup : DKPerms.getInstance().getObjectManager().getDefaultGroups(scopes)) {
@@ -80,10 +78,12 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
         ScopeBasedDataList<PermissionGroupEntity> dataList = object.getGroups(scopes);
         for (ScopeBasedData<PermissionGroupEntity> groupData : dataList) {
             for (PermissionGroupEntity group : groupData.getData()) {
-                if(!entities.contains(group)){
-                    entities.add(group);
-                    objectPriority.put(group,level);
-                    if(subGroups) findNextGroups(group.getGroup(),level+1);
+                if(!group.hasTimeout()){
+                    if(!entities.contains(group)){
+                        entities.add(group);
+                        objectPriority.put(group,level);
+                        if(subGroups) findNextGroups(group.getGroup(),level+1);
+                    }
                 }
             }
         }
@@ -100,11 +100,9 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
         subscribe = false;
         owner.unsubscribeObserver(this);
         if(subGroups){
-           /*
-            for (PermissionObject object : objectPriority.keySet()) {
-                object.unsubscribeObserver(this);
+            for (PermissionGroupEntity object : objectPriority.keySet()) {
+                object.getGroup().unsubscribeObserver(this);
             }
-            */
         }
     }
 
@@ -114,13 +112,11 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
             owner.subscribeObserver(this);
         }
         if(subGroups){
-          /*
-            for (PermissionObject object : objectPriority.keySet()) {
-                if(!object.isObserverSubscribed(this)){
-                    object.subscribeObserver(this);
+            for (PermissionGroupEntity object : objectPriority.keySet()) {
+                if(!object.getGroup().isObserverSubscribed(this)){
+                    object.getGroup().subscribeObserver(this);
                 }
             }
-           */
         }
     }
 

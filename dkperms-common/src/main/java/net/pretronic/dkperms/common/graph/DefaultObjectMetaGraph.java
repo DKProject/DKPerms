@@ -22,9 +22,12 @@ import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
 import net.pretronic.libraries.utility.Validate;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class DefaultObjectMetaGraph extends AbstractObservable<PermissionObject,SyncAction> implements ObjectMetaGraph, ObserveCallback<PermissionObject, SyncAction> {
+
+    public static final Comparator<ObjectMetaEntry> PRIORITY_COMPARATOR = Comparator.comparingInt(ObjectMetaEntry::getPriority);
 
     private final PermissionObject owner;
     private final Graph<PermissionScope> scopes;
@@ -64,7 +67,9 @@ public class DefaultObjectMetaGraph extends AbstractObservable<PermissionObject,
 
         for (PermissionScope scope : scopes.traverse()) {
             for (ScopeBasedDataList<ObjectMetaEntry> data : dataList) {
-                result.addAll(data.getData(scope));
+                List<ObjectMetaEntry> entries = new ArrayList<>(data.getData(scope));
+                entries.sort(PRIORITY_COMPARATOR);
+                result.addAll(entries);
             }
         }
     }
@@ -72,7 +77,9 @@ public class DefaultObjectMetaGraph extends AbstractObservable<PermissionObject,
     public void traverseOne() {
         ScopeBasedDataList<ObjectMetaEntry> data = owner.getMeta().getEntries(scopes);
         for (PermissionScope scope : scopes.traverse()) {
-            result.addAll(data.getData(scope));
+            List<ObjectMetaEntry> entries = new ArrayList<>(data.getData(scope));
+            entries.sort(PRIORITY_COMPARATOR);
+            result.addAll(entries);
         }
     }
 
@@ -81,8 +88,10 @@ public class DefaultObjectMetaGraph extends AbstractObservable<PermissionObject,
         List<ObjectMetaEntry> entries = traverse();
         ObjectMetaEntry result = null;
         for (ObjectMetaEntry entry : entries) {
-            if(entry.getKey().equalsIgnoreCase(key)){
-                result = entry;
+            if(!entry.hasTimeout()){
+                if(entry.getKey().equalsIgnoreCase(key)){
+                    result = entry;
+                }
             }
         }
         return result;

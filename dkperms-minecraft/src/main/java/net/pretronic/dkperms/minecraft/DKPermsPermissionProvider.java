@@ -10,12 +10,12 @@
 
 package net.pretronic.dkperms.minecraft;
 
-import net.pretronic.libraries.logging.PretronicLogger;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.minecraft.player.PermissionPlayer;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectManager;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
+import net.pretronic.libraries.logging.PretronicLogger;
 import org.mcnative.common.player.MinecraftPlayer;
 import org.mcnative.common.serviceprovider.permission.PermissionHandler;
 import org.mcnative.common.serviceprovider.permission.PermissionProvider;

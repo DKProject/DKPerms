@@ -18,8 +18,6 @@ import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.libraries.utility.Validate;
 
-import java.util.Collection;
-
 public class DefaultPermissionGroupEntity implements PermissionGroupEntity {
 
     private final PermissionObject owner;

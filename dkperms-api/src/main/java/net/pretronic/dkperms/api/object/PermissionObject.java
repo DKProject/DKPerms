@@ -11,9 +11,9 @@
 package net.pretronic.dkperms.api.object;
 
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.entity.PermissionEntity;
 import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
+import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.graph.GroupGraph;
 import net.pretronic.dkperms.api.graph.ObjectGraph;
 import net.pretronic.dkperms.api.graph.PermissionGraph;
@@ -28,7 +28,7 @@ import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 import net.pretronic.libraries.synchronisation.observer.Observable;
 import net.pretronic.libraries.utility.annonations.Nullable;
 
-import java.security.Permissions;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -129,14 +129,22 @@ public interface PermissionObject extends Observable<PermissionObject,SyncAction
     PermissionGroupEntity setGroup(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, long timeout);
 
     default PermissionGroupEntity setGroup(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, long duration, TimeUnit unit){
-        return addGroup(executor,scope, group,action,duration>0?unit.toMillis(duration):duration);
+        return setGroup(executor,scope, group,action,duration>0?unit.toMillis(duration)+System.currentTimeMillis():duration);
+    }
+
+    default PermissionGroupEntity setGroup(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, Duration duration){
+        return setGroup(executor,scope, group,action,duration.getSeconds(),TimeUnit.SECONDS);
     }
 
 
     PermissionGroupEntity addGroup(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, long timeout);
 
+    default PermissionGroupEntity addGroup(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, Duration duration){
+        return addGroup(executor,scope, group,action,duration.getSeconds(),TimeUnit.SECONDS);
+    }
+
     default PermissionGroupEntity addGroup(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, long duration, TimeUnit unit){
-        return addGroup(executor,scope, group,action,duration>0?unit.toMillis(duration):duration);
+        return addGroup(executor,scope, group,action,duration>0?unit.toMillis(duration)+System.currentTimeMillis():duration);
     }
 
 
@@ -200,26 +208,25 @@ public interface PermissionObject extends Observable<PermissionObject,SyncAction
     PermissionEntity getPermission(PermissionScope scope, String permission);
 
 
-    default PermissionAction hasPermission(String permission){
-        return hasPermission(getScope(),permission);
-    }
-
     PermissionAction hasPermission(PermissionScope scope, String permission);
 
 
-    PermissionEntity addPermission(PermissionObject executor,PermissionScope scope, String permission,PermissionAction action, long timeout);
+    PermissionEntity setPermission(PermissionObject executor,PermissionScope scope, String permission,PermissionAction action, long timeout);
 
+    default PermissionEntity setPermission(PermissionObject executor, PermissionScope scope, String permission, PermissionAction action, Duration duration){
+        return setPermission(executor,scope, permission,action, duration.getSeconds(), TimeUnit.SECONDS);
+    }
 
-    default PermissionEntity addPermission(PermissionObject executor,PermissionScope scope, String permission,PermissionAction action, long duration, TimeUnit unit){
-        return addPermission(executor,scope, permission,action, duration>0?unit.toMillis(duration):duration);
+    default PermissionEntity setPermission(PermissionObject executor,PermissionScope scope, String permission,PermissionAction action, long duration, TimeUnit unit){
+        return setPermission(executor,scope, permission,action, duration>0?unit.toMillis(duration)+System.currentTimeMillis():duration);
     }
 
 
-    default void removePermission(PermissionObject executor,String permission){
-        removePermission(executor,getScope(),permission);
+    default void unsetPermission(PermissionObject executor,String permission){
+        unsetPermission(executor,getScope(),permission);
     }
 
-    void removePermission(PermissionObject executor,PermissionScope scope, String permission);
+    void unsetPermission(PermissionObject executor,PermissionScope scope, String permission);
 
     default void clearPermission(PermissionObject executor){
         clearPermission(executor,getScope());

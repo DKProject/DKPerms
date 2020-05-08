@@ -20,12 +20,12 @@ import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
-import net.pretronic.libraries.utility.GeneralUtil;
+import net.pretronic.libraries.utility.duration.DurationProcessor;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
-import java.util.concurrent.TimeUnit;
 
-//world=test;server=server-1;serverGroup=;
 public class CommandUtil {
 
     public static PermissionScope readScope(CommandSender sender, PermissionObject object, String[] arguments, int index){
@@ -33,20 +33,24 @@ public class CommandUtil {
     }
 
     public static PermissionScope readScope(CommandSender sender, PermissionScope fallback, String[] arguments, int index){
-        if(arguments.length >= index+1) {
-            try{
-                PermissionScope namespace = DKPerms.getInstance().getScopeManager().getNamespace(DKPermsConfig.SCOPE_NAMESPACE);
-                PermissionScope scope = DKPerms.getInstance().getScopeManager().get(namespace,arguments[index]);
-                if (scope == null) {
-                    sender.sendMessage(Messages.SCOPE_NOTFOUND, VariableSet.create().add("scope", arguments[index]));
-                    return null;
-                }
-                return scope;
-            }catch (IllegalArgumentException exception){
-                sender.sendMessage(Messages.SCOPE_INVALID, VariableSet.create().add("scope", arguments[index]));
-            }
-        }
+        if(arguments.length > index) return readScope(sender,arguments[index]);
         return fallback;
+    }
+
+
+    public static PermissionScope readScope(CommandSender sender, String argument) {
+        try{
+            PermissionScope namespace = DKPerms.getInstance().getScopeManager().getNamespace(DKPermsConfig.SCOPE_NAMESPACE);
+            PermissionScope scope = DKPerms.getInstance().getScopeManager().get(namespace,argument);
+            if (scope == null) {
+                sender.sendMessage(Messages.SCOPE_NOTFOUND, VariableSet.create().add("scope", argument));
+                return null;
+            }
+            return scope;
+        }catch (IllegalArgumentException exception){
+            sender.sendMessage(Messages.SCOPE_INVALID, VariableSet.create().add("scope", argument));
+        }
+        return null;
     }
 
     public static PermissionObject getGroup(CommandSender sender, String argument) {
@@ -66,37 +70,38 @@ public class CommandUtil {
 
     public static void changeGroup(boolean set,CommandSender sender, PermissionObject object,PermissionObject group,String[] arguments){
         PermissionAction action = PermissionAction.ALLOW;
-        long time = -1;
-        TimeUnit unit = TimeUnit.DAYS;
         PermissionScope scope = group.getScope();
+        Duration duration = Duration.of(-1, ChronoUnit.SECONDS);
+        UpdateModifier modifier = UpdateModifier.REPLACE;
 
         for (int i = 1; i < arguments.length; i++) {
             String argument = arguments[i];
-            if(GeneralUtil.isNaturalNumber(argument)){
-                time = Long.parseLong(argument);
+            UpdateModifier modifier0 = UpdateModifier.parse(argument);
+            if(modifier0 == null){
+                try{
+                    duration = DurationProcessor.getStandard().parse(argument);
+                }catch (IllegalArgumentException ignored){
+                    scope = CommandUtil.readScope(sender, argument);
+                    if (scope == null) return;
+                }
             }else{
-                PermissionAction action0 = GeneralUtil.valueOfEnumOrNull(PermissionAction.class,argument.toUpperCase());
-                if(action0 == null){
-                    TimeUnit unit0 = GeneralUtil.valueOfEnumOrNull(TimeUnit.class,argument.toUpperCase());//@Todo add alternative time unit options
-                    if(unit0 == null){
-                        try{
-                            scope = DKPerms.getInstance().getScopeManager().get(argument);
-                            if(scope == null){
-                                sender.sendMessage(Messages.SCOPE_NOTFOUND, VariableSet.create().add("scope",argument));
-                                return;
-                            }
-                        }catch (IllegalArgumentException exception){
-                            sender.sendMessage(Messages.SCOPE_INVALID, VariableSet.create().add("scope",argument));
-                            return;
-                        }
-                    }else unit = unit0;
-                }else action = action0;
+                modifier = modifier0;
             }
         }
 
-        PermissionGroupEntity entity;
-        if(set) entity = object.setGroup(null,scope,group,action,time,unit);
-        else entity = object.addGroup(null,scope,group,action,time,unit);
+        PermissionGroupEntity entity = object.getGroup(scope,group);
+
+        if(entity != null){
+            if(modifier == UpdateModifier.FAIL) return; //@Todo send message
+            else duration = modifier.take(entity.getRemainingDuration(),duration);
+        }
+
+        if(entity == null || set){
+            if(set) entity = object.setGroup(null,scope,group,action,duration);
+            else entity = object.addGroup(null,scope,group,action,duration);
+        }else{
+            entity.update(null,action,scope,duration);
+        }
 
         sender.sendMessage(set ? Messages.OBJECT_GROUP_SET: Messages.OBJECT_GROUP_ADD,
                 VariableSet.create()
@@ -106,9 +111,24 @@ public class CommandUtil {
                         .addDescribed("group",group)
                         .add("action",action)
                         .add("timeout",entity.getTimeoutFormatted())
-                        .add("remaining",entity.getRemainingDuration())
-                        .add("time",time)
-                        .add("unit",unit));
+                        .add("remaining",entity.getRemainingDurationFormatted()));
+    }
+
+    public static void removeGroup(CommandSender sender, PermissionObject object, String[] arguments, PermissionObject group) {
+        PermissionScope scope = CommandUtil.readScope(sender,object,arguments,1);
+        if(scope == null) return;
+
+        object.removeGroup(null,scope,group);
+
+        VariableSet variables = VariableSet.create()
+                .add("type",object.getType().getName().toLowerCase())
+                .addDescribed("object",object)
+                .addDescribed("group",group)
+                .add("action", PermissionAction.NEUTRAL)
+                .add("timeout", DKPermsConfig.FORMAT_DATE_ENDLESSLY)
+                .add("remaining",DKPermsConfig.FORMAT_DATE_ENDLESSLY)
+                .add("scope",scope.getPath());
+        sender.sendMessage(Messages.OBJECT_GROUP_REMOVE,variables);
     }
 
     public static void sendInvalidSyntax(CommandSender sender,String command,String usage){

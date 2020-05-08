@@ -16,6 +16,7 @@ import org.mcnative.common.text.components.MessageKeyComponent;
 public final class Messages {
 
     public static final MessageKeyComponent SENDER_ONLY_CONSOLE = Text.ofMessageKey("dkperms.sender.only.console");
+    public static final MessageKeyComponent INVALID_NUMBER = Text.ofMessageKey("dkperms.invalid.number");
     public static final MessageKeyComponent COMMAND_PERMS_HELP = Text.ofMessageKey("dkperms.command.perms.help");
     public static final MessageKeyComponent COMMAND_INVALID_SYNTAX = Text.ofMessageKey("dkperms.command.invalid.syntax");
 
@@ -30,6 +31,7 @@ public final class Messages {
     public static final MessageKeyComponent GROUP_CREATED = Text.ofMessageKey("dkperms.group.created");
     public static final MessageKeyComponent GROUP_DELETE_CONFIRM = Text.ofMessageKey("dkperms.group.delete.confirm");
     public static final MessageKeyComponent GROUP_DELETED = Text.ofMessageKey("dkperms.group.deleted");
+    public static final MessageKeyComponent GROUP_RENAMED = Text.ofMessageKey("dkperms.group.renamed");
 
     public static final MessageKeyComponent GROUP_LIST = Text.ofMessageKey("dkperms.group.list");
     public static final MessageKeyComponent GROUP_TREE_HEADER = Text.ofMessageKey("dkperms.group.tree.header");
@@ -63,6 +65,7 @@ public final class Messages {
     public static final MessageKeyComponent OBJECT_PERMISSION_TREE_HEADER = Text.ofMessageKey("dkperms.object.permission.tree.header");
     public static final MessageKeyComponent OBJECT_PERMISSION_TREE_SCOPE = Text.ofMessageKey("dkperms.object.permission.tree.scope");
     public static final MessageKeyComponent OBJECT_PERMISSION_TREE_ENTRY = Text.ofMessageKey("dkperms.object.permission.tree.entry");
+    public static final MessageKeyComponent OBJECT_PERMISSION_NOT_SET = Text.ofMessageKey("dkperms.object.permission.notSet");
 
 
     public static final MessageKeyComponent OBJECT_GROUP_HELP = Text.ofMessageKey("dkperms.object.group.help");
@@ -70,8 +73,16 @@ public final class Messages {
     public static final MessageKeyComponent OBJECT_GROUP_SET = Text.ofMessageKey("dkperms.object.group.set");
     public static final MessageKeyComponent OBJECT_GROUP_ADD = Text.ofMessageKey("dkperms.object.group.add");
     public static final MessageKeyComponent OBJECT_GROUP_REMOVE = Text.ofMessageKey("dkperms.object.group.remove");
+    public static final MessageKeyComponent OBJECT_GROUP_SHOW = Text.ofMessageKey("dkperms.object.group.show");
     public static final MessageKeyComponent OBJECT_GROUP_LIST = Text.ofMessageKey("dkperms.object.group.list");
     public static final MessageKeyComponent OBJECT_GROUP_TREE_HEADER = Text.ofMessageKey("dkperms.object.group.tree.header");
     public static final MessageKeyComponent OBJECT_GROUP_TREE_SCOPE = Text.ofMessageKey("dkperms.object.group.tree.scope");
     public static final MessageKeyComponent OBJECT_GROUP_TREE_ENTRY = Text.ofMessageKey("dkperms.object.group.tree.entry");
+    public static final MessageKeyComponent OBJECT_GROUP_NOT_SET = Text.ofMessageKey("dkperms.object.group.notSet");
+
+    public static final MessageKeyComponent OBJECT_PRIORITY_SET = Text.ofMessageKey("dkperms.object.priority.set");
+
+    public static final MessageKeyComponent RANK_HELP = Text.ofMessageKey("dkperms.rank.help");
+    public static final MessageKeyComponent RANK_CHANGE_NO_PERMISSION_FOR_RANK = Text.ofMessageKey("dkperms.rank.noPermissionForRank");
+    public static final MessageKeyComponent RANK_LIST = Text.ofMessageKey("dkperms.rank.list");
 }

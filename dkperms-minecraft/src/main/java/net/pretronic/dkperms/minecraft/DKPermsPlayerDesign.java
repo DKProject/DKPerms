@@ -12,6 +12,7 @@ package net.pretronic.dkperms.minecraft;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
+import net.pretronic.libraries.message.bml.variable.VariableSet;
 import org.mcnative.common.player.PlayerDesign;
 
 public class DKPermsPlayerDesign implements PlayerDesign {
@@ -44,6 +45,11 @@ public class DKPermsPlayerDesign implements PlayerDesign {
     public String getChat() {
         ObjectMetaEntry entry = object.getCurrentSnapshot().getMeta("chat");
         return entry != null?entry.getValue():"";
+    }
+
+    @Override
+    public void appendAdditionalVariables(VariableSet variables) {
+        variables.addDescribed("object",object);
     }
 
     @Override

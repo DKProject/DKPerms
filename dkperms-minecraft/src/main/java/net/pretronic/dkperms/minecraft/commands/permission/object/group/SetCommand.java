@@ -34,8 +34,8 @@ public class SetCommand extends ObjectCommand<PermissionObject> {
             CommandUtil.changeGroup(true,sender,object,group,arguments);
         }else{
             VariableSet variables = VariableSet.create();
-            variables.add("command",getConfiguration().getName());
-            variables.add("usage","/perms <user/group> <object> group add <name> {action} {time} {unit} {scope}");
+            variables.add("command","group set");
+            variables.add("usage","/perms <user/group> <name> group set <name> {action} {time} {unit} {scope}");
             sender.sendMessage(Messages.COMMAND_INVALID_SYNTAX,variables);
         }
     }

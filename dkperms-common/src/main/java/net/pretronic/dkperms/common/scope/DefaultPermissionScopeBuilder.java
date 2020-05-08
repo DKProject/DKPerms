@@ -10,10 +10,10 @@
 
 package net.pretronic.dkperms.common.scope;
 
-import net.pretronic.libraries.utility.map.Pair;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.PermissionScopeBuilder;
+import net.pretronic.libraries.utility.map.Pair;
 
 import java.util.ArrayList;
 import java.util.List;

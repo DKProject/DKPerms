@@ -10,6 +10,7 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.object.group;
 
+import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.DefinedNotFindable;
@@ -17,7 +18,6 @@ import net.pretronic.libraries.command.command.object.MainObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
-import net.pretronic.dkperms.api.object.PermissionObject;
 
 public class GroupCommand extends MainObjectCommand<PermissionObject> implements DefinedNotFindable<PermissionObject> {
 
@@ -27,6 +27,7 @@ public class GroupCommand extends MainObjectCommand<PermissionObject> implements
         registerCommand(new SetCommand(owner));
         registerCommand(new AddCommand(owner));
         registerCommand(new RemoveCommand(owner));
+        registerCommand(new ShowCommand(owner));
         registerCommand(new ClearCommand(owner));
         registerCommand(new ListCommand(owner));
         registerCommand(new TreeCommand(owner));

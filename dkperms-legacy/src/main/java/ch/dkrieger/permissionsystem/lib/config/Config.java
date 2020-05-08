@@ -6,7 +6,6 @@ package ch.dkrieger.permissionsystem.lib.config;
  *
  */
 
-import ch.dkrieger.permissionsystem.lib.PermissionSystem;
 import ch.dkrieger.permissionsystem.lib.storage.StorageType;
 
 import java.io.File;

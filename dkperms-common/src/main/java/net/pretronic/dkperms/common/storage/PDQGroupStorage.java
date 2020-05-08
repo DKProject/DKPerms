@@ -14,22 +14,20 @@ import net.pretronic.databasequery.api.collection.DatabaseCollection;
 import net.pretronic.databasequery.api.query.SearchOrder;
 import net.pretronic.databasequery.api.query.result.QueryResult;
 import net.pretronic.databasequery.api.query.result.QueryResultEntry;
-import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
-import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
-import net.pretronic.dkperms.common.object.meta.DefaultObjectMetaEntry;
-import net.pretronic.dkperms.common.scope.data.ArrayScopeBasedDataList;
-import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
+import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
+import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 import net.pretronic.dkperms.api.storage.GroupStorage;
 import net.pretronic.dkperms.common.entity.DefaultPermissionGroupEntity;
+import net.pretronic.dkperms.common.scope.data.ArrayScopeBasedDataList;
+import net.pretronic.libraries.utility.Iterators;
 
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class PDQGroupStorage implements GroupStorage {
 
@@ -157,6 +155,11 @@ public class PDQGroupStorage implements GroupStorage {
                 .set("Timeout",timeout)
                 .where("Id",entityId)
                 .execute();
+    }
+
+    @Override
+    public void deleteTimedOutGroupReferences() {
+        this.group_entities.delete().whereLower("Timeout",System.currentTimeMillis()).execute();
     }
 
     public void setCollections(DatabaseCollection group_entities){

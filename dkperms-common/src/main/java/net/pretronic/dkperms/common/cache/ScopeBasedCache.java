@@ -10,15 +10,17 @@
 
 package net.pretronic.dkperms.common.cache;
 
-import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedData;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 import net.pretronic.dkperms.common.scope.data.ArrayScopeBasedDataList;
+import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.Validate;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public abstract class ScopeBasedCache<T> {
 

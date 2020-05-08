@@ -11,12 +11,10 @@
 package net.pretronic.dkperms.minecraft;
 
 import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.entity.Entity;
 import net.pretronic.dkperms.api.entity.PermissionEntity;
 import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
 import net.pretronic.dkperms.api.graph.Graph;
-import net.pretronic.dkperms.api.graph.ObjectMetaGraph;
-import net.pretronic.dkperms.api.graph.PermissionGraph;
-import net.pretronic.dkperms.api.minecraft.event.MinecraftPlayerPermissionScopeChangeEvent;
 import net.pretronic.dkperms.api.minecraft.player.PermissionPlayer;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.SyncAction;
@@ -26,15 +24,15 @@ import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
 import net.pretronic.libraries.utility.Iterators;
-import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import org.mcnative.common.McNative;
+import org.mcnative.common.event.player.design.MinecraftPlayerDesignUpdateEvent;
 import org.mcnative.common.player.MinecraftPlayer;
+import org.mcnative.common.player.OnlineMinecraftPlayer;
 import org.mcnative.common.player.PlayerDesign;
 import org.mcnative.common.serviceprovider.permission.PermissionHandler;
 import org.mcnative.common.serviceprovider.permission.PermissionResult;
 
 import java.util.Collection;
-import java.util.concurrent.TimeUnit;
 
 //@Todo on scope change listener and event
 public class DKPermsPermissionPlayer implements PermissionPlayer, ObserveCallback<PermissionObject, SyncAction> {
@@ -126,7 +124,7 @@ public class DKPermsPermissionPlayer implements PermissionPlayer, ObserveCallbac
         PermissionEntity entity = object.getPermission(DKPermsConfig.MCNATIVE_MANAGEMENT_SCOPE_PERMISSION,permission);
         PermissionAction action = action0? PermissionAction.ALLOW:PermissionAction.REJECT;
         if(entity == null){
-            object.addPermission(DKPerms.getInstance().getObjectManager().getSuperAdministrator()
+            object.setPermission(DKPerms.getInstance().getObjectManager().getSuperAdministrator()
                     ,DKPermsConfig.MCNATIVE_MANAGEMENT_SCOPE_PERMISSION
                     ,permission,action,-1);
         }else if(!entity.getAction().equals(action)){
@@ -136,7 +134,7 @@ public class DKPermsPermissionPlayer implements PermissionPlayer, ObserveCallbac
 
     @Override
     public void unsetPermission(String permission) {
-        object.removePermission(DKPerms.getInstance().getObjectManager().getSuperAdministrator()
+        object.unsetPermission(DKPerms.getInstance().getObjectManager().getSuperAdministrator()
                 ,DKPermsConfig.MCNATIVE_MANAGEMENT_SCOPE_PERMISSION
                 ,permission);
     }
@@ -177,7 +175,9 @@ public class DKPermsPermissionPlayer implements PermissionPlayer, ObserveCallbac
             object.getMeta().set(DKPerms.getInstance().getObjectManager().getSuperAdministrator()
                     ,"operator"
                     ,operator
-                    ,DKPermsConfig.MCNATIVE_MANAGEMENT_SCOPE_OPERATOR);
+                    ,0
+                    ,DKPermsConfig.MCNATIVE_MANAGEMENT_SCOPE_OPERATOR
+                    ,Entity.PERMANENTLY);
         }
     }
 
@@ -198,12 +198,11 @@ public class DKPermsPermissionPlayer implements PermissionPlayer, ObserveCallbac
 
     @Override
     public void callback(PermissionObject object, SyncAction action) {
-        McNative.getInstance().getScheduler().createTask(ObjectOwner.SYSTEM)
-                .delay(1, TimeUnit.SECONDS)
-                .execute(() -> {
-                    if(McNative.getInstance().getLocal().getServerTablist() != null){
-                        McNative.getInstance().getLocal().getServerTablist().update();
-                    }
-                });
+        //@Todo change to direct assignment
+        OnlineMinecraftPlayer player =  McNative.getInstance().getLocal().getOnlinePlayer(object.getAssignmentId());
+        if(player != null){
+            MinecraftPlayerDesignUpdateEvent event = new MinecraftPlayerDesignUpdateEvent(null,design);
+            McNative.getInstance().getLocal().getEventBus().callEvent(event);
+        }
     }
 }

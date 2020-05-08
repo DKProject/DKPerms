@@ -35,7 +35,8 @@ public class ShowCommand extends ObjectCommand<PermissionObject> {
             PermissionScope scope = CommandUtil.readScope(sender,object,arguments,1);
             if(scope == null) return;
 
-            ObjectMetaEntry entry = object.getMeta().get(key,scope);
+            ObjectMetaEntry entry = object.getMeta().getHighest(key,scope);
+            //@Todo Commands do currently only support one entry, multiple entries should be implemented in future
 
             VariableSet variables = VariableSet.create();
             variables.add("type",object.getType().getName().toLowerCase());
@@ -45,7 +46,7 @@ public class ShowCommand extends ObjectCommand<PermissionObject> {
             variables.addDescribed("scope",scope);
             sender.sendMessage(Messages.OBJECT_META_SHOW,variables);
         }else{
-            CommandUtil.sendInvalidSyntax(sender,"meta show","/perms <user/group> <object> meta show <key> [scope]");
+            CommandUtil.sendInvalidSyntax(sender,"meta show","/perms <user/group> <name> meta show <key> [scope]");
         }
     }
 }

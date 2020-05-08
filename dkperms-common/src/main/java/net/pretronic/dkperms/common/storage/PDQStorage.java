@@ -105,6 +105,8 @@ public class PDQStorage implements DKPermsStorage {
                 .field("ScopeId",DataType.INTEGER,ForeignKey.of(scope,"Id"),FieldOption.NOT_NULL)
                 .field("Key",DataType.STRING,FieldOption.NOT_NULL)
                 .field("Value",DataType.STRING,FieldOption.NOT_NULL)
+                .field("Priority",DataType.INTEGER,FieldOption.NOT_NULL)
+                .field("Timeout",DataType.LONG,FieldOption.NOT_NULL)
                 .create();
 
         DatabaseCollection object_groups = database.createCollection("DKPerms_Object_Groups")

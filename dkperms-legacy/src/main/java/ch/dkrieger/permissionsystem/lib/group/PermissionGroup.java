@@ -12,10 +12,8 @@ package ch.dkrieger.permissionsystem.lib.group;
 
 import ch.dkrieger.permissionsystem.lib.PermissionAdapter;
 import ch.dkrieger.permissionsystem.lib.PermissionType;
-import ch.dkrieger.permissionsystem.lib.player.PermissionPlayer;
 import ch.dkrieger.permissionsystem.lib.player.PlayerDesign;
 
-import java.util.List;
 import java.util.UUID;
 
 public class PermissionGroup extends PermissionAdapter{

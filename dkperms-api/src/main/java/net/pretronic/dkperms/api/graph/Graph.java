@@ -15,6 +15,8 @@ import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.SyncAction;
 import net.pretronic.libraries.synchronisation.observer.Observable;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -22,6 +24,12 @@ import java.util.concurrent.CompletableFuture;
 public interface Graph<T> extends Iterable<T>, Observable<PermissionObject, SyncAction> {
 
     List<T> traverse();
+
+    default List<T> traverseReversed(){
+        List<T> copy = new ArrayList<>(traverse());
+        Collections.reverse(copy);
+        return copy;
+    }
 
     default CompletableFuture<List<T>> traverseAsync(){
         return DKPerms.getInstance().getExecutor().execute(this::traverse);

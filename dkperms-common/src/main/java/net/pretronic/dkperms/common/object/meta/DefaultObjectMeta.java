@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2019 The DKPerms Project (Davide Wietlisbach & Philipp Elvin Friedhoff)
+ * (C) Copyright 2020 The DKPerms Project (Davide Wietlisbach & Philipp Elvin Friedhoff)
  *
  * @author Davide Wietlisbach
- * @since 02.11.19, 15:05
+ * @since 04.05.20, 18:48
  * @website %web%
  *
  * %license%
@@ -10,24 +10,26 @@
 
 package net.pretronic.dkperms.common.object.meta;
 
-import net.pretronic.dkperms.api.object.SyncAction;
-import net.pretronic.dkperms.common.object.DefaultPermissionObject;
-import net.pretronic.libraries.document.Document;
-import net.pretronic.libraries.utility.Iterators;
-import net.pretronic.libraries.utility.Validate;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.graph.ObjectMetaGraph;
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.SyncAction;
 import net.pretronic.dkperms.api.object.meta.ObjectMeta;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 import net.pretronic.dkperms.common.cache.ObjectMetaCache;
-import net.pretronic.dkperms.common.graph.EmptyGraph;
 import net.pretronic.dkperms.common.graph.DefaultObjectMetaGraph;
+import net.pretronic.dkperms.common.graph.EmptyGraph;
+import net.pretronic.dkperms.common.object.DefaultPermissionObject;
+import net.pretronic.libraries.document.Document;
+import net.pretronic.libraries.utility.Iterators;
+import net.pretronic.libraries.utility.Validate;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 public class DefaultObjectMeta implements ObjectMeta {
 
@@ -40,13 +42,15 @@ public class DefaultObjectMeta implements ObjectMeta {
     }
 
     @Override
-    public ObjectMetaEntry get(String key) {
+    public List<ObjectMetaEntry> get(String key) {
         return get(key,object.getScope());
     }
 
     @Override
-    public ObjectMetaEntry get(String key,PermissionScope scope) {
-        return Iterators.findOne(getEntries(scope), entry -> entry.getKey().equalsIgnoreCase(key));
+    public List<ObjectMetaEntry> get(String key, PermissionScope scope) {
+        List<ObjectMetaEntry> result =  Iterators.filter(cache.get(scope), entry -> entry.getKey().equalsIgnoreCase(key));
+        result.sort(DefaultObjectMetaGraph.PRIORITY_COMPARATOR);
+        return result;
     }
 
     @Override
@@ -86,45 +90,58 @@ public class DefaultObjectMeta implements ObjectMeta {
 
     @Override
     public boolean isSet(String key, Object value) {
-        ObjectMetaEntry entry = get(key);
+        ObjectMetaEntry entry = getHighest(key);
         return entry != null && entry.equalsValue(value);
     }
 
     @Override
     public boolean isSet(PermissionScope scope, String key, Object value) {
-        ObjectMetaEntry entry = get(key,scope);
+        ObjectMetaEntry entry = getHighest(key,scope);
         return entry != null && entry.equalsValue(value);
     }
 
     @Override
-    public ObjectMetaEntry set(PermissionObject executor,String key, Object value) {
-        return set(executor,key,value,object.getScope());
+    public ObjectMetaEntry set(PermissionObject executor, String key, Object value, int priority, PermissionScope scope, long timeout) {
+        Validate.notNull(key,value,scope);
+        List<ObjectMetaEntry> entries = get(key,scope);
+        if(entries.size() == 1){
+            ObjectMetaEntry entry = entries.get(0);
+            entry.update(executor,value,priority,scope,timeout);
+            return entry;
+        }else{
+            if(!entries.isEmpty()){
+                DKPerms.getInstance().getStorage().getObjectStorage().deleteMetaEntries(object.getId(),scope.getId(),key);
+            }
+            return add(executor, key, value, priority, scope, timeout);
+        }
     }
 
     @Override
-    public ObjectMetaEntry set(PermissionObject executor,String key, Object value, PermissionScope scope) {
+    public ObjectMetaEntry add(PermissionObject executor, String key, Object value, int priority, PermissionScope scope, long timeout) {
         Validate.notNull(key,value,scope);
-        ObjectMetaEntry entry = get(key,scope);
-        if(entry == null){
-            if(!scope.isSaved()) scope.insert();
-            int id = DKPerms.getInstance().getStorage().getObjectStorage().insertMeta(object.getId(),scope.getId(),key,value.toString());
-            entry = new DefaultObjectMetaEntry(object,scope,id,key,value);
-            cache.insert(scope,entry);
-        }else entry.setValue(executor,value);
+        if(!scope.isSaved()) scope.insert();
+        int id = DKPerms.getInstance().getStorage().getObjectStorage().insertMeta(object.getId(),scope.getId(),key,value.toString(),priority,timeout);
+        ObjectMetaEntry entry = new DefaultObjectMetaEntry(object,scope,id,key,value,priority,timeout);
+        cache.insert(scope,entry);
         synchronizeMeta(scope);
         return entry;
     }
 
     @Override
-    public void unset(PermissionObject executor,String key) {
-        unset(executor,key, object.getScope());
+    public void unset(PermissionObject executor,String key, PermissionScope scope) {
+        Validate.notNull(key,scope);
+        List<ObjectMetaEntry> entries = get(key,scope);
+        if(!entries.isEmpty()){
+            DKPerms.getInstance().getStorage().getObjectStorage().deleteMetaEntries(object.getId(),scope.getId(),key);
+            for(ObjectMetaEntry entry : entries) this.cache.remove(scope,entry);
+            synchronizeMeta(scope);
+        }
     }
 
     @Override
-    public void unset(PermissionObject executor,String key, PermissionScope scope) {
-        ObjectMetaEntry entry = get(key,scope);
-        if(entry != null){
-            DKPerms.getInstance().getStorage().getObjectStorage().deleteMetaEntry(entry.getId());
+    public void remove(PermissionObject executor, ObjectMetaEntry entry, PermissionScope scope) {
+        if(entry.getOwner().equals(object)){
+            DKPerms.getInstance().getStorage().getObjectStorage().deleteMetaEntry(object.getId());
             cache.remove(scope,entry);
             synchronizeMeta(scope);
         }

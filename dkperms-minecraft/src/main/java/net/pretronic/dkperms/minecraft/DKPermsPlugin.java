@@ -15,28 +15,22 @@ import net.pretronic.dkperms.api.minecraft.player.PermissionPlayer;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.holder.PermissionHolderFactory;
 import net.pretronic.dkperms.api.object.holder.PermissionObjectHolder;
-import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.PermissionScopeManager;
 import net.pretronic.dkperms.common.DefaultDKPerms;
 import net.pretronic.dkperms.common.DefaultMigrationAssistant;
-import net.pretronic.dkperms.common.entity.DefaultPermissionEntity;
-import net.pretronic.dkperms.common.entity.DefaultPermissionGroupEntity;
 import net.pretronic.dkperms.common.logging.DefaultAuditLog;
 import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.dkperms.common.object.DefaultPermissionObjectManager;
-import net.pretronic.dkperms.common.object.DefaultPermissionObjectType;
-import net.pretronic.dkperms.common.object.meta.DefaultObjectMetaEntry;
-import net.pretronic.dkperms.common.scope.DefaultPermissionScope;
 import net.pretronic.dkperms.common.scope.DefaultPermissionScopeManager;
 import net.pretronic.dkperms.common.storage.PDQStorage;
 import net.pretronic.dkperms.minecraft.commands.permission.PermissionCommand;
+import net.pretronic.dkperms.minecraft.commands.rank.RankCommand;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
+import net.pretronic.dkperms.minecraft.integration.DKPermsPlaceholders;
 import net.pretronic.dkperms.minecraft.migration.DKPermsLegacyMigration;
 import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.document.type.DocumentFileType;
-import net.pretronic.libraries.message.bml.variable.describer.VariableDescriber;
-import net.pretronic.libraries.message.bml.variable.describer.VariableDescriberRegistry;
 import net.pretronic.libraries.plugin.description.PluginVersion;
 import net.pretronic.libraries.plugin.lifecycle.Lifecycle;
 import net.pretronic.libraries.plugin.lifecycle.LifecycleState;
@@ -44,6 +38,7 @@ import net.pretronic.libraries.plugin.service.ServicePriority;
 import net.pretronic.libraries.synchronisation.UnconnectedSynchronisationCaller;
 import net.pretronic.libraries.utility.GeneralUtil;
 import net.pretronic.libraries.utility.concurrent.AsyncExecutor;
+import net.pretronic.libraries.utility.duration.DurationProcessor;
 import net.pretronic.libraries.utility.io.FileUtil;
 import net.pretronic.libraries.utility.io.IORuntimeException;
 import org.mcnative.common.McNative;
@@ -52,8 +47,11 @@ import org.mcnative.common.player.MinecraftPlayer;
 import org.mcnative.common.plugin.MinecraftPlugin;
 import org.mcnative.common.plugin.configuration.Configuration;
 import org.mcnative.common.serviceprovider.permission.PermissionProvider;
+import org.mcnative.common.serviceprovider.placeholder.PlaceholderProvider;
 
 import java.io.File;
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 public class DKPermsPlugin extends MinecraftPlugin {
@@ -111,6 +109,9 @@ public class DKPermsPlugin extends MinecraftPlugin {
         getRuntime().getRegistry().registerService(this,PermissionProvider.class,new DKPermsPermissionProvider(),ServicePriority.HIGHEST);
         getRuntime().getPlayerManager().registerPlayerAdapter(PermissionPlayer.class,new PlayerAdapter());
 
+        PlaceholderProvider placeholderProvider = getRuntime().getRegistry().getServiceOrDefault(PlaceholderProvider.class);
+        if(placeholderProvider != null) placeholderProvider.registerPlaceHolders(this,"dkperms",new DKPermsPlaceholders());
+
         if(getRuntime().getPlatform().isService()){
             getRuntime().getLocal().getEventBus().subscribe(this,new MinecraftServiceListener());
         }
@@ -119,11 +120,24 @@ public class DKPermsPlugin extends MinecraftPlugin {
                 ,event -> event.getPlayer().getPermissionHandler());
 
         registerCommands();
-        registerDescribers();
+        DescriberRegistrar.register();
 
         dkPerms.getMigrationAssistant().registerMigration(new DKPermsLegacyMigration());
 
         getLogger().info("DKPerms successfully started");
+
+        if(DKPermsConfig.DELETE_TIMED_OUT_ENTRIES_ENABLED){
+            Duration duration = DurationProcessor.getStandard().parse(DKPermsConfig.DELETE_TIMED_OUT_ENTRIES_INTERVAL);
+            getRuntime().getScheduler().createTask(this)
+                    .interval(duration.getSeconds(), TimeUnit.SECONDS)
+                    .execute(() -> dkPerms.getStorage().deleteTimedOutEntries())
+                    .addListener(future -> {
+                        if(future.isFailed()){
+                            getRuntime().getLogger().error("Failed deleting timed out entries");
+                            future.getThrowable().printStackTrace();
+                        }
+                    });
+        }
     }
 
     private void copyLegacyConfig(){
@@ -159,7 +173,7 @@ public class DKPermsPlugin extends MinecraftPlugin {
 
             PermissionScope groupScope = scopeManager.getNamespace(DKPermsConfig.SCOPE_NAMESPACE)
                     .getChild("serverGroup",group);
-            PermissionScope scope = groupScope.getChild("server",getName());
+            PermissionScope scope = groupScope.getChild("server",serverName);
             scopeManager.setCurrentInstanceScope(scope);
             DKPermsConfig.SCOPE_CURRENT_INSTANCE_SCOPE = scope;
             DKPermsConfig.SCOPE_CURRENT_GROUP_SCOPE = groupScope;
@@ -188,42 +202,8 @@ public class DKPermsPlugin extends MinecraftPlugin {
     }
 
     private void registerCommands(){
-       // if(!DKPermsConfig.SECURITY_COMMANDS_ENABLED) return;@Todo add after fix
         getRuntime().getLocal().getCommandManager().registerCommand(new PermissionCommand(this,DKPermsConfig.COMMAND_PERMISSION));
-    }
-
-    private void registerDescribers(){
-        VariableDescriber<DefaultPermissionObject> objectDescriber = VariableDescriberRegistry.registerDescriber(DefaultPermissionObject.class);
-        objectDescriber.registerFunction("uniqueId", DefaultPermissionObject::getAssignmentId);
-        objectDescriber.registerParameterFunction("property", (object, key) ->{
-            ObjectMetaEntry entry =  object.getMeta().get(key);
-            String result =  entry != null ?entry.getValue() : "";
-            if(result.length() == 2 && result.charAt(0) == '&'){
-                result += "█";//Add for showing colors
-            }
-            return result;
-        });
-
-        objectDescriber.registerParameterFunction("boolProperty", (object, key) ->{
-            ObjectMetaEntry entry =  object.getMeta().get(key);
-            return entry != null ?entry.getBooleanValue() : "false";
-        });
-
-        objectDescriber.registerParameterFunction("numberProperty", (object, key) ->{
-            ObjectMetaEntry entry =  object.getMeta().get(key);
-            return entry != null ?entry.getLongValue(): "0";
-        });
-
-        objectDescriber.registerFunction("globalGroups", PermissionObject::getGroups);
-
-        VariableDescriber<DefaultPermissionGroupEntity> groupEntityDescriber = VariableDescriberRegistry.registerDescriber(DefaultPermissionGroupEntity.class);
-        groupEntityDescriber.setForwardFunction(DefaultPermissionGroupEntity::getGroup);
-
-        VariableDescriberRegistry.registerDescriber(DefaultPermissionScope.class);
-        VariableDescriberRegistry.registerDescriber(DefaultObjectMetaEntry.class);
-        VariableDescriberRegistry.registerDescriber(DefaultPermissionEntity.class);
-        VariableDescriberRegistry.registerDescriber(DefaultPermissionObjectType.class);
-        VariableDescriberRegistry.registerDescriber(DKPermsPlayerDesign.class);
+        getRuntime().getLocal().getCommandManager().registerCommand(new RankCommand(this,DKPermsConfig.COMMAND_RANK));
     }
 
     //@Tod update and optimize

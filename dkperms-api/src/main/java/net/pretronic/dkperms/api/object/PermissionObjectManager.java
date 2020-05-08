@@ -11,8 +11,8 @@
 package net.pretronic.dkperms.api.object;
 
 import net.pretronic.dkperms.api.graph.Graph;
-import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
 import net.pretronic.dkperms.api.object.search.ObjectSearchQuery;
+import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 
 import java.util.Collection;

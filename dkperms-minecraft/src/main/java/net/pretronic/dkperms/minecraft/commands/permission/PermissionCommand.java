@@ -11,7 +11,9 @@
 package net.pretronic.dkperms.minecraft.commands.permission;
 
 import net.pretronic.dkperms.minecraft.commands.MigrationCommand;
+import net.pretronic.dkperms.minecraft.commands.permission.group.GroupMainCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.group.ListCommand;
+import net.pretronic.dkperms.minecraft.commands.permission.user.UserMainCommand;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.NotFindable;
@@ -19,8 +21,6 @@ import net.pretronic.libraries.command.command.MainCommand;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
-import net.pretronic.dkperms.minecraft.commands.permission.group.GroupMainCommand;
-import net.pretronic.dkperms.minecraft.commands.permission.user.UserMainCommand;
 import org.mcnative.common.McNative;
 import org.mcnative.common.player.MinecraftPlayer;
 import org.mcnative.common.player.OnlineMinecraftPlayer;

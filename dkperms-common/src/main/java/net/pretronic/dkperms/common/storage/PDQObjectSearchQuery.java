@@ -26,8 +26,10 @@ import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.dkperms.common.object.DefaultPermissionObjectManager;
 import net.pretronic.dkperms.common.object.search.DirectObjectSearchResult;
 
-import java.util.*;
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class PDQObjectSearchQuery implements ObjectSearchQuery {
 
@@ -170,7 +172,6 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
             query.get(objectCollection.getName()+".AssignmentId");
             query.get(objectCollection.getName()+".Name");
             query.get(objectCollection.getName()+".Disabled");
-            query.get(objectCollection.getName()+".Deleted");
             query.get(objectCollection.getName()+".TypeId");
             query.get(objectCollection.getName()+".ScopeId");
 

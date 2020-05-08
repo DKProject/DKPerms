@@ -10,16 +10,16 @@
 
 package net.pretronic.dkperms.common.scope;
 
-import net.pretronic.libraries.document.Document;
-import net.pretronic.libraries.synchronisation.SynchronisationCaller;
-import net.pretronic.libraries.synchronisation.SynchronisationHandler;
-import net.pretronic.libraries.utility.interfaces.Initializable;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.PermissionScopeBuilder;
 import net.pretronic.dkperms.api.scope.PermissionScopeManager;
 import net.pretronic.dkperms.common.graph.ScopeGraph;
+import net.pretronic.libraries.document.Document;
+import net.pretronic.libraries.synchronisation.SynchronisationCaller;
+import net.pretronic.libraries.synchronisation.SynchronisationHandler;
+import net.pretronic.libraries.utility.interfaces.Initializable;
 
 import java.util.List;
 import java.util.Objects;

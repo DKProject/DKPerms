@@ -12,8 +12,6 @@ package net.pretronic.dkperms.api.entity;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
 
-import java.util.UUID;
-
 public interface PermissionGroupEntity extends Entity {
 
     PermissionObject getGroup();

@@ -10,6 +10,13 @@
 
 package net.pretronic.dkperms.common.object;
 
+import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.PermissionObjectManager;
+import net.pretronic.dkperms.api.object.PermissionObjectType;
+import net.pretronic.dkperms.api.object.search.ObjectSearchQuery;
+import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
+import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.libraries.caching.ArrayCache;
 import net.pretronic.libraries.caching.Cache;
 import net.pretronic.libraries.caching.CacheQuery;
@@ -19,19 +26,10 @@ import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.Validate;
 import net.pretronic.libraries.utility.interfaces.Initializable;
-import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.api.object.PermissionObjectManager;
-import net.pretronic.dkperms.api.object.PermissionObjectType;
-import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
-import net.pretronic.dkperms.api.object.search.ObjectSearchQuery;
-import net.pretronic.dkperms.api.scope.PermissionScope;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
 
 public class DefaultPermissionObjectManager implements PermissionObjectManager, Initializable<DKPerms> {
 

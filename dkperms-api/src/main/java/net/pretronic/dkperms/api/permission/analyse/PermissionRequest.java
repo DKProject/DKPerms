@@ -10,9 +10,9 @@
 
 package net.pretronic.dkperms.api.permission.analyse;
 
-import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.permission.analyse.track.PermissionTrackResult;
+import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
 public interface PermissionRequest {
 

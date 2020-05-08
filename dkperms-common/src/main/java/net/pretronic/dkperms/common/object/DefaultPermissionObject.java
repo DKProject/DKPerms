@@ -38,7 +38,6 @@ import net.pretronic.dkperms.common.graph.DefaultGroupGraph;
 import net.pretronic.dkperms.common.graph.DefaultObjectGraph;
 import net.pretronic.dkperms.common.graph.DefaultPermissionGraph;
 import net.pretronic.dkperms.common.object.meta.DefaultObjectMeta;
-import net.pretronic.dkperms.common.scope.data.ArrayScopeBasedDataList;
 import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.message.bml.variable.describer.VariableObjectToString;
 import net.pretronic.libraries.synchronisation.SynchronisationCaller;
@@ -387,7 +386,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     }
 
     @Override
-    public PermissionEntity addPermission(PermissionObject permissionObject, PermissionScope scope, String permission,PermissionAction action, long timeout) {
+    public PermissionEntity setPermission(PermissionObject permissionObject, PermissionScope scope, String permission,PermissionAction action, long timeout) {
         Validate.notNull(scope,permission,action);
         if(getPermission(scope,permission) != null) throw new IllegalArgumentException("This permission is already set.");
         if(!scope.isSaved()) scope.insert();
@@ -399,7 +398,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     }
 
     @Override
-    public void removePermission(PermissionObject executor,PermissionScope scope, String permission) {
+    public void unsetPermission(PermissionObject executor,PermissionScope scope, String permission) {
         PermissionEntity entity = getPermission(scope, permission);
         if(entity != null){
             DKPerms.getInstance().getStorage().getPermissionStorage().deletePermissions(entity.getId());

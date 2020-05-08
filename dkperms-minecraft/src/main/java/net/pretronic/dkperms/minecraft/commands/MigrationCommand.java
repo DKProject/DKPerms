@@ -12,7 +12,6 @@ package net.pretronic.dkperms.minecraft.commands;
 
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.migration.PermissionMigration;
-import net.pretronic.dkperms.minecraft.DKPermsPlugin;
 import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.BasicCommand;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;

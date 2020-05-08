@@ -10,10 +10,10 @@
 
 package net.pretronic.dkperms.common.scope.data;
 
-import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedData;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
+import net.pretronic.libraries.utility.Iterators;
 
 import java.util.ArrayList;
 import java.util.Collection;

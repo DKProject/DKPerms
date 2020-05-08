@@ -16,9 +16,7 @@ import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 
-import java.security.Permission;
 import java.util.Collection;
-import java.util.Map;
 
 public final class GroupCache extends ScopeBasedCache<PermissionGroupEntity>{
 

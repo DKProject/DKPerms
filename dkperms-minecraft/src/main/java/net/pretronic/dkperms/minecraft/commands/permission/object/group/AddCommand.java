@@ -10,25 +10,15 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.object.group;
 
+import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
+import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
-import net.pretronic.libraries.utility.GeneralUtil;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
-import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
-import net.pretronic.dkperms.api.permission.PermissionAction;
-import net.pretronic.dkperms.api.scope.PermissionScope;
-import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
-import net.pretronic.dkperms.minecraft.config.Messages;
 
-import java.util.Collection;
-import java.util.concurrent.TimeUnit;
-
-//@Todo multiply add time with existing group
 public class AddCommand extends ObjectCommand<PermissionObject> {
 
     public AddCommand(ObjectOwner owner) {
@@ -43,8 +33,8 @@ public class AddCommand extends ObjectCommand<PermissionObject> {
             CommandUtil.changeGroup(false,sender,object,group,arguments);
         }else{
             VariableSet variables = VariableSet.create();
-            variables.add("command",getConfiguration().getName());
-            variables.add("usage","/perms <user/group> <object> group add <name> {action} {time} {unit} {scope}");
+            variables.add("command","group add");
+            variables.add("usage","/perms <user/group> <name> group add <name> {action} {time} {unit} {scope}");
             sender.sendMessage(Messages.COMMAND_INVALID_SYNTAX,variables);
         }
     }

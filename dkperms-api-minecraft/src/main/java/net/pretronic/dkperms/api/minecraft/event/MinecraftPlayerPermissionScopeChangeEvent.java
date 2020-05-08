@@ -10,10 +10,10 @@
 
 package net.pretronic.dkperms.api.minecraft.event;
 
-import net.pretronic.libraries.event.Cancellable;
 import net.pretronic.dkperms.api.minecraft.player.PermissionPlayer;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.scope.PermissionScope;
+import net.pretronic.libraries.event.Cancellable;
 import org.mcnative.common.event.player.MinecraftPlayerEvent;
 import org.mcnative.common.player.MinecraftPlayer;
 

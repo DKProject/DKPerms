@@ -10,22 +10,37 @@
 
 package net.pretronic.dkperms.minecraft;
 
+import net.pretronic.dkperms.api.minecraft.player.PermissionPlayer;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.libraries.event.Listener;
+import org.mcnative.common.player.MinecraftPlayer;
+import org.mcnative.service.event.player.MinecraftPlayerJoinEvent;
 import org.mcnative.service.event.player.MinecraftPlayerWorldChangedEvent;
+import org.mcnative.service.world.World;
 
 public class MinecraftServiceListener {
 
     @Listener
-    public void onPlayerWorldChanged(MinecraftPlayerWorldChangedEvent event ){
-        PermissionObject permissionObject = event.getPlayer().getAs(PermissionObject.class);
-        if(permissionObject != null){
-            PermissionScope scope = DKPermsConfig.SCOPE_CURRENT_INSTANCE_SCOPE
-                    .getChild(DKPermsConfig.SCOPE_WORLD_KEY,event.getTo().getName());
-            permissionObject.setCurrentScope(scope);
+    public void onPlayerJoin(MinecraftPlayerJoinEvent event){
+        if(event.getOnlinePlayer().getWorld() != null){
+            setWorldScope(event.getPlayer(),event.getOnlinePlayer().getWorld());
         }
+    }
+
+    @Listener
+    public void onPlayerWorldChanged(MinecraftPlayerWorldChangedEvent event ){
+        if(event.getTo() != null){
+            setWorldScope(event.getPlayer(),event.getTo());
+        }
+    }
+
+    private void setWorldScope(MinecraftPlayer player,World world){
+        PermissionObject permissionObject = player.getAs(PermissionPlayer.class).getObject();
+        PermissionScope scope = DKPermsConfig.SCOPE_CURRENT_INSTANCE_SCOPE
+                .getChild(DKPermsConfig.SCOPE_WORLD_KEY,world.getName());
+        permissionObject.setCurrentScope(scope);
     }
 
 }

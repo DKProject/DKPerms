@@ -14,8 +14,6 @@ import ch.dkrieger.permissionsystem.lib.storage.yaml.YamlPermissionPlayerStorage
 import ch.dkrieger.permissionsystem.lib.storage.yaml.YamlPermissionStorage;
 import ch.dkrieger.permissionsystem.lib.utils.Messages;
 
-import java.util.Properties;
-
 /*
  *
  *  * Copyright (c) 2018 Davide Wietlisbach on 10.06.18 13:20
