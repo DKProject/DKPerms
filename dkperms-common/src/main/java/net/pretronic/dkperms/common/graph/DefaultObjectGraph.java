@@ -46,9 +46,14 @@ public class DefaultObjectGraph extends AbstractObservable<PermissionObject, Syn
         List<PermissionGroupEntity> inheritance = inheritanceGraph.traverse();
 
         for (PermissionGroupEntity entity : inheritance) {
+
+        }
+
+        for (PermissionGroupEntity entity : inheritance) {
             if(!blocked.contains(entity.getGroup())){
                 if(entity.getAction() == PermissionAction.ALLOW){
-                    if(!result.contains(entity.getGroup())) result.add(entity.getGroup());
+                    result.remove(entity.getGroup());
+                    result.add(entity.getGroup());
                 }else if(entity.getAction() == PermissionAction.REJECT){
                     result.remove(entity.getGroup());
                 }else if(entity.getAction() == PermissionAction.ALLOW_ALWAYS){
