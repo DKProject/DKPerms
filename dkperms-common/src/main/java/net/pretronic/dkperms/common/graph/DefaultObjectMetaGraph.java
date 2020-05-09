@@ -10,6 +10,7 @@
 
 package net.pretronic.dkperms.common.graph;
 
+import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.graph.ObjectMetaGraph;
 import net.pretronic.dkperms.api.object.PermissionObject;
@@ -72,6 +73,13 @@ public class DefaultObjectMetaGraph extends AbstractObservable<PermissionObject,
                 result.addAll(entries);
             }
         }
+
+        System.out.println("-------------------");
+        System.out.println("-> Meta of "+owner.getName());
+        for (ObjectMetaEntry entry : result) {
+            System.out.println(entry.getKey()+" | "+entry.getValue());
+        }
+        System.out.println("-------------------");
     }
 
     public void traverseOne() {

@@ -60,6 +60,7 @@ public class DefaultObjectGraph extends AbstractObservable<PermissionObject, Syn
                 }
             }
         }
+
     }
 
     @Override
