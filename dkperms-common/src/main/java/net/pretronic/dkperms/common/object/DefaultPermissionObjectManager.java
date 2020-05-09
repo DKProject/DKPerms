@@ -51,6 +51,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         this.objects.registerQuery("ById",new ObjectIdLoader(false));
         this.objects.registerQuery("ByIdOnlyCached",new ObjectIdLoader(true));
         this.objects.registerQuery("ByAssignment",new ObjectAssignmentLoader());
+        this.objects.setIdentifierQuery((o, objects) -> o.getId() == (int)objects[0]);
         //@Todo remove listener
 
         this.searchResults = new ArrayCache<>(100);
