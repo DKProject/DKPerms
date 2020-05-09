@@ -136,6 +136,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         return priority;
     }
 
+
     @Override
     public void setPriority(PermissionObject executor, int priority) {
         DKPerms.getInstance().getStorage().getObjectStorage().updateObjectPriority(this.id,priority);
