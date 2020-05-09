@@ -19,9 +19,10 @@ import net.pretronic.dkperms.common.graph.DefaultGroupGraph;
 import net.pretronic.dkperms.common.graph.DefaultObjectGraph;
 import net.pretronic.dkperms.common.graph.DefaultObjectMetaGraph;
 import net.pretronic.dkperms.common.graph.DefaultPermissionGraph;
+import net.pretronic.libraries.synchronisation.observer.AbstractObservable;
 import net.pretronic.libraries.utility.Validate;
 
-public class DefaultPermissionObjectSnapshot implements PermissionObjectSnapshot {
+public class DefaultPermissionObjectSnapshot extends AbstractObservable<PermissionObjectSnapshot,PermissionScope> implements PermissionObjectSnapshot {
 
     private final PermissionObject object;
 
@@ -65,8 +66,7 @@ public class DefaultPermissionObjectSnapshot implements PermissionObjectSnapshot
     @Override
     public void setScope(PermissionScope scope) {
         Validate.notNull(scope);
-        System.out.println("SET SCOPE");
-
+        PermissionScope oldScope = this.scope;
 
         if(groupGraph != null) unsubscribe();
 
@@ -86,6 +86,7 @@ public class DefaultPermissionObjectSnapshot implements PermissionObjectSnapshot
         this.permissionInheritanceGraph = new DefaultPermissionGraph(object,scopeGraph,effectedGroupInheritanceGraph);
 
         subscribe();
+        callObservers(this,oldScope);
     }
 
     private void subscribe(){

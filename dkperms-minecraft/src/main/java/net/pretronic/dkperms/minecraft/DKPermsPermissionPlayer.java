@@ -44,6 +44,10 @@ public class DKPermsPermissionPlayer implements PermissionPlayer, ObserveCallbac
         this.object = object;
         setCurrentScope(DKPerms.getInstance().getScopeManager().getCurrentInstanceScope());
         this.design = new DKPermsPlayerDesign(object);
+
+        //@Todo optimize
+        object.getCurrentSnapshot().subscribeObserver((snapshot, oldScope)
+                -> snapshot.getGroupGraph().subscribeObserver(DKPermsPermissionPlayer.this));
     }
 
     @Override
@@ -69,8 +73,6 @@ public class DKPermsPermissionPlayer implements PermissionPlayer, ObserveCallbac
     @Override
     public void setCurrentScope(PermissionScope scope) {
         object.setCurrentScope(scope);
-        System.out.println("Update and subscribe callback listener");
-        object.getCurrentSnapshot().getGroupGraph().subscribeObserver(this);
     }
 
     @Override

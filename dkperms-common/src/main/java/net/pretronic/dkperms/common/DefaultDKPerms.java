@@ -48,8 +48,6 @@ public class DefaultDKPerms extends DKPerms {
         this.formatter = formatter;
     }
 
-
-
     @Override
     public String getVersion() {
         return version;

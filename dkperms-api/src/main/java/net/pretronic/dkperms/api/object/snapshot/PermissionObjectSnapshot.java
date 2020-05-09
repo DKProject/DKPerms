@@ -15,8 +15,12 @@ import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
+import net.pretronic.libraries.synchronisation.observer.Observable;
+import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
 
-public interface PermissionObjectSnapshot {
+import java.util.List;
+
+public interface PermissionObjectSnapshot extends Observable<PermissionObjectSnapshot,PermissionScope> {
 
     PermissionObject getObject();
 
