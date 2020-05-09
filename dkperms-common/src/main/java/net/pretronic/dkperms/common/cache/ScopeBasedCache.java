@@ -34,12 +34,6 @@ public abstract class ScopeBasedCache<T> {
 
     public ScopeBasedDataList<T> getAll(){
         if(!loadedAll){
-
-            System.out.println("----------------");
-            System.out.println("Loading data in "+getClass());
-            System.out.println("All");
-            System.out.println("----------------");
-
             entries.addAll(loadAll(entries.getScopes()));
             loadedAll = true;
         }
@@ -50,12 +44,6 @@ public abstract class ScopeBasedCache<T> {
         if(scope.isSaved()){
             ScopeBasedData<T> entry = getEntry(scope);
             if(entry == null){
-
-                System.out.println("----------------");
-                System.out.println("Loading data in "+getClass());
-                System.out.println("Scope:  "+scope.getPath());
-                System.out.println("----------------");
-
                 Collection<T> result = load(scope);
                 entry = new CacheEntry(scope,result!=null?result:new ArrayList<>());
                 this.entries.add(entry);
@@ -81,14 +69,6 @@ public abstract class ScopeBasedCache<T> {
         }
 
         if(!scopes.isEmpty()){
-
-            System.out.println("----------------");
-            System.out.println("Loading data in "+getClass());
-            for (PermissionScope scope : scopes) {
-                System.out.println("Scope:  "+scope.getPath());
-            }
-            System.out.println("----------------");
-
             ScopeBasedDataList<T> response = load(scopes);
             result.addAll(response);
             this.entries.addAll(response);

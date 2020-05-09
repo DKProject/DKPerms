@@ -115,7 +115,6 @@ public class DefaultObjectMetaGraph extends AbstractObservable<PermissionObject,
 
     @Override
     public void subscribeObservers() {
-        System.out.println("CALCULATING PERMISSIONS "+(groups != null));
         if(groups == null) owner.subscribeObserver(this);
         else groups.subscribeObserver(this);
     }
@@ -128,8 +127,10 @@ public class DefaultObjectMetaGraph extends AbstractObservable<PermissionObject,
 
     @Override
     public void callback(PermissionObject observable, SyncAction action) {
+        System.out.println("CALCULATING PERMISSIONS "+(groups != null));
         if(action == SyncAction.OBJECT_GROUP_UPDATE || action == SyncAction.OBJECT_META_UPDATE){
             this.result.clear();
         }
+        callObservers(action);
     }
 }
