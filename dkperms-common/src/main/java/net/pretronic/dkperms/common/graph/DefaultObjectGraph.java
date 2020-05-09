@@ -61,6 +61,12 @@ public class DefaultObjectGraph extends AbstractObservable<PermissionObject, Syn
             }
         }
 
+        System.out.println("-> Effected groups");
+        for (PermissionObject object : result) {
+            System.out.println(object.getName());
+        }
+        System.out.println("-------------------");
+
     }
 
     @Override

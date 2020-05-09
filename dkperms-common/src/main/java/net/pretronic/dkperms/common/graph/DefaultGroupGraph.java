@@ -75,7 +75,7 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
         System.out.println("-------------------");
         System.out.println("-> Groups of "+owner.getName());
         for (PermissionGroupEntity entity : entities) {
-            System.out.println(entity.getGroup().getName()+" | "+objectPriority.get(entity)+" | "+entity.getGroup().getPriority());
+            System.out.println(entity.getGroup().getName()+" | "+entity.getScope().getLevel()+" | "+objectPriority.get(entity)+" | "+entity.getGroup().getPriority());
         }
         System.out.println("-------------------");
 

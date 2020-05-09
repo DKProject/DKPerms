@@ -150,8 +150,8 @@ messages:
   &8» &7Tablist&8: &e{group.property.prefix}Player{group.property.suffix}
   &8
   &8» &7Inheritance Groups&8:
-  @for("group" in {group.globalGroups},${dkperms.group.info.groups.loop},"\n")'
-  dkperms.group.info.groups.loop: '  &8- {group.property.color}{group.name}'
+  @for("subGroup" in {group.globalGroups},${dkperms.group.info.groups.loop},"\n")'
+  dkperms.group.info.groups.loop: '  &8- {subGroup.property.color}{subGroup.name}'
   dkperms.group.alreadyExists: '${dkperms.prefix} &7The group &e{name} &7does already exist.'
   dkperms.group.created: '${dkperms.prefix} &7The group &e{group.name} &7was created'
   dkperms.group.delete.confirm: '${dkperms.prefix} &7Are you sure to delete the group &e{group.name}&7? !["&8[&eConfirm&8]"]("run://perms group delete confirm")'
