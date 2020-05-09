@@ -501,7 +501,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     //@Todo maybe optimize
     @Internal
     public void executeSynchronisationUpdate(SyncAction action,Document data){
-        data.set("action", SyncAction.OBJECT_GROUP_UPDATE);
+        data.set("action", SyncAction.OBJECT_GROUP_UPDATE.ordinal());
         System.out.println("SEND NETWORK UPDATE "+action);
         SYNCHRONISATION_CALLER.update(getId(),data);
 
