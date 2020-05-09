@@ -24,6 +24,7 @@ import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
 import net.pretronic.libraries.utility.Iterators;
+import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import org.mcnative.common.McNative;
 import org.mcnative.common.event.player.design.MinecraftPlayerDesignUpdateEvent;
 import org.mcnative.common.player.MinecraftPlayer;
@@ -33,6 +34,7 @@ import org.mcnative.common.serviceprovider.permission.PermissionHandler;
 import org.mcnative.common.serviceprovider.permission.PermissionResult;
 
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 //@Todo on scope change listener and event
 public class DKPermsPermissionPlayer implements PermissionPlayer, ObserveCallback<PermissionObject, SyncAction> {
@@ -203,8 +205,13 @@ public class DKPermsPermissionPlayer implements PermissionPlayer, ObserveCallbac
     public void callback(PermissionObject object, SyncAction action) {
         OnlineMinecraftPlayer player =  McNative.getInstance().getLocal().getOnlinePlayer(this.object.getAssignmentId());
         if(player != null){
-            MinecraftPlayerDesignUpdateEvent event = new MinecraftPlayerDesignUpdateEvent(player,design);
-            McNative.getInstance().getLocal().getEventBus().callEvent(event);
+            McNative.getInstance().getScheduler()
+                    .createTask(ObjectOwner.SYSTEM)
+                    .delay(1, TimeUnit.SECONDS)
+                    .execute(() -> {
+                MinecraftPlayerDesignUpdateEvent event = new MinecraftPlayerDesignUpdateEvent(player,design);
+                McNative.getInstance().getLocal().getEventBus().callEvent(event);
+            });
         }
     }
 }
