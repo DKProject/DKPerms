@@ -47,7 +47,10 @@ public class DKPermsPermissionPlayer implements PermissionPlayer, ObserveCallbac
 
         //@Todo optimize
         object.getCurrentSnapshot().subscribeObserver((snapshot, oldScope)
-                -> snapshot.getGroupGraph().subscribeObserver(DKPermsPermissionPlayer.this));
+                -> {
+            System.out.println("UPDATED SCOPE TO NEW ONE ");
+            snapshot.getGroupGraph().subscribeObserver(DKPermsPermissionPlayer.this);
+        });
     }
 
     @Override
