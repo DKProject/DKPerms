@@ -129,11 +129,13 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
             System.out.println(observer);
         }
 
+
         System.out.println("----------");
         if(action == SyncAction.OBJECT_GROUP_UPDATE){
             this.objectPriority.clear();
             this.entities.clear();
         }
+
         callObservers(observable,action);
     }
 
