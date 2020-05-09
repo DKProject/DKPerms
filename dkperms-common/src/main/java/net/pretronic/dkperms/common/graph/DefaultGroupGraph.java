@@ -16,6 +16,7 @@ import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.graph.GroupGraph;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.SyncAction;
+import net.pretronic.dkperms.api.object.meta.ObjectMeta;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedData;
@@ -123,6 +124,12 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
     @Override
     public void callback(PermissionObject observable, SyncAction action) {
         System.out.println("GROUP CALLBACK");
+
+        for (ObserveCallback<PermissionObject, SyncAction> observer : getObservers()) {
+            System.out.println(observer);
+        }
+
+        System.out.println("----------");
         if(action == SyncAction.OBJECT_GROUP_UPDATE){
             this.objectPriority.clear();
             this.entities.clear();

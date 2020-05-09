@@ -89,6 +89,7 @@ public class DefaultObjectGraph extends AbstractObservable<PermissionObject, Syn
 
     @Override
     public void callback(PermissionObject observable, SyncAction action) {
+        System.out.println("OBJECT CALLBACK");
         if(action == SyncAction.OBJECT_GROUP_UPDATE || action == SyncAction.OBJECT_META_UPDATE){
             this.result.clear();
         }
