@@ -500,12 +500,10 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         executeSynchronisationUpdate(SyncAction.OBJECT_PERMISSION_UPDATE,data);
     }
 
-    //@Todo maybe optimize
     @Internal
     public void executeSynchronisationUpdate(SyncAction action,Document data){
-        data.set("action", SyncAction.OBJECT_GROUP_UPDATE.ordinal());
+        data.set("action", action.ordinal());
         SYNCHRONISATION_CALLER.update(getId(),data);
-
         callObservers(action);
     }
 }
