@@ -99,6 +99,7 @@ public class DefaultPermissionGraph extends AbstractObservable<PermissionObject,
 
     @Override
     public void subscribeObservers() {
+        System.out.println("CALCULATING PERMISSIONS "+(groups != null));
         if(groups == null) owner.subscribeObserver(this);
         else groups.subscribeObserver(this);
     }
