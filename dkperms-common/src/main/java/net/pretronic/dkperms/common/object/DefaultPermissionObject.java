@@ -141,6 +141,11 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         DKPerms.getInstance().getStorage().getObjectStorage().updateObjectPriority(this.id,priority);
         executeSynchronisationUpdate(SyncAction.OBJECT_PRIORITY_UPDATE,Document.newDocument().set("priority",priority));
         this.priority = priority;
+        /*
+        if(!getMeta().isSet("priority",scope)){
+            getMeta().set(executor,"priority",priority,0,scope,-1);
+        }
+         */
     }
 
     @Override

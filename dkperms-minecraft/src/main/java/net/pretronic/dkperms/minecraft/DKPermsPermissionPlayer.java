@@ -47,10 +47,7 @@ public class DKPermsPermissionPlayer implements PermissionPlayer, ObserveCallbac
 
         //@Todo optimize
         object.getCurrentSnapshot().subscribeObserver((snapshot, oldScope)
-                -> {
-            System.out.println("UPDATED SCOPE TO NEW ONE ");
-            snapshot.getGroupGraph().subscribeObserver(DKPermsPermissionPlayer.this);
-        });
+                -> snapshot.getGroupGraph().subscribeObserver(DKPermsPermissionPlayer.this));
     }
 
     @Override
@@ -204,11 +201,9 @@ public class DKPermsPermissionPlayer implements PermissionPlayer, ObserveCallbac
 
     @Override
     public void callback(PermissionObject object, SyncAction action) {
-        //@Todo change to direct assignment
         OnlineMinecraftPlayer player =  McNative.getInstance().getLocal().getOnlinePlayer(this.object.getAssignmentId());
-        System.out.println("CALL UPDATE "+player);
         if(player != null){
-            MinecraftPlayerDesignUpdateEvent event = new MinecraftPlayerDesignUpdateEvent(null,design);
+            MinecraftPlayerDesignUpdateEvent event = new MinecraftPlayerDesignUpdateEvent(player,design);
             McNative.getInstance().getLocal().getEventBus().callEvent(event);
         }
     }
