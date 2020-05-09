@@ -69,7 +69,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     private PermissionObjectHolder holder;
     private PermissionObjectSnapshot currentSnapshot;
 
-    private final ObjectMeta meta;
+    private final DefaultObjectMeta meta;
     private final GroupCache groupCache;
     private final PermissionCache permissionCache;
 
@@ -456,10 +456,8 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
 
     @Override
     public void onUpdate(Document data) {
-        System.out.println("--------------- RECEVIED NETWORK UPDATE");
-
-
         SyncAction action = SyncAction.of(data.getInt("action"));
+        System.out.println("--------------- RECEIVED NETWORK UPDATE "+action);
         if(action != null) {
            if(action == SyncAction.OBJECT_NAME_UPDATE){
                this.name = data.getString("name");
@@ -477,6 +475,10 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
                int scopeId = data.getInt("scope");
                if(scopeId != 0) this.groupCache.reset(data.getInt("scope"));
                else this.groupCache.reset();
+           }else if(action == SyncAction.OBJECT_META_UPDATE){
+               int scopeId = data.getInt("scope");
+               if(scopeId != 0) this.meta.getCache().reset(data.getInt("scope"));
+               else this.meta.getCache().reset();
            }
            callObservers(action);
         }

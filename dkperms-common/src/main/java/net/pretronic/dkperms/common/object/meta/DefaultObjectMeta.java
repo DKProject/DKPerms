@@ -41,6 +41,10 @@ public class DefaultObjectMeta implements ObjectMeta {
         this.cache = new ObjectMetaCache(object);
     }
 
+    public ObjectMetaCache getCache() {
+        return cache;
+    }
+
     @Override
     public List<ObjectMetaEntry> get(String key) {
         return get(key,object.getScope());

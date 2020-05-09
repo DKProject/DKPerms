@@ -214,6 +214,7 @@ public class DKPermsPlugin extends MinecraftPlugin {
         @Override
         public PermissionPlayer apply(MinecraftPlayer player) {
             PermissionObject object = DKPerms.getInstance().getObjectManager().getObjectByAssignment(player.getUniqueId());
+            if(object != null) System.out.println("Name: "+object.getName());
             if(object == null){
                 object = DKPerms.getInstance().getObjectManager().createObject(
                         DKPermsConfig.OBJECT_PLAYER_SCOPE
