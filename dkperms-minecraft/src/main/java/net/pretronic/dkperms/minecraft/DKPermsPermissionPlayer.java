@@ -199,7 +199,8 @@ public class DKPermsPermissionPlayer implements PermissionPlayer, ObserveCallbac
     @Override
     public void callback(PermissionObject object, SyncAction action) {
         //@Todo change to direct assignment
-        OnlineMinecraftPlayer player =  McNative.getInstance().getLocal().getOnlinePlayer(object.getAssignmentId());
+        OnlineMinecraftPlayer player =  McNative.getInstance().getLocal().getOnlinePlayer(this.object.getAssignmentId());
+        System.out.println("CALL UPDATE "+player);
         if(player != null){
             MinecraftPlayerDesignUpdateEvent event = new MinecraftPlayerDesignUpdateEvent(null,design);
             McNative.getInstance().getLocal().getEventBus().callEvent(event);

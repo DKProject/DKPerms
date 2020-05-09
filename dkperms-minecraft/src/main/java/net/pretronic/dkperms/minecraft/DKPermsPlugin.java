@@ -206,7 +206,7 @@ public class DKPermsPlugin extends MinecraftPlugin {
         getRuntime().getLocal().getCommandManager().registerCommand(new RankCommand(this,DKPermsConfig.COMMAND_RANK));
     }
 
-    //@Tod update and optimize
+    //@Todo update and optimize
     private static class PlayerAdapter implements Function<MinecraftPlayer, PermissionPlayer> {
 
         private PlayerAdapter(){}
@@ -214,7 +214,6 @@ public class DKPermsPlugin extends MinecraftPlugin {
         @Override
         public PermissionPlayer apply(MinecraftPlayer player) {
             PermissionObject object = DKPerms.getInstance().getObjectManager().getObjectByAssignment(player.getUniqueId());
-            if(object != null) System.out.println("Name: "+object.getName());
             if(object == null){
                 object = DKPerms.getInstance().getObjectManager().createObject(
                         DKPermsConfig.OBJECT_PLAYER_SCOPE

@@ -457,7 +457,6 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     @Override
     public void onUpdate(Document data) {
         SyncAction action = SyncAction.of(data.getInt("action"));
-        System.out.println("--------------- RECEIVED NETWORK UPDATE "+action);
         if(action != null) {
            if(action == SyncAction.OBJECT_NAME_UPDATE){
                this.name = data.getString("name");
@@ -502,7 +501,6 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     @Internal
     public void executeSynchronisationUpdate(SyncAction action,Document data){
         data.set("action", SyncAction.OBJECT_GROUP_UPDATE.ordinal());
-        System.out.println("SEND NETWORK UPDATE "+action);
         SYNCHRONISATION_CALLER.update(getId(),data);
 
         callObservers(action);

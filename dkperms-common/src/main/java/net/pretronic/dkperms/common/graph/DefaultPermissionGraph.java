@@ -111,7 +111,6 @@ public class DefaultPermissionGraph extends AbstractObservable<PermissionObject,
 
     @Override
     public void callback(PermissionObject observable, SyncAction action) {
-        System.out.println("CALCULATING PERMISSIONS "+(groups != null));
         if(action == SyncAction.OBJECT_GROUP_UPDATE || action == SyncAction.OBJECT_PERMISSION_UPDATE){
             this.result.clear();
         }
