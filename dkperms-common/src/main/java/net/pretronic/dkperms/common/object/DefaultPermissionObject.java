@@ -50,9 +50,6 @@ import net.pretronic.libraries.utility.annonations.Internal;
 import java.util.Collection;
 import java.util.UUID;
 
-/*
-@Todo Cache reset objects
- */
 public class DefaultPermissionObject extends AbstractObservable<PermissionObject,SyncAction> implements PermissionObject, VariableObjectToString, Synchronizable {
 
     public static SynchronisationCaller<Integer> SYNCHRONISATION_CALLER = new UnconnectedSynchronisationCaller<>(true);
@@ -142,11 +139,6 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         DKPerms.getInstance().getStorage().getObjectStorage().updateObjectPriority(this.id,priority);
         executeSynchronisationUpdate(SyncAction.OBJECT_PRIORITY_UPDATE,Document.newDocument().set("priority",priority));
         this.priority = priority;
-        /*
-        if(!getMeta().isSet("priority",scope)){
-            getMeta().set(executor,"priority",priority,0,scope,-1);
-        }
-         */
     }
 
     @Override
@@ -481,7 +473,11 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
                if(scopeId != 0) this.groupCache.reset(data.getInt("scope"));
                else this.groupCache.reset();
            }else if(action == SyncAction.OBJECT_META_UPDATE){
+               System.out.println("UPDATING META FOR "+name);
+
                int scopeId = data.getInt("scope");
+
+               System.out.println("ScopeId "+scopeId);
                if(scopeId != 0) this.meta.getCache().reset(data.getInt("scope"));
                else this.meta.getCache().reset();
            }

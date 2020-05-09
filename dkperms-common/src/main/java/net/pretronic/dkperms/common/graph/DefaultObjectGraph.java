@@ -46,10 +46,6 @@ public class DefaultObjectGraph extends AbstractObservable<PermissionObject, Syn
         List<PermissionGroupEntity> inheritance = inheritanceGraph.traverse();
 
         for (PermissionGroupEntity entity : inheritance) {
-
-        }
-
-        for (PermissionGroupEntity entity : inheritance) {
             if(!blocked.contains(entity.getGroup())){
                 if(entity.getAction() == PermissionAction.ALLOW){
                     result.remove(entity.getGroup());
@@ -65,13 +61,6 @@ public class DefaultObjectGraph extends AbstractObservable<PermissionObject, Syn
                 }
             }
         }
-
-        System.out.println("-> Effected groups");
-        for (PermissionObject object : result) {
-            System.out.println(object.getName());
-        }
-        System.out.println("-------------------");
-
     }
 
     @Override

@@ -64,20 +64,13 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
                     new DefaultPermissionGroupEntity(owner,-1,defaultGroup,PermissionAction.ALLOW,defaultGroup.getScope(),-1);
 
             this.objectPriority.put(defaultEntity,Integer.MAX_VALUE);
-            this.entities.add(defaultEntity);  //@Todo maybe add scope
+            this.entities.add(defaultEntity);
         }
 
         entities.sort(Comparator
                 .comparingInt((PermissionGroupEntity o) -> o.getScope().getLevel())
                 .thenComparing(((Comparator<PermissionGroupEntity>) (o1, o2) -> Integer.compare(objectPriority.get(o1), objectPriority.get(o2))).reversed())
                 .thenComparing(Comparator.comparingInt((ToIntFunction<PermissionGroupEntity>) entity -> entity.getGroup().getPriority()).reversed()));
-
-        System.out.println("-------------------");
-        System.out.println("-> Groups of "+owner.getName());
-        for (PermissionGroupEntity entity : entities) {
-            System.out.println(entity.getGroup().getName()+" | "+entity.getScope().getLevel()+" | "+objectPriority.get(entity)+" | "+entity.getGroup().getPriority());
-        }
-        System.out.println("-------------------");
 
         trySubscribe();
     }

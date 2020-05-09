@@ -60,7 +60,11 @@ public class DKPermsPlayerDesign implements PlayerDesign {
     @Override
     public int getPriority() {
         ObjectMetaEntry entry = object.getCurrentSnapshot().getMeta("priority");
-        return entry != null?entry.getIntValue():0;
+        if(entry == null){
+            PermissionObject group = object.getCurrentSnapshot().getHighestGroup();
+            return group != null ? group.getPriority() : 0;
+        }
+        return entry.getIntValue();
     }
 
 }
