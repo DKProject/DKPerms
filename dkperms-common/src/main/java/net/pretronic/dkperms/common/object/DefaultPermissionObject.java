@@ -455,6 +455,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     @Override
     public void onUpdate(Document data) {
         SyncAction action = SyncAction.of(data.getInt("action"));
+        System.out.println("Received update "+name+" | "+action);
         if(action != null) {
            if(action == SyncAction.OBJECT_NAME_UPDATE){
                this.name = data.getString("name");
