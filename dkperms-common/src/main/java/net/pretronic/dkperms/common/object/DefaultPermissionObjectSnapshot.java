@@ -65,6 +65,9 @@ public class DefaultPermissionObjectSnapshot implements PermissionObjectSnapshot
     @Override
     public void setScope(PermissionScope scope) {
         Validate.notNull(scope);
+        System.out.println("SET SCOPE");
+
+
         if(groupGraph != null) unsubscribe();
 
         this.scope = scope;
