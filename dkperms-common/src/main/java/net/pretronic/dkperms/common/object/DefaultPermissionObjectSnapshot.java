@@ -87,7 +87,6 @@ public class DefaultPermissionObjectSnapshot extends AbstractObservable<Permissi
 
         subscribe();
         callObservers(this,oldScope);
-
     }
 
     private void subscribe(){
@@ -103,6 +102,7 @@ public class DefaultPermissionObjectSnapshot extends AbstractObservable<Permissi
     }
 
     private void unsubscribe(){
+        System.out.println("Snapshot unsubscribe");
         this.groupGraph.unsubscribeObservers();
         this.groupInheritanceGraph.unsubscribeObservers();
         this.effectedGroupGraph.unsubscribeObservers();
