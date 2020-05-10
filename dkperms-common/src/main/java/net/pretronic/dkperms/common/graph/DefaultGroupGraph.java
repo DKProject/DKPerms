@@ -109,16 +109,21 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
 
     private void trySubscribe(){
         if(!subscribe) return;
+        System.out.println("-----------------");
+        System.out.println("Subscribing to observers "+subGroups);
         if(!owner.isObserverSubscribed(this)){
             owner.subscribeObserver(this);
+            System.out.println("Subscribing to owner");
         }
         if(subGroups){
             for (PermissionGroupEntity object : objectPriority.keySet()) {
                 if(!object.getGroup().isObserverSubscribed(this)){
+                    System.out.println("Subscribing to group observer "+object.getGroup());
                     object.getGroup().subscribeObserver(this);
                 }
             }
         }
+        System.out.println("-----------------");
     }
 
     @Override
