@@ -24,9 +24,11 @@ import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 import net.pretronic.dkperms.common.entity.DefaultPermissionGroupEntity;
 import net.pretronic.libraries.synchronisation.observer.AbstractObservable;
 import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
+import net.pretronic.libraries.utility.SystemUtil;
 import net.pretronic.libraries.utility.Validate;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.ToIntFunction;
 
 public final class DefaultGroupGraph extends AbstractObservable<PermissionObject, SyncAction> implements GroupGraph, ObserveCallback<PermissionObject, SyncAction> {
@@ -39,6 +41,8 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
     private final Map<PermissionGroupEntity,Integer> objectPriority;
 
     private boolean subscribe;
+
+    private boolean looked;
 
     public DefaultGroupGraph(PermissionObject owner, Graph<PermissionScope> scopes, boolean subGroups) {
         Validate.notNull(owner,scopes);
@@ -57,6 +61,7 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
     }
 
     private void traverse0(){
+        while (looked) SystemUtil.sleepUninterruptible(300, TimeUnit.MILLISECONDS);
         findNextGroups(owner,1);
 
         for (PermissionObject defaultGroup : DKPerms.getInstance().getObjectManager().getDefaultGroups(scopes)) {
@@ -112,6 +117,7 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
 
     private void trySubscribe(){
         if(!subscribe) return;
+        looked = true;
         System.out.println("-----------------");
         System.out.println("Subscribing to observers "+this+" | "+subGroups);
         if(!owner.isObserverSubscribed(this)){
@@ -127,6 +133,7 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
             }
         }
         System.out.println("-----------------");
+        looked = false;
     }
 
     @Override
