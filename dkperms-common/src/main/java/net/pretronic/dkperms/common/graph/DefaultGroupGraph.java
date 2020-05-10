@@ -100,7 +100,7 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
 
     @Override
     public void unsubscribeObservers() {
-        System.out.println("Unsubscribing from observers");
+        System.out.println("Unsubscribing from observers "+this+" | "+subGroups);
         subscribe = false;
         owner.unsubscribeObserver(this);
         if(subGroups){
