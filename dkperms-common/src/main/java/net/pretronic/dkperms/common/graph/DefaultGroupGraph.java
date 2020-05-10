@@ -129,6 +129,7 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
 
     @Override
     public void callback(PermissionObject observable, SyncAction action) {
+        System.out.println("GROUP GRAPH CALLBACK "+action);
         if(action == SyncAction.OBJECT_GROUP_UPDATE){
             if(subGroups && subscribe){
                 for (PermissionGroupEntity object : objectPriority.keySet()) {
