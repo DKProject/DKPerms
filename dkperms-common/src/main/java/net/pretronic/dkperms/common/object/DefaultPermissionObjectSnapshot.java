@@ -68,7 +68,7 @@ public class DefaultPermissionObjectSnapshot extends AbstractObservable<Permissi
         Validate.notNull(scope);
         PermissionScope oldScope = this.scope;
 
-        //if(groupGraph != null) unsubscribe();
+        if(groupGraph != null) unsubscribe();
 
         this.scope = scope;
         this.scopeGraph = DKPerms.getInstance().getScopeManager().newGraph(scope);
@@ -90,6 +90,7 @@ public class DefaultPermissionObjectSnapshot extends AbstractObservable<Permissi
     }
 
     private void subscribe(){
+        System.out.println("Snapshot Subscribe");
         this.groupGraph.subscribeObservers();
         this.groupInheritanceGraph.subscribeObservers();
         this.effectedGroupGraph.subscribeObservers();

@@ -20,7 +20,6 @@ import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.libraries.caching.ArrayCache;
 import net.pretronic.libraries.caching.Cache;
 import net.pretronic.libraries.caching.CacheQuery;
-import net.pretronic.libraries.caching.synchronisation.ArraySynchronizableCache;
 import net.pretronic.libraries.caching.synchronisation.ShadowArraySynchronizableCache;
 import net.pretronic.libraries.caching.synchronisation.SynchronizableCache;
 import net.pretronic.libraries.document.Document;
@@ -253,7 +252,6 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         @Override
         public PermissionObject load(Object[] identifiers) {
             if(onlyCached) return null;
-            System.out.println(" ---------- Loading Object with identifier "+identifiers[0]);
             return DKPerms.getInstance().getStorage().getObjectStorage().getObject((int) identifiers[0]);
         }
     }

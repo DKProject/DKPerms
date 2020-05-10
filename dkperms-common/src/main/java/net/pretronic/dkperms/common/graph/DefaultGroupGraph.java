@@ -93,6 +93,7 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
     @Override
     public void subscribeObservers() {
         subscribe = true;
+        System.out.println("Enabled subscriber subscription");
         trySubscribe();
     }
 
