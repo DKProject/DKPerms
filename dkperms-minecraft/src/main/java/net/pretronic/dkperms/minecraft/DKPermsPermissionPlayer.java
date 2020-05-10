@@ -51,6 +51,7 @@ public class DKPermsPermissionPlayer implements PermissionPlayer, ObserveCallbac
                 -> snapshot.getGroupInheritanceGraph().subscribeObserver(DKPermsPermissionPlayer.this));
     }
 
+
     @Override
     public PermissionObject getObject() {
         return object;
