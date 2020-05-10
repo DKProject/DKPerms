@@ -72,6 +72,7 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
                 .thenComparing(((Comparator<PermissionGroupEntity>) (o1, o2) -> Integer.compare(objectPriority.get(o1), objectPriority.get(o2))).reversed())
                 .thenComparing(Comparator.comparingInt((ToIntFunction<PermissionGroupEntity>) entity -> entity.getGroup().getPriority()).reversed()));
 
+        System.out.println("-> Traversed Group Graph");
         trySubscribe();
     }
 
