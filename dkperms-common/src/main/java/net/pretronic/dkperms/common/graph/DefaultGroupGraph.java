@@ -98,6 +98,7 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
 
     @Override
     public void unsubscribeObservers() {
+        System.out.println("Unsubscribing from observers");
         subscribe = false;
         owner.unsubscribeObserver(this);
         if(subGroups){
@@ -110,7 +111,7 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
     private void trySubscribe(){
         if(!subscribe) return;
         System.out.println("-----------------");
-        System.out.println("Subscribing to observers "+subGroups);
+        System.out.println("Subscribing to observers "+this+" | "+subGroups);
         if(!owner.isObserverSubscribed(this)){
             owner.subscribeObserver(this);
             System.out.println("Subscribing to owner");
@@ -118,7 +119,7 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
         if(subGroups){
             for (PermissionGroupEntity object : objectPriority.keySet()) {
                 if(!object.getGroup().isObserverSubscribed(this)){
-                    System.out.println("Subscribing to group observer "+object.getGroup());
+                    System.out.println("Subscribing to group observer "+object.getGroup().getName());
                     object.getGroup().subscribeObserver(this);
                 }
             }
@@ -129,6 +130,11 @@ public final class DefaultGroupGraph extends AbstractObservable<PermissionObject
     @Override
     public void callback(PermissionObject observable, SyncAction action) {
         if(action == SyncAction.OBJECT_GROUP_UPDATE){
+            if(subGroups && subscribe){
+                for (PermissionGroupEntity object : objectPriority.keySet()) {
+                    object.getGroup().unsubscribeObserver(this);
+                }
+            }
             this.objectPriority.clear();
             this.entities.clear();
         }
