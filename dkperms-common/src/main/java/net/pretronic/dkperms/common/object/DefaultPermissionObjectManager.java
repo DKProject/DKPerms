@@ -253,6 +253,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         @Override
         public PermissionObject load(Object[] identifiers) {
             if(onlyCached) return null;
+            System.out.println(" ---------- Loading Object with identifier "+identifiers[0]);
             return DKPerms.getInstance().getStorage().getObjectStorage().getObject((int) identifiers[0]);
         }
     }
