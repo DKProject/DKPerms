@@ -114,6 +114,6 @@ public class DefaultPermissionGraph extends AbstractObservable<PermissionObject,
         if(action == SyncAction.OBJECT_GROUP_UPDATE || action == SyncAction.OBJECT_PERMISSION_UPDATE){
             this.result.clear();
         }
-        callObservers(action);
+        callObservers(observable,action);
     }
 }

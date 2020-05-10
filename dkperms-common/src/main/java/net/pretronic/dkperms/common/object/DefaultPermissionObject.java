@@ -44,6 +44,7 @@ import net.pretronic.libraries.synchronisation.SynchronisationCaller;
 import net.pretronic.libraries.synchronisation.Synchronizable;
 import net.pretronic.libraries.synchronisation.UnconnectedSynchronisationCaller;
 import net.pretronic.libraries.synchronisation.observer.AbstractObservable;
+import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
 import net.pretronic.libraries.utility.Validate;
 import net.pretronic.libraries.utility.annonations.Internal;
 
@@ -455,7 +456,6 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     @Override
     public void onUpdate(Document data) {
         SyncAction action = SyncAction.of(data.getInt("action"));
-        System.out.println("Received update "+name+" | "+action);
         if(action != null) {
            if(action == SyncAction.OBJECT_NAME_UPDATE){
                this.name = data.getString("name");
@@ -474,13 +474,18 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
                if(scopeId != 0) this.groupCache.reset(data.getInt("scope"));
                else this.groupCache.reset();
            }else if(action == SyncAction.OBJECT_META_UPDATE){
-               System.out.println("UPDATING META FOR "+name);
-
                int scopeId = data.getInt("scope");
-
-               System.out.println("ScopeId "+scopeId);
                if(scopeId != 0) this.meta.getCache().reset(data.getInt("scope"));
                else this.meta.getCache().reset();
+
+               if(type.isGroup()){
+                   System.out.println("Updated Meta for "+name);
+                   System.out.println("Observers:");
+                   for (ObserveCallback<PermissionObject, SyncAction> observer : getObservers()) {
+                       System.out.println(observer);
+                   }
+                   System.out.println("-------------");
+               }
            }
            callObservers(action);
         }

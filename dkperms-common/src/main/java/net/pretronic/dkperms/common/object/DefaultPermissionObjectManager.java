@@ -21,6 +21,7 @@ import net.pretronic.libraries.caching.ArrayCache;
 import net.pretronic.libraries.caching.Cache;
 import net.pretronic.libraries.caching.CacheQuery;
 import net.pretronic.libraries.caching.synchronisation.ArraySynchronizableCache;
+import net.pretronic.libraries.caching.synchronisation.ShadowArraySynchronizableCache;
 import net.pretronic.libraries.caching.synchronisation.SynchronizableCache;
 import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.utility.Iterators;
@@ -43,9 +44,9 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
     private Collection<PermissionObjectType> types;
 
     public DefaultPermissionObjectManager() {
-        this.objects = new ArraySynchronizableCache<>(1000);
-        //this.objects.setClearOnDisconnect(true);
-        //this.objects.setExpireAfterAccess(1,TimeUnit.HOURS);
+        this.objects = new ShadowArraySynchronizableCache<>(1000);
+        this.objects.setClearOnDisconnect(true);
+        this.objects.setExpireAfterAccess(30,TimeUnit.MINUTES);
 
         this.objects.registerQuery("ByName",new ObjectNameLoader());
         this.objects.registerQuery("ById",new ObjectIdLoader(false));
@@ -55,7 +56,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         //@Todo remove listener
 
         this.searchResults = new ArrayCache<>(100);
-        this.searchResults.setExpireAfterAccess(2, TimeUnit.HOURS);
+        this.searchResults.setExpireAfterAccess(15, TimeUnit.MINUTES);
         this.searchResults.registerQuery("ByQuery",new ObjectQueryLoader());
     }
 

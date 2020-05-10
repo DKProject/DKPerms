@@ -126,6 +126,6 @@ public class DefaultObjectMetaGraph extends AbstractObservable<PermissionObject,
         if(action == SyncAction.OBJECT_GROUP_UPDATE || action == SyncAction.OBJECT_META_UPDATE){
             this.result.clear();
         }
-        callObservers(action);
+        callObservers(observable,action);
     }
 }
