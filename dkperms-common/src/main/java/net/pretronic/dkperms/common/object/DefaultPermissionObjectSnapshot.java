@@ -87,6 +87,7 @@ public class DefaultPermissionObjectSnapshot extends AbstractObservable<Permissi
 
         subscribe();
         callObservers(this,oldScope);
+
     }
 
     private void subscribe(){
