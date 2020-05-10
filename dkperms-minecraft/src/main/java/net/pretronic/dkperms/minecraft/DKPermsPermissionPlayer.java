@@ -47,9 +47,8 @@ public class DKPermsPermissionPlayer implements PermissionPlayer, ObserveCallbac
         setCurrentScope(DKPerms.getInstance().getScopeManager().getCurrentInstanceScope());
         this.design = new DKPermsPlayerDesign(object);
 
-        //@Todo optimize
         object.getCurrentSnapshot().subscribeObserver((snapshot, oldScope)
-                -> snapshot.getGroupGraph().subscribeObserver(DKPermsPermissionPlayer.this));
+                -> snapshot.getGroupInheritanceGraph().subscribeObserver(DKPermsPermissionPlayer.this));
     }
 
     @Override
@@ -203,6 +202,7 @@ public class DKPermsPermissionPlayer implements PermissionPlayer, ObserveCallbac
 
     @Override
     public void callback(PermissionObject object, SyncAction action) {
+        System.out.println("Player design callback");
         OnlineMinecraftPlayer player =  McNative.getInstance().getLocal().getOnlinePlayer(this.object.getAssignmentId());
         if(player != null){
             McNative.getInstance().getScheduler()
