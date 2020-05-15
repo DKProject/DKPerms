@@ -11,19 +11,15 @@
 package net.pretronic.dkperms.common.object;
 
 import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.entity.Entity;
 import net.pretronic.dkperms.api.entity.PermissionEntity;
 import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.graph.GroupGraph;
 import net.pretronic.dkperms.api.graph.ObjectGraph;
 import net.pretronic.dkperms.api.graph.PermissionGraph;
-import net.pretronic.dkperms.api.object.PermissionGroupOrder;
-import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.api.object.PermissionObjectType;
-import net.pretronic.dkperms.api.object.SyncAction;
-import net.pretronic.dkperms.api.object.holder.PermissionObjectHolder;
+import net.pretronic.dkperms.api.object.*;
 import net.pretronic.dkperms.api.object.meta.ObjectMeta;
-import net.pretronic.dkperms.api.object.snapshot.PermissionObjectSnapshot;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyse;
 import net.pretronic.dkperms.api.permission.analyse.track.PermissionTrackResult;
@@ -31,6 +27,7 @@ import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 import net.pretronic.dkperms.common.cache.GroupCache;
 import net.pretronic.dkperms.common.cache.PermissionCache;
+import net.pretronic.dkperms.common.calculator.GroupCalculator;
 import net.pretronic.dkperms.common.calculator.PermissionCalculator;
 import net.pretronic.dkperms.common.entity.DefaultPermissionEntity;
 import net.pretronic.dkperms.common.entity.DefaultPermissionGroupEntity;
@@ -48,8 +45,7 @@ import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
 import net.pretronic.libraries.utility.Validate;
 import net.pretronic.libraries.utility.annonations.Internal;
 
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
 
 public class DefaultPermissionObject extends AbstractObservable<PermissionObject,SyncAction> implements PermissionObject, VariableObjectToString, Synchronizable {
 
@@ -64,7 +60,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     private PermissionObjectType type;
     private PermissionScope scope;
 
-    private PermissionObjectHolder holder;
+    private Object holder;
     private PermissionObjectSnapshot currentSnapshot;
 
     private final DefaultObjectMeta meta;
@@ -168,9 +164,15 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     }
 
     @Override
-    public PermissionObjectHolder getHolder() {
-        if(holder == null) holder = type.getLocalHolderFactory().create(this);
+    public Object getHolder() {
+        if(holder == null && type.hasLocalHolderFactory()) holder = type.getLocalHolderFactory().create(this);
         return holder;
+    }
+
+    @Override
+    public void setHolder(Object holder) {
+        Validate.notNull(holder);
+        this.holder = holder;
     }
 
     @Override
@@ -325,24 +327,53 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         return PermissionAction.NEUTRAL;
     }
 
+
     @Override
-    public void promote(PermissionScope scope) {
-        throw new UnsupportedOperationException("Currently not implemented");
+    public PermissionObject promote(PermissionObject executor,PermissionScope scope) {
+        throw new UnsupportedOperationException("Currently not supported");
     }
 
     @Override
-    public void promote(PermissionScope scope, PermissionGroupOrder order) {
-        throw new UnsupportedOperationException("Currently not implemented");
+    public PermissionObject promote(PermissionObject executor,PermissionScope scope, PermissionGroupTrack track) {
+        Validate.notNull(scope,track);
+        if(track.isEmpty()) throw new IllegalArgumentException("Track is empthy");
+        List<PermissionGroupEntity> groups = new ArrayList<>(getGroups(scope));
+        GroupCalculator.orderEntities(groups);
+        Collections.reverse(groups);
+        for (PermissionGroupEntity entity : getGroups(scope)) {
+            if(entity.getAction().has() && track.contains(entity.getGroup())){
+                removeGroup(executor,entity);
+                PermissionObject object = track.getNextGroup(entity.getGroup());
+                addGroup(executor,entity.getScope(),object,entity.getAction(),entity.getTimeout());
+                return object;
+            }
+        }
+        PermissionObject object = track.getFirstGroup();
+        addGroup(executor,scope,object,PermissionAction.ALLOW, Entity.PERMANENTLY);
+        return object;
     }
 
     @Override
-    public void demote(PermissionScope scope) {
-        throw new UnsupportedOperationException("Currently not implemented");
+    public PermissionObject demote(PermissionObject executor,PermissionScope scope) {
+        throw new UnsupportedOperationException("Currently not supported");
     }
 
     @Override
-    public void demote(PermissionScope scope, PermissionGroupOrder order) {
-        throw new UnsupportedOperationException("Currently not implemented");
+    public PermissionObject demote(PermissionObject executor,PermissionScope scope, PermissionGroupTrack track) {
+        Validate.notNull(scope,track);
+        if(track.isEmpty()) throw new IllegalArgumentException("Track is empthy");
+        List<PermissionGroupEntity> groups = new ArrayList<>(getGroups(scope));
+        GroupCalculator.orderEntities(groups);
+        Collections.reverse(groups);
+        for (PermissionGroupEntity entity : getGroups(scope)) {
+            if(entity.getAction().has() && track.contains(entity.getGroup())){
+                removeGroup(executor,entity);
+                PermissionObject object = track.getPreviousGroup(entity.getGroup());
+                addGroup(executor,entity.getScope(),object,entity.getAction(),entity.getTimeout());
+                return object;
+            }
+        }
+        return null;
     }
 
     // ----- Permissions -----
@@ -510,5 +541,12 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         data.set("action", action.ordinal());
         SYNCHRONISATION_CALLER.update(getId(),data);
         callObservers(action);
+    }
+
+    @Internal
+    public void clearCache(){
+        this.groupCache.clearCache();
+        this.permissionCache.clearCache();
+        meta.getCache().clearCache();
     }
 }

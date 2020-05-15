@@ -79,10 +79,25 @@ public final class Messages {
     public static final MessageKeyComponent OBJECT_GROUP_TREE_SCOPE = Text.ofMessageKey("dkperms.object.group.tree.scope");
     public static final MessageKeyComponent OBJECT_GROUP_TREE_ENTRY = Text.ofMessageKey("dkperms.object.group.tree.entry");
     public static final MessageKeyComponent OBJECT_GROUP_NOT_SET = Text.ofMessageKey("dkperms.object.group.notSet");
+    public static final MessageKeyComponent OBJECT_GROUP_PRIORITY_SET = Text.ofMessageKey("dkperms.object.group.priority.set");//Add
 
-    public static final MessageKeyComponent OBJECT_PRIORITY_SET = Text.ofMessageKey("dkperms.object.priority.set");
+    public static final MessageKeyComponent TRACK_HELP = Text.ofMessageKey("dkperms.track.help");
+    public static final MessageKeyComponent TRACK_ALREADY_EXISTS = Text.ofMessageKey("dkperms.track.alreadyExists");
+    public static final MessageKeyComponent TRACK_ALREADY_CONTAINS = Text.ofMessageKey("dkperms.track.alreadyContains");
+    public static final MessageKeyComponent TRACK_NOT_FOUND = Text.ofMessageKey("dkperms.notFound");
+    public static final MessageKeyComponent TRACK_LIST = Text.ofMessageKey("dkperms.track.list");
+    public static final MessageKeyComponent TRACK_CREATED = Text.ofMessageKey("dkperms.track.created");
+    public static final MessageKeyComponent TRACK_RENAMED = Text.ofMessageKey("dkperms.track.renamed");
+    public static final MessageKeyComponent TRACK_DELETED = Text.ofMessageKey("dkperms.track.deleted");
+    public static final MessageKeyComponent TRACK_CLEAR = Text.ofMessageKey("dkperms.track.clear");
+    public static final MessageKeyComponent TRACK_ADD = Text.ofMessageKey("dkperms.track.add");
+    public static final MessageKeyComponent TRACK_INSERT = Text.ofMessageKey("dkperms.track.insert");
+    public static final MessageKeyComponent TRACK_REMOVE = Text.ofMessageKey("dkperms.track.remove");
 
     public static final MessageKeyComponent RANK_HELP = Text.ofMessageKey("dkperms.rank.help");
     public static final MessageKeyComponent RANK_CHANGE_NO_PERMISSION_FOR_RANK = Text.ofMessageKey("dkperms.rank.noPermissionForRank");
     public static final MessageKeyComponent RANK_LIST = Text.ofMessageKey("dkperms.rank.list");
+
+
+    public static final MessageKeyComponent SYNCHRONIZED = Text.ofMessageKey("dkperms.synchronized");
 }

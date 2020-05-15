@@ -17,9 +17,7 @@ import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.graph.GroupGraph;
 import net.pretronic.dkperms.api.graph.ObjectGraph;
 import net.pretronic.dkperms.api.graph.PermissionGraph;
-import net.pretronic.dkperms.api.object.holder.PermissionObjectHolder;
 import net.pretronic.dkperms.api.object.meta.ObjectMeta;
-import net.pretronic.dkperms.api.object.snapshot.PermissionObjectSnapshot;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyse;
 import net.pretronic.dkperms.api.permission.analyse.track.PermissionTrackResult;
@@ -71,7 +69,10 @@ public interface PermissionObject extends Observable<PermissionObject,SyncAction
 
     // ----- Current location data -----
 
-    PermissionObjectHolder getHolder();
+    Object getHolder();
+
+    void setHolder(Object holder);
+
 
     @Nullable
     PermissionObjectSnapshot getCurrentSnapshot();
@@ -173,13 +174,13 @@ public interface PermissionObject extends Observable<PermissionObject,SyncAction
     PermissionAction isInGroup(PermissionScope scope, PermissionObject group);
 
 
-    void promote(PermissionScope scope);
+    PermissionObject promote(PermissionObject executor, PermissionScope scope);
 
-    void promote(PermissionScope scope, PermissionGroupOrder order);
+    PermissionObject promote(PermissionObject executor,PermissionScope scope, PermissionGroupTrack track);
 
-    void demote(PermissionScope scope);
+    PermissionObject demote(PermissionObject executor,PermissionScope scope);
 
-    void demote(PermissionScope scope, PermissionGroupOrder order);
+    PermissionObject demote(PermissionObject executor,PermissionScope scope, PermissionGroupTrack track);
 
 
     // ----- Permissions -----

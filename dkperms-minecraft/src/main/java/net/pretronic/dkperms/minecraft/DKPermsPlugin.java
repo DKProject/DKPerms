@@ -11,10 +11,8 @@
 package net.pretronic.dkperms.minecraft;
 
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.minecraft.player.PermissionPlayer;
+import net.pretronic.dkperms.api.object.PermissionHolderFactory;
 import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.api.object.holder.PermissionHolderFactory;
-import net.pretronic.dkperms.api.object.holder.PermissionObjectHolder;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.PermissionScopeManager;
 import net.pretronic.dkperms.common.DefaultDKPerms;
@@ -100,14 +98,13 @@ public class DKPermsPlugin extends MinecraftPlugin {
         objectManager.initialise(dkPerms);
 
         objectManager.getTypeOrCreate(DKPermsConfig.OBJECT_PLAYER_TYPE_NAME,false).setLocalHolderFactory(new UserFactory());
-        objectManager.getTypeOrCreate(DKPermsConfig.OBJECT_GROUP_TYPE_NAME,true).setLocalHolderFactory(new GroupFactory());
 
         DKPermsConfig.load();
 
         findCurrentInstanceScope(scopeManager);
 
         getRuntime().getRegistry().registerService(this,PermissionProvider.class,new DKPermsPermissionProvider(),ServicePriority.HIGHEST);
-        getRuntime().getPlayerManager().registerPlayerAdapter(PermissionPlayer.class,new PlayerAdapter());
+        getRuntime().getPlayerManager().registerPlayerAdapter(PermissionObject.class,new PlayerAdapter());
 
         PlaceholderProvider placeholderProvider = getRuntime().getRegistry().getServiceOrDefault(PlaceholderProvider.class);
         if(placeholderProvider != null) placeholderProvider.registerPlaceHolders(this,"dkperms",new DKPermsPlaceholders());
@@ -207,12 +204,12 @@ public class DKPermsPlugin extends MinecraftPlugin {
     }
 
     //@Todo update and optimize
-    private static class PlayerAdapter implements Function<MinecraftPlayer, PermissionPlayer> {
+    private static class PlayerAdapter implements Function<MinecraftPlayer, PermissionObject> {
 
         private PlayerAdapter(){}
 
         @Override
-        public PermissionPlayer apply(MinecraftPlayer player) {
+        public PermissionObject apply(MinecraftPlayer player) {
             PermissionObject object = DKPerms.getInstance().getObjectManager().getObjectByAssignment(player.getUniqueId());
             if(object == null){
                 object = DKPerms.getInstance().getObjectManager().createObject(
@@ -222,23 +219,15 @@ public class DKPermsPlugin extends MinecraftPlugin {
             }else if(!object.getName().equals(player.getName())){
                 object.setName(null,player.getName());
             }
-            return object.getHolder(PermissionPlayer.class);
+            return object;
         }
     }
 
     private static class UserFactory implements PermissionHolderFactory {
 
         @Override
-        public PermissionObjectHolder create(PermissionObject object) {
-            return new DKPermsPermissionPlayer(object);
-        }
-    }
-
-    private static class GroupFactory implements PermissionHolderFactory {
-
-        @Override
-        public PermissionObjectHolder create(PermissionObject object) {
-            return new DKPermsPermissionGroup(object);
+        public Object create(PermissionObject object) {
+            return McNative.getInstance().getPlayerManager().getPlayer(object.getAssignmentId());
         }
     }
 

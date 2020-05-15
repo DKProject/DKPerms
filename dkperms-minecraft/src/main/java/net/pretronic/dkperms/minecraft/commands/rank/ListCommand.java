@@ -12,7 +12,6 @@ package net.pretronic.dkperms.minecraft.commands.rank;
 
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.graph.Graph;
-import net.pretronic.dkperms.api.minecraft.player.PermissionPlayer;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
@@ -39,7 +38,7 @@ public class ListCommand extends ObjectCommand<PermissionObject> {
     public void execute(CommandSender sender, PermissionObject object, String[] arguments) {
         PermissionScope fallback = object.getScope();
         if(sender instanceof MinecraftPlayer){
-            fallback = ((MinecraftPlayer) sender).getAs(PermissionPlayer.class).getObject().getCurrentSnapshot().getScope();
+            fallback = ((MinecraftPlayer) sender).getAs(PermissionObject.class).getCurrentSnapshot().getScope();
         }
         PermissionScope scope = CommandUtil.readScope(sender,fallback,arguments,0);
         Graph<PermissionScope> range = DKPerms.getInstance().getScopeManager().newGraph(scope);

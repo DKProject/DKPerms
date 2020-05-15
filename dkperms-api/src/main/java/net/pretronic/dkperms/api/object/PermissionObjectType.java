@@ -10,8 +10,6 @@
 
 package net.pretronic.dkperms.api.object;
 
-import net.pretronic.dkperms.api.object.holder.PermissionHolderFactory;
-
 import java.util.concurrent.CompletableFuture;
 
 public interface PermissionObjectType {
@@ -26,6 +24,7 @@ public interface PermissionObjectType {
 
     boolean isGroup();
 
+    boolean hasLocalHolderFactory();
 
     PermissionHolderFactory getLocalHolderFactory();
 

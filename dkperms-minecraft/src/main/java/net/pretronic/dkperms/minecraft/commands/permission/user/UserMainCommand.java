@@ -10,7 +10,6 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.user;
 
-import net.pretronic.dkperms.api.minecraft.player.PermissionPlayer;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.minecraft.commands.permission.object.group.GroupCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.object.meta.MetaCommand;
@@ -39,7 +38,7 @@ public class UserMainCommand extends MainObjectCommand<PermissionObject> impleme
     @Override
     public PermissionObject getObject(CommandSender sender,String name) {
         MinecraftPlayer player =  McNative.getInstance().getPlayerManager().getPlayer(name);
-        if(player != null) return player.getAs(PermissionPlayer.class).getObject();
+        if(player != null) return player.getAs(PermissionObject.class);
         return null;
     }
 

@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+//@Todo check if caching is working
 public class PDQObjectSearchQuery implements ObjectSearchQuery {
 
     private final FindQuery query;
@@ -191,6 +192,7 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
                             ,entry.getInt("Priority")
                             ,DKPerms.getInstance().getObjectManager().getType(entry.getInt("TypeId"))
                             ,DKPerms.getInstance().getScopeManager().getScope(entry.getInt("ScopeId")));
+                    getObjectManager().getObjects().insert(object);
                 }
                 data.add(object);
             }

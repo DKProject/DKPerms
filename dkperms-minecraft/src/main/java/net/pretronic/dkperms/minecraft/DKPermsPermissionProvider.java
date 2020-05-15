@@ -11,17 +11,18 @@
 package net.pretronic.dkperms.minecraft;
 
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.minecraft.player.PermissionPlayer;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectManager;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
+import net.pretronic.dkperms.api.permission.PermissionAction;
+import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.libraries.logging.PretronicLogger;
+import net.pretronic.libraries.utility.Iterators;
 import org.mcnative.common.player.MinecraftPlayer;
 import org.mcnative.common.serviceprovider.permission.PermissionHandler;
 import org.mcnative.common.serviceprovider.permission.PermissionProvider;
 
 import java.util.Collection;
-import java.util.Collections;
 
 public class DKPermsPermissionProvider implements PermissionProvider {
 
@@ -39,28 +40,31 @@ public class DKPermsPermissionProvider implements PermissionProvider {
 
     @Override
     public Collection<MinecraftPlayer> getOperators() {
-        /*
-        return Iterators.map(objectManager.search().type(userType).hasMeta("operator", true)
-                .search().getAllHolders(PermissionPlayer.class), player -> player);
-         */
-        return Collections.emptyList();//@Todo implement
+        return objectManager.search()
+                .withType(userType)
+                .hasMeta("operator", true)
+                .execute().getAllHolders(MinecraftPlayer.class);
     }
 
     @Override
-    public Collection<String> getGroups() {
-        //objectManager.get
-        return Collections.emptyList();//@Todo implement
+    public Collection<String> getGroups() { ;
+        return Iterators.map(DKPerms.getInstance().getObjectManager()
+                .getObjects(groupType, DKPermsConfig.OBJECT_GROUP_SCOPE).getAll()
+                ,PermissionObject::getName);
     }
 
     @Override
     public PermissionHandler getPlayerHandler(MinecraftPlayer player) {
-        return player.getAs(PermissionPlayer.class);
+        return new DKPermsPermissionHandler(player.getAs(PermissionObject.class));
     }
 
     @Override
     public boolean createGroup(String group) {
-        return objectManager.createObject(null,groupType,group)
-                .getHolder(DKPermsPermissionGroup.class);
+        if(objectManager.getObject(group,DKPermsConfig.OBJECT_GROUP_SCOPE,groupType) != null){
+            objectManager.createObject(DKPermsConfig.OBJECT_GROUP_SCOPE,groupType,group);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -78,12 +82,24 @@ public class DKPermsPermissionProvider implements PermissionProvider {
     }
 
     @Override
-    public void setGroupPermission(String s, String s1, boolean b) {
-
+    public void setGroupPermission(String group, String permission, boolean value) {
+        PermissionObject object = objectManager.getObject(group,DKPermsConfig.OBJECT_GROUP_SCOPE,groupType);
+        if(object != null){
+            PermissionAction action = value ? PermissionAction.ALLOW : PermissionAction.REJECT;
+            object.setPermission(DKPerms.getInstance().getObjectManager().getSuperAdministrator()
+                    ,object.getScope()
+                    ,permission
+                    ,action
+                    ,-1);
+        }
     }
 
     @Override
-    public void unsetGroupPermission(String s, String s1) {
-
+    public void unsetGroupPermission(String group, String permission) {
+        PermissionObject object = objectManager.getObject(group,DKPermsConfig.OBJECT_GROUP_SCOPE,groupType);
+        if(object != null){
+            object.unsetPermission(DKPerms.getInstance().getObjectManager().getSuperAdministrator()
+                    ,permission);
+        }
     }
 }

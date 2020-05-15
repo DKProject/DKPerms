@@ -10,7 +10,6 @@
 
 package net.pretronic.dkperms.common.graph;
 
-import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.graph.ObjectMetaGraph;
 import net.pretronic.dkperms.api.object.PermissionObject;

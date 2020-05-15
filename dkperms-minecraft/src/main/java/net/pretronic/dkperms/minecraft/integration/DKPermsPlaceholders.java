@@ -10,7 +10,6 @@
 
 package net.pretronic.dkperms.minecraft.integration;
 
-import net.pretronic.dkperms.api.minecraft.player.PermissionPlayer;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import org.mcnative.common.player.MinecraftPlayer;
@@ -20,7 +19,7 @@ public class DKPermsPlaceholders implements PlaceholderHook {
 
     @Override
     public Object onRequest(MinecraftPlayer player, String parameter) {
-        PermissionObject object = player.getAs(PermissionPlayer.class).getObject();
+        PermissionObject object = player.getAs(PermissionObject.class);
         if(parameter.equalsIgnoreCase("name")){
             return player.getName();
         }else if(parameter.equalsIgnoreCase("uniqueId")){

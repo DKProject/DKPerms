@@ -26,6 +26,7 @@ public class PDQStorage implements DKPermsStorage {
     private final PDQObjectStorage objectStorage;
     private final PDQGroupStorage groupStorage;
     private final PDQPermissionStorage permissionStorage;
+    private final PDQTrackStorage trackStorage;
 
     public PDQStorage(Database database) {
         this.database = database;
@@ -35,6 +36,7 @@ public class PDQStorage implements DKPermsStorage {
         this.objectStorage = new PDQObjectStorage();
         this.groupStorage = new PDQGroupStorage();
         this.permissionStorage = new PDQPermissionStorage();
+        this.trackStorage = new PDQTrackStorage();
         createTables();
     }
 
@@ -68,17 +70,17 @@ public class PDQStorage implements DKPermsStorage {
         return permissionStorage;
     }
 
+    @Override
+    public TrackStorage getTrackStorage() {
+        return trackStorage;
+    }
+
     private void createTables(){
         DatabaseCollection scope = database.createCollection("DKPerms_Scope")
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL,FieldOption.INDEX)
                 .field("ParentId",DataType.INTEGER, ForeignKey.of(database.getName(),"DKPerms_Scope","Id", ForeignKey.Option.CASCADE),FieldOption.INDEX)
                 .field("Key",DataType.STRING,64,FieldOption.NOT_NULL)
                 .field("Name",DataType.STRING,64,FieldOption.NOT_NULL)
-                .create();
-
-        DatabaseCollection context = database.createCollection("DKPerms_Context")
-                .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
-                .field("Name",DataType.STRING,64,FieldOption.NOT_NULL,FieldOption.UNIQUE,FieldOption.INDEX)
                 .create();
 
         DatabaseCollection object_type = database.createCollection("DKPerms_Object_Type")
@@ -140,10 +142,24 @@ public class PDQStorage implements DKPermsStorage {
                 .field("NewValue",DataType.STRING,500,FieldOption.NOT_NULL)
                 .create();
 
+        DatabaseCollection track = database.createCollection("DKPerms_Track")
+                .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
+                .field("Name",DataType.STRING,FieldOption.NOT_NULL)
+                .field("ScopeId",DataType.INTEGER,ForeignKey.of(scope,"Id"),FieldOption.NOT_NULL)
+                .create();
+
+        DatabaseCollection track_assignments = database.createCollection("DKPerms_Track_Assignments")
+                .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
+                .field("TrackId",DataType.INTEGER,ForeignKey.of(object,"TrackId"),FieldOption.NOT_NULL)
+                .field("ObjectId",DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
+                .field("Index",DataType.INTEGER,FieldOption.NOT_NULL)
+                .create();
+
         this.auditLogStorage.setCollections(auditLog);
         this.scopeStorage.setCollections(scope);
         this.objectStorage.setCollections(object,object_type,object_meta);
         this.groupStorage.setCollections(object_groups);
         this.permissionStorage.setCollections(object_permissions);
+        this.trackStorage.setCollections(track,track_assignments);
     }
 }

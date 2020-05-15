@@ -2,23 +2,19 @@
  * (C) Copyright 2020 The DKPerms Project (Davide Wietlisbach & Philipp Elvin Friedhoff)
  *
  * @author Davide Wietlisbach
- * @since 07.04.20, 23:05
+ * @since 10.05.20, 20:21
  * @website %web%
  *
  * %license%
  */
 
-package net.pretronic.dkperms.api.object.snapshot;
+package net.pretronic.dkperms.api.object;
 
 import net.pretronic.dkperms.api.graph.*;
-import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.libraries.synchronisation.observer.Observable;
-import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
-
-import java.util.List;
 
 public interface PermissionObjectSnapshot extends Observable<PermissionObjectSnapshot,PermissionScope> {
 

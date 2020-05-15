@@ -11,6 +11,7 @@
 package net.pretronic.dkperms.common.object;
 
 import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.object.PermissionGroupTrack;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectManager;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
@@ -27,9 +28,11 @@ import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.Validate;
 import net.pretronic.libraries.utility.interfaces.Initializable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 public class DefaultPermissionObjectManager implements PermissionObjectManager, Initializable<DKPerms> {
 
@@ -41,6 +44,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
     private final Cache<ObjectSearchResult> searchResults;
     private PermissionObject superAdministrator;
     private Collection<PermissionObjectType> types;
+    private Collection<PermissionGroupTrack> tracks;//Currently pre loaded, maybe change in future
 
     public DefaultPermissionObjectManager() {
         this.objects = new ShadowArraySynchronizableCache<>(1000);
@@ -197,6 +201,56 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         this.objects.remove(object);
         DKPerms.getInstance().getStorage().getObjectStorage().deleteObject(object.getId());
         this.objects.getCaller().createAndIgnore(object.getId(), Document.newDocument());
+    }
+
+
+    @Override
+    public Collection<PermissionGroupTrack> getTracks() {
+        return tracks;
+    }
+
+    @Override
+    public Collection<PermissionGroupTrack> getTracks(PermissionScope scope) {
+        return Iterators.filter(this.tracks, track -> track.getScope().equals(scope));
+    }
+
+    @Override
+    public PermissionGroupTrack getTrack(int id) {
+        return Iterators.findOne(this.tracks, track -> track.getId() == id);
+    }
+
+    @Override
+    public PermissionGroupTrack getTrack(String name, PermissionScope scope) {
+        Validate.notNull(name);
+        return Iterators.findOne(this.tracks, track -> track.getName().equalsIgnoreCase(name) && track.getScope().equals(scope));
+    }
+
+    @Override
+    public PermissionGroupTrack createTrack(String name, PermissionScope scope) {
+        Validate.notNull(name,scope);
+        if(!scope.isSaved()) scope.insert();
+        if(getTrack(name,scope) != null) throw new IllegalArgumentException("A track with the name "+name+" does already exist");
+        int id = DKPerms.getInstance().getStorage().getTrackStorage().createTrack(name,scope.getId());
+        PermissionGroupTrack track = new DefaultPermissionGroupTrack(id,name,scope,new ArrayList<>());
+        this.tracks.add(track);
+        return track;
+    }
+
+    @Override
+    public void deleteTrack(PermissionGroupTrack track) {
+        Validate.notNull(track);
+        DKPerms.getInstance().getStorage().getTrackStorage().deleteTrack(track.getId());
+        this.tracks.remove(track);
+    }
+
+    @Override
+    public void sync() {
+        for (PermissionObject object : this.objects.getCachedObjects()) {
+            if(object instanceof DefaultPermissionObject){
+                ((DefaultPermissionObject) object).clearCache();
+            }
+        }
+        this.searchResults.clear();
     }
 
     @Override

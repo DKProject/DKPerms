@@ -10,9 +10,8 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.user;
 
-import net.pretronic.dkperms.api.minecraft.player.PermissionPlayer;
 import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.api.object.snapshot.PermissionObjectSnapshot;
+import net.pretronic.dkperms.api.object.PermissionObjectSnapshot;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
 import net.pretronic.dkperms.minecraft.config.Messages;
@@ -33,7 +32,7 @@ public class InfoCommand extends ObjectCommand<PermissionObject> {
     public void execute(CommandSender sender, PermissionObject object, String[] arguments) {
         PermissionScope fallback = object.getScope();
         if(sender instanceof MinecraftPlayer){
-            fallback = ((MinecraftPlayer) sender).getAs(PermissionPlayer.class).getObject().getCurrentSnapshot().getScope();
+            fallback = ((MinecraftPlayer) sender).getAs(PermissionObject.class).getCurrentSnapshot().getScope();
         }
         PermissionScope scope = CommandUtil.readScope(sender,fallback,arguments,0);
 

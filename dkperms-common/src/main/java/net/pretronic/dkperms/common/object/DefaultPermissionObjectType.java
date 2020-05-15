@@ -11,8 +11,8 @@
 package net.pretronic.dkperms.common.object;
 
 import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.object.PermissionHolderFactory;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
-import net.pretronic.dkperms.api.object.holder.PermissionHolderFactory;
 import net.pretronic.libraries.message.bml.variable.describer.VariableObjectToString;
 
 import java.util.Objects;
@@ -57,6 +57,11 @@ public class DefaultPermissionObjectType implements PermissionObjectType, Variab
     @Override
     public boolean isGroup() {
         return group;
+    }
+
+    @Override
+    public boolean hasLocalHolderFactory() {
+        return holderFactory != null;
     }
 
     @Override

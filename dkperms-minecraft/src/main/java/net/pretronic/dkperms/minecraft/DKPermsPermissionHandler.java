@@ -14,13 +14,9 @@ import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.entity.Entity;
 import net.pretronic.dkperms.api.entity.PermissionEntity;
 import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
-import net.pretronic.dkperms.api.graph.Graph;
-import net.pretronic.dkperms.api.minecraft.player.PermissionPlayer;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.SyncAction;
-import net.pretronic.dkperms.api.object.snapshot.PermissionObjectSnapshot;
 import net.pretronic.dkperms.api.permission.PermissionAction;
-import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
 import net.pretronic.libraries.utility.Iterators;
@@ -37,44 +33,18 @@ import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 //@Todo on scope change listener and event
-public class DKPermsPermissionPlayer implements PermissionPlayer, ObserveCallback<PermissionObject, SyncAction> {
+public class DKPermsPermissionHandler implements PermissionHandler, ObserveCallback<PermissionObject, SyncAction> {
 
     private final PermissionObject object;
     private PlayerDesign design;
 
-    public DKPermsPermissionPlayer(PermissionObject object) {
+    public DKPermsPermissionHandler(PermissionObject object) {
         this.object = object;
-        setCurrentScope(DKPerms.getInstance().getScopeManager().getCurrentInstanceScope());
+        object.setCurrentScope(DKPerms.getInstance().getScopeManager().getCurrentInstanceScope());
         this.design = new DKPermsPlayerDesign(object);
 
         object.getCurrentSnapshot().subscribeObserver((snapshot, oldScope)
-                -> snapshot.getGroupInheritanceGraph().subscribeObserver(DKPermsPermissionPlayer.this));
-    }
-
-
-    @Override
-    public PermissionObject getObject() {
-        return object;
-    }
-
-    @Override
-    public PermissionObjectSnapshot getSnapshot() {
-        return object.getCurrentSnapshot();
-    }
-
-    @Override
-    public Graph<PermissionScope> getCurrentScopes() {
-        return object.getCurrentSnapshot().getScopeRange();
-    }
-
-    @Override
-    public PermissionScope getCurrentScope() {
-        return object.getScope();
-    }
-
-    @Override
-    public void setCurrentScope(PermissionScope scope) {
-        object.setCurrentScope(scope);
+                -> snapshot.getGroupInheritanceGraph().subscribeObserver(DKPermsPermissionHandler.this));
     }
 
     @Override

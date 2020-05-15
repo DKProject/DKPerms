@@ -11,7 +11,6 @@
 package net.pretronic.dkperms.common.object.search;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.api.object.holder.PermissionObjectHolder;
 import net.pretronic.dkperms.api.object.search.ObjectSearchQuery;
 import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
 import net.pretronic.libraries.utility.Iterators;
@@ -86,13 +85,13 @@ public class DirectObjectSearchResult implements ObjectSearchResult {
     }
 
     @Override
-    public Collection<PermissionObjectHolder> getAllHolders() {
+    public Collection<Object> getAllHolders() {
         return Iterators.map(this.objects, PermissionObject::getHolder);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends PermissionObjectHolder> Collection<T> getAllHolders(Class<T> holderClass) {
+    public <T> Collection<T> getAllHolders(Class<T> holderClass) {
         return (Collection<T>) getAllHolders();
     }
 

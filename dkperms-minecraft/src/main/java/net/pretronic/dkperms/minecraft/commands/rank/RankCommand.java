@@ -10,7 +10,6 @@
 
 package net.pretronic.dkperms.minecraft.commands.rank;
 
-import net.pretronic.dkperms.api.minecraft.player.PermissionPlayer;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
@@ -40,7 +39,7 @@ public class RankCommand extends MainObjectCommand<PermissionObject> implements 
     @Override
     public PermissionObject getObject(CommandSender sender,String name) {
         MinecraftPlayer player =  McNative.getInstance().getPlayerManager().getPlayer(name);
-        if(player != null) return player.getAs(PermissionPlayer.class).getObject();
+        if(player != null) return player.getAs(PermissionObject.class);
         return null;
     }
 
@@ -48,7 +47,7 @@ public class RankCommand extends MainObjectCommand<PermissionObject> implements 
     public void objectNotFound(CommandSender sender, String value, String[] arguments) {
         if(value == null || !sender.hasPermission("dkperms.rank.see.other")){
             if(sender instanceof MinecraftPlayer){
-                listCommand.execute(sender,((MinecraftPlayer) sender).getAs(PermissionPlayer.class).getObject(),arguments);
+                listCommand.execute(sender,((MinecraftPlayer) sender).getAs(PermissionObject.class),arguments);
             }else{
                 sender.sendMessage(Messages.RANK_HELP);
             }
@@ -66,7 +65,7 @@ public class RankCommand extends MainObjectCommand<PermissionObject> implements 
         }
 
         if(object == null || !sender.hasPermission("dkperms.rank.see.other")){
-            listCommand.execute(sender,((MinecraftPlayer) sender).getAs(PermissionPlayer.class).getObject(),arguments);
+            listCommand.execute(sender,((MinecraftPlayer) sender).getAs(PermissionObject.class),arguments);
             return;
         }
 

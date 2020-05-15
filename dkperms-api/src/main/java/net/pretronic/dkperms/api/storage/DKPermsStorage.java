@@ -24,6 +24,8 @@ public interface DKPermsStorage{
 
     PermissionStorage getPermissionStorage();
 
+    TrackStorage getTrackStorage();
+
 
     default void deleteTimedOutEntries(){
         getGroupStorage().deleteTimedOutGroupReferences();

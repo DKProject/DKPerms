@@ -96,16 +96,18 @@ public interface PermissionObjectManager {
     void deleteObject(PermissionObject executor,PermissionObject object);
 
 
+    Collection<PermissionGroupTrack> getTracks();
 
-   /*
-    Collection<PermissionGroupOrder> getOrders();
+    Collection<PermissionGroupTrack> getTracks(PermissionScope scope);
 
-    PermissionGroupOrder getOrder(String name);
+    PermissionGroupTrack getTrack(int id);
 
-    PermissionGroupOrder getOrder(int id);
+    PermissionGroupTrack getTrack(String name,PermissionScope scope);
 
-    PermissionGroupOrder createOrder(int id);
+    PermissionGroupTrack createTrack(String name,PermissionScope scope);
 
-    PermissionGroupOrder createOrder(int id, PermissionScope scope);
-    */
+    void deleteTrack(PermissionGroupTrack track);
+
+
+    void sync();
 }

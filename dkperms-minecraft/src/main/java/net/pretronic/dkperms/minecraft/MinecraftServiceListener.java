@@ -10,7 +10,6 @@
 
 package net.pretronic.dkperms.minecraft;
 
-import net.pretronic.dkperms.api.minecraft.player.PermissionPlayer;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
@@ -37,7 +36,7 @@ public class MinecraftServiceListener {
     }
 
     private void setWorldScope(MinecraftPlayer player,World world){
-        PermissionObject permissionObject = player.getAs(PermissionPlayer.class).getObject();
+        PermissionObject permissionObject = player.getAs(PermissionObject.class);
         PermissionScope scope = DKPermsConfig.SCOPE_CURRENT_INSTANCE_SCOPE
                 .getChild(DKPermsConfig.SCOPE_WORLD_KEY,world.getName());
         permissionObject.setCurrentScope(scope);
