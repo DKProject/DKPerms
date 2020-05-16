@@ -22,6 +22,7 @@ import net.pretronic.libraries.command.command.object.MainObjectCommand;
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.command.object.ObjectNotFindable;
 import net.pretronic.libraries.command.sender.CommandSender;
+import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
 import java.util.Arrays;
@@ -40,7 +41,6 @@ public class TrackMainCommand extends MainObjectCommand<PermissionGroupTrack> im
         registerCommand(new TrackInsertCommand(owner));
         registerCommand(new TrackRemoveCommand(owner));
         registerCommand(new TrackClearCommand(owner));
-        registerCommand(new TrackAddCommand(owner));
 
         listCommand = new TrackListCommand(owner);
         createCommand = new TrackCreateCommand(owner);
@@ -67,6 +67,8 @@ public class TrackMainCommand extends MainObjectCommand<PermissionGroupTrack> im
                 || arguments[0].equalsIgnoreCase("c"))){
             this.createCommand.execute(sender,name, Arrays.copyOfRange(arguments, 1, arguments.length));
             return;
+        }else{
+            sender.sendMessage(Messages.TRACK_NOT_FOUND, VariableSet.create().add("name",name));
         }
     }
 }
