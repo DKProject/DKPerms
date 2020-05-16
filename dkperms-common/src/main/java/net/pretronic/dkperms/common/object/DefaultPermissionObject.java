@@ -330,6 +330,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
 
     @Override
     public PermissionObject promote(PermissionObject executor,PermissionScope scope) {
+        PermissionObject highest = null;
         throw new UnsupportedOperationException("Currently not supported");
     }
 

@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
 
 public class DefaultPermissionObjectManager implements PermissionObjectManager, Initializable<DKPerms> {
 
@@ -44,7 +43,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
     private final Cache<ObjectSearchResult> searchResults;
     private PermissionObject superAdministrator;
     private Collection<PermissionObjectType> types;
-    private Collection<PermissionGroupTrack> tracks;//Currently pre loaded, maybe change in future
+    private final Collection<PermissionGroupTrack> tracks;//Currently pre loaded, maybe change in future
 
     public DefaultPermissionObjectManager() {
         this.objects = new ShadowArraySynchronizableCache<>(1000);
@@ -61,6 +60,8 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         this.searchResults = new ArrayCache<>(100);
         this.searchResults.setExpireAfterAccess(15, TimeUnit.MINUTES);
         this.searchResults.registerQuery("ByQuery",new ObjectQueryLoader());
+
+        this.tracks = new ArrayList<>();
     }
 
     public SynchronizableCache<PermissionObject,Integer> getObjects() {

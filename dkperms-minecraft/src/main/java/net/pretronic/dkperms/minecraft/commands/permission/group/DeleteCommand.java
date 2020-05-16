@@ -26,6 +26,11 @@ public class DeleteCommand extends ObjectCommand<PermissionObject> {
 
     @Override
     public void execute(CommandSender sender, PermissionObject object, String[] arguments) {
+        object.delete(null);
+        sender.sendMessage(Messages.GROUP_DELETED, VariableSet.create()
+                .addDescribed("group",object)
+                .addDescribed("object",object));
+        /*
         if(arguments.length == 1 && arguments[0].equalsIgnoreCase("confirm")){
             object.delete(null);//@Todo add executor
             sender.sendMessage(Messages.GROUP_DELETED, VariableSet.create()
@@ -36,5 +41,6 @@ public class DeleteCommand extends ObjectCommand<PermissionObject> {
                     .addDescribed("group",object)
                     .addDescribed("object",object));
         }
+         */
     }
 }
