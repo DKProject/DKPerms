@@ -8,19 +8,22 @@
  * %license%
  */
 
-package net.pretronic.dkperms.minecraft.commands.permission.object.group;
+package net.pretronic.dkperms.minecraft.commands.permission.object.parent;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
+import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
+import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
-public class RemoveCommand extends ObjectCommand<PermissionObject> {
+//@Todo multiply add time with existing group
+public class SetCommand extends ObjectCommand<PermissionObject> {
 
-    public RemoveCommand(ObjectOwner owner) {
-        super(owner, CommandConfiguration.name("remove","r","unset","u"));
+    public SetCommand(ObjectOwner owner) {
+        super(owner, CommandConfiguration.name("set","s"));
     }
 
     @Override
@@ -28,10 +31,12 @@ public class RemoveCommand extends ObjectCommand<PermissionObject> {
         if(arguments.length >= 1){
             PermissionObject group = CommandUtil.getGroup(sender, arguments[0]);
             if(group == null) return;
-
-            CommandUtil.removeGroup(sender, object, arguments, group);
+            CommandUtil.changeGroup(true,sender,object,group,arguments);
         }else{
-            CommandUtil.sendInvalidSyntax(sender,"group set","/perms <user/group> <name> group set <key> <value> [scope]");
+            VariableSet variables = VariableSet.create();
+            variables.add("command","group set");
+            variables.add("usage","/perms <user/group> <name> group set <name> {action} {time} {unit} {scope}");
+            sender.sendMessage(Messages.COMMAND_INVALID_SYNTAX,variables);
         }
     }
 }

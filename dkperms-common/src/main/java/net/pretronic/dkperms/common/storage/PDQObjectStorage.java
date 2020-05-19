@@ -46,6 +46,7 @@ public class PDQObjectStorage implements ObjectStorage {
         this.object_type.find().execute().loadIn(types, entry
                 -> new DefaultPermissionObjectType(entry.getInt("Id")
                 ,entry.getString("Name")
+                ,entry.getString("DisplayName")
                 ,entry.getBoolean("IsGroup")));
         return types;
     }
@@ -56,6 +57,7 @@ public class PDQObjectStorage implements ObjectStorage {
         if(!result.isEmpty()) result.first().to(entry
                 -> new DefaultPermissionObjectType(entry.getInt("Id")
                 ,entry.getString("Name")
+                ,entry.getString("DisplayName")
                 ,entry.getBoolean("IsGroup")));
         return null;
     }
@@ -66,22 +68,25 @@ public class PDQObjectStorage implements ObjectStorage {
         if(!result.isEmpty()) result.first().to( entry
                 -> new DefaultPermissionObjectType(entry.getInt("Id")
                 ,entry.getString("Name")
+                ,entry.getString("DisplayName")
                 ,entry.getBoolean("IsGroup")));
         return null;
     }
 
     @Override
-    public int createObjectType(String name, boolean group) {
+    public int createObjectType(String name,String displayName, boolean group) {
         return this.object_type.insert()
                 .set("Name",name)
+                .set("DisplayName",displayName)
                 .set("IsGroup",group)
                 .executeAndGetGeneratedKeys("id").first().getInt("id");
     }
 
     @Override
-    public void updateObjectType(int typeId, String name) {
+    public void updateObjectType(int typeId, String name,String displayName) {
         this.object_type.update()
                 .set("Name",name)
+                .set("DisplayName",displayName)
                 .where("Id",typeId)
                 .execute();
     }

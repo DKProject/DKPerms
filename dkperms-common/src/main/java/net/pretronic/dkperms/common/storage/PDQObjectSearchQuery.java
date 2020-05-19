@@ -101,12 +101,17 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
     }
 
     @Override
-    public ObjectSearchQuery isInGroup(PermissionObject group) {
+    public ObjectSearchQuery hasParent(PermissionObject group) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ObjectSearchQuery isInGroup(PermissionObject group, PermissionScope scope) {
+    public ObjectSearchQuery hasParent(PermissionObject group, PermissionScope scope) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ObjectSearchQuery hasParent(PermissionObject parent, Collection<PermissionScope> scopes) {
         throw new UnsupportedOperationException();
     }
 
@@ -166,6 +171,7 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
 
     @Override
     public ObjectSearchResult execute() {
+        directLoading();//Auto enable, passive loading not integrated
         ObjectSearchResult cached = getObjectManager().getSearchResults().get("ByQuery",this);
         if(cached != null) return cached;
         if(directLoading){

@@ -11,7 +11,7 @@
 package net.pretronic.dkperms.minecraft.commands;
 
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
+import net.pretronic.dkperms.api.entity.PermissionParentEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
 import net.pretronic.dkperms.api.permission.PermissionAction;
@@ -89,7 +89,7 @@ public class CommandUtil {
             }
         }
 
-        PermissionGroupEntity entity = object.getGroup(scope,group);
+        PermissionParentEntity entity = object.getParent(scope,group);
 
         if(entity != null){
             if(modifier == UpdateModifier.FAIL) return; //@Todo send message
@@ -97,8 +97,8 @@ public class CommandUtil {
         }
 
         if(entity == null || set){
-            if(set) entity = object.setGroup(null,scope,group,action,duration);
-            else entity = object.addGroup(null,scope,group,action,duration);
+            if(set) entity = object.setParent(null,scope,group,action,duration);
+            else entity = object.addParent(null,scope,group,action,duration);
         }else{
             entity.update(null,action,scope,duration);
         }
@@ -118,7 +118,7 @@ public class CommandUtil {
         PermissionScope scope = CommandUtil.readScope(sender,object,arguments,1);
         if(scope == null) return;
 
-        object.removeGroup(null,scope,group);
+        object.removeParent(null,scope,group);
 
         VariableSet variables = VariableSet.create()
                 .add("type",object.getType().getName().toLowerCase())

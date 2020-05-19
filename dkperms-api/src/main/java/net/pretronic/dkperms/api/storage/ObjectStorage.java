@@ -28,9 +28,9 @@ public interface ObjectStorage {
 
     PermissionObjectType getObjectType(String name);
 
-    int createObjectType(String name, boolean group);
+    int createObjectType(String name,String displayName, boolean group);
 
-    void updateObjectType(int typeId, String name);
+    void updateObjectType(int typeId, String name,String displayName);
 
     void deleteObjectType(int typeId);
 

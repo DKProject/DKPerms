@@ -33,9 +33,15 @@ public interface PermissionObjectSnapshot extends Observable<PermissionObjectSna
     PermissionGraph getPermissionInheritanceGraph();
 
 
-    GroupGraph getGroupGraph();
+    ParentGraph getParentGraph();
 
-    GroupGraph getGroupInheritanceGraph();
+    ParentGraph getParentInheritanceGraph();
+
+
+    ObjectGraph getEffectedParentGraph();
+
+    ObjectGraph getEffectedParentInheritanceGraph();
+
 
 
     ObjectGraph getEffectedGroupGraph();
@@ -48,12 +54,20 @@ public interface PermissionObjectSnapshot extends Observable<PermissionObjectSna
     ObjectMetaGraph getMetaInheritanceGraph();
 
 
-    default PermissionAction isGroupSet(PermissionObject object){
-        return getGroupInheritanceGraph().calculateGroup(object);
+    default boolean isGroupSet(PermissionObject object){
+        return getParentInheritanceGraph().containsGroup(object);
     }
 
     default PermissionAction isInGroup(PermissionObject object){
-        return getGroupInheritanceGraph().calculateGroup(object);
+        return getParentInheritanceGraph().calculateGroup(object);
+    }
+
+    default boolean isParentSet(PermissionObject object){
+        return getParentInheritanceGraph().containsGroup(object);
+    }
+
+    default PermissionAction hasParent(PermissionObject object){
+        return getParentInheritanceGraph().calculateGroup(object);
     }
 
 

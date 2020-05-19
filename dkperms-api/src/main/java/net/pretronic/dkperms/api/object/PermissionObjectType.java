@@ -14,15 +14,24 @@ import java.util.concurrent.CompletableFuture;
 
 public interface PermissionObjectType {
 
+    PermissionObjectType SERVICE_ACCOUNT = new BuiltInPermissionObjectType(1,"BUILTIN/SERVICE_ACCOUNT","Service",false);
+
+    PermissionObjectType USER_ACCOUNT = new BuiltInPermissionObjectType(1,"BUILTIN/SERVICE_ACCOUNT","User",false);
+
+    PermissionObjectType GROUP = new BuiltInPermissionObjectType(1,"BUILTIN/GROUP","Group",true);
+
+
     int getId();
 
     String getName();
 
-    void rename(String name);
+    String getDisplayName();
 
-    CompletableFuture<Void> renameAsync(String name);
+    void rename(String name, String displayName);
 
-    boolean isGroup();
+    CompletableFuture<Void> renameAsync(String name, String displayName);
+
+    boolean isParentAble();
 
     boolean hasLocalHolderFactory();
 
@@ -31,8 +40,8 @@ public interface PermissionObjectType {
     void setLocalHolderFactory(PermissionHolderFactory factory);
 
 
-    default void checkIsGroup(){
-        if(!isGroup()) throw new IllegalArgumentException("Object "+getName()+" is not a group object");
+    default void checkParentAble(){
+        if(!isParentAble()) throw new IllegalArgumentException("Object "+getName()+" is not a group object");
     }
 
 }

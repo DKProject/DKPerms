@@ -40,9 +40,15 @@ public interface ObjectSearchQuery {
     ObjectSearchQuery hasPermissionNot(String permission, PermissionScope scope);
 
 
-    ObjectSearchQuery isInGroup(PermissionObject group);
+    ObjectSearchQuery hasParent(PermissionObject group);
 
-    ObjectSearchQuery isInGroup(PermissionObject group, PermissionScope scope);
+    ObjectSearchQuery hasParent(PermissionObject group, PermissionScope scope);
+
+    default ObjectSearchQuery hasParent(PermissionObject parent, Graph<PermissionScope> scopes){
+        return hasParent(parent,scopes.traverse());
+    }
+
+    ObjectSearchQuery hasParent(PermissionObject parent, Collection<PermissionScope> scopes);
 
 
     ObjectSearchQuery hasMeta(String key);

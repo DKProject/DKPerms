@@ -2,14 +2,15 @@
  * (C) Copyright 2020 The DKPerms Project (Davide Wietlisbach & Philipp Elvin Friedhoff)
  *
  * @author Davide Wietlisbach
- * @since 24.02.20, 20:47
+ * @since 01.02.20, 21:38
  * @website %web%
  *
  * %license%
  */
 
-package net.pretronic.dkperms.minecraft.commands.permission.object.group;
+package net.pretronic.dkperms.minecraft.commands.permission.object.parent;
 
+import net.pretronic.dkperms.api.entity.PermissionParentEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
@@ -20,10 +21,12 @@ import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
-public class ClearCommand extends ObjectCommand<PermissionObject> {
+import java.util.Collection;
 
-    public ClearCommand(ObjectOwner owner) {
-        super(owner, CommandConfiguration.name("clear","c"));
+public class ListCommand extends ObjectCommand<PermissionObject> {
+
+    public ListCommand(ObjectOwner owner) {
+        super(owner, CommandConfiguration.name("list","l"));
     }
 
     @Override
@@ -31,11 +34,12 @@ public class ClearCommand extends ObjectCommand<PermissionObject> {
         PermissionScope scope = CommandUtil.readScope(sender,object,arguments,0);
         if(scope == null) return;
 
-        object.clearGroups(null,scope);
+        Collection<PermissionParentEntity> entries = object.getParents(scope);
 
-        VariableSet variables = VariableSet.create()
+        sender.sendMessage(Messages.OBJECT_GROUP_LIST, VariableSet.create()
+                .add("type",object.getType().getName().toLowerCase())
                 .addDescribed("object",object)
-                .addDescribed("scope",scope);
-        sender.sendMessage(Messages.OBJECT_GROUP_CLEAR,variables);
+                .addDescribed("scope",scope)
+                .add("entries",entries));
     }
 }

@@ -8,9 +8,9 @@
  * %license%
  */
 
-package net.pretronic.dkperms.minecraft.commands.permission.object.group;
+package net.pretronic.dkperms.minecraft.commands.permission.object.parent;
 
-import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
+import net.pretronic.dkperms.api.entity.PermissionParentEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
@@ -38,7 +38,7 @@ public class ShowCommand extends ObjectCommand<PermissionObject> {
             PermissionScope scope = CommandUtil.readScope(sender,object,arguments,1);
             if(scope == null) return;
 
-            PermissionGroupEntity entity = object.getGroup(scope,group);
+            PermissionParentEntity entity = object.getParent(scope,group);
 
             if(entity == null){
                 sender.sendMessage(Messages.OBJECT_GROUP_NOT_SET,VariableSet.create()

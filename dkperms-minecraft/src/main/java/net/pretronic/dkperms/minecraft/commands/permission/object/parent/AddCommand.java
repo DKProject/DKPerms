@@ -8,7 +8,7 @@
  * %license%
  */
 
-package net.pretronic.dkperms.minecraft.commands.permission.object.group;
+package net.pretronic.dkperms.minecraft.commands.permission.object.parent;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;

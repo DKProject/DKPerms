@@ -15,7 +15,7 @@ import net.pretronic.databasequery.api.query.SearchOrder;
 import net.pretronic.databasequery.api.query.result.QueryResult;
 import net.pretronic.databasequery.api.query.result.QueryResultEntry;
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
+import net.pretronic.dkperms.api.entity.PermissionParentEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
@@ -34,8 +34,8 @@ public class PDQGroupStorage implements GroupStorage {
     private DatabaseCollection group_entities;
 
     @Override
-    public Collection<PermissionGroupEntity> getGroupReferences(PermissionObject object, PermissionScope scope) {
-        List<PermissionGroupEntity> entities = new ArrayList<>();
+    public Collection<PermissionParentEntity> getGroupReferences(PermissionObject object, PermissionScope scope) {
+        List<PermissionParentEntity> entities = new ArrayList<>();
         group_entities.find()
                 .where("ObjectId",object.getId())
                 .where("ScopeId",scope.getId())
@@ -48,7 +48,7 @@ public class PDQGroupStorage implements GroupStorage {
     }
 
     @Override
-    public ScopeBasedDataList<PermissionGroupEntity> getGroupReferences(PermissionObject object, Collection<PermissionScope> scope) {
+    public ScopeBasedDataList<PermissionParentEntity> getGroupReferences(PermissionObject object, Collection<PermissionScope> scope) {
         if(scope.isEmpty()) return new ArrayScopeBasedDataList<>();
         QueryResult result = group_entities.find()
                 .where("ObjectId",object.getId())
@@ -59,7 +59,7 @@ public class PDQGroupStorage implements GroupStorage {
     }
 
     @Override
-    public ScopeBasedDataList<PermissionGroupEntity> getAllGroupReferences(PermissionObject object, Collection<PermissionScope> skipped) {
+    public ScopeBasedDataList<PermissionParentEntity> getAllGroupReferences(PermissionObject object, Collection<PermissionScope> skipped) {
         QueryResult result = group_entities.find()
                 .where("ObjectId",object.getId())
                 .not(query -> query.whereIn("ScopeId", skipped, PermissionScope::getId))
@@ -68,11 +68,11 @@ public class PDQGroupStorage implements GroupStorage {
         return getGroupReferences(object,result,null);
     }
 
-    private ScopeBasedDataList<PermissionGroupEntity> getGroupReferences(PermissionObject object,QueryResult result, Collection<PermissionScope> scopes) {
-        ScopeBasedDataList<PermissionGroupEntity> response = new ArrayScopeBasedDataList<>();
+    private ScopeBasedDataList<PermissionParentEntity> getGroupReferences(PermissionObject object, QueryResult result, Collection<PermissionScope> scopes) {
+        ScopeBasedDataList<PermissionParentEntity> response = new ArrayScopeBasedDataList<>();
 
         PermissionScope last = null;
-        Collection<PermissionGroupEntity> entities = null;
+        Collection<PermissionParentEntity> entities = null;
         for (QueryResultEntry entry : result) {
             int id = entry.getInt("ScopeId");
             if(last == null || last.getId() != id){

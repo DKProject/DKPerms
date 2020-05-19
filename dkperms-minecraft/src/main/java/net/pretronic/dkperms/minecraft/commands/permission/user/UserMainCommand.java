@@ -11,7 +11,7 @@
 package net.pretronic.dkperms.minecraft.commands.permission.user;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.minecraft.commands.permission.object.group.GroupCommand;
+import net.pretronic.dkperms.minecraft.commands.permission.object.parent.ParentCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.object.meta.MetaCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.object.permission.PermissionCommand;
 import net.pretronic.dkperms.minecraft.config.Messages;
@@ -30,7 +30,7 @@ public class UserMainCommand extends MainObjectCommand<PermissionObject> impleme
     public UserMainCommand(ObjectOwner owner) {
         super(owner, CommandConfiguration.name("user","u","player","p"));
 
-        registerCommand(new GroupCommand(owner));
+        registerCommand(new ParentCommand(owner));
         registerCommand(new MetaCommand(owner));
         registerCommand(new PermissionCommand(owner));
     }

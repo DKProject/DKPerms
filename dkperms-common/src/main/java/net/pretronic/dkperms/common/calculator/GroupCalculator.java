@@ -11,7 +11,7 @@
 package net.pretronic.dkperms.common.calculator;
 
 import net.pretronic.dkperms.api.entity.PermissionEntity;
-import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
+import net.pretronic.dkperms.api.entity.PermissionParentEntity;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
@@ -21,7 +21,6 @@ import net.pretronic.libraries.utility.StringUtil;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.ToIntFunction;
 
 public class GroupCalculator {
 
@@ -71,7 +70,7 @@ public class GroupCalculator {
         groups.sort(Comparator.comparingInt(PermissionObject::getPriority));
     }
 
-    public static void orderEntities(List<PermissionGroupEntity> groups){
+    public static void orderEntities(List<PermissionParentEntity> groups){
         groups.sort(Comparator.comparingInt(value -> value.getGroup().getPriority()));
     }
 }

@@ -141,8 +141,8 @@ public class DKPermsLegacyMigration implements PermissionMigration {
         for (PermissionGroupEntity group : groups) {
             PermissionObject newGroup = this.migratedGroups.get(group.getGroupUUID());
             if(newGroup != null){
-                if(object.isInGroup(object.getScope(),newGroup) == PermissionAction.NEUTRAL){
-                    object.addGroup(admin,object.getScope(),newGroup, PermissionAction.ALLOW,-1);
+                if(object.hasParent(object.getScope(),newGroup) == PermissionAction.NEUTRAL){
+                    object.addParent(admin,object.getScope(),newGroup, PermissionAction.ALLOW,-1);
                 }
             }
         }

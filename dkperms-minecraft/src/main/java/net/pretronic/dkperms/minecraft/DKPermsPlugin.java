@@ -13,6 +13,7 @@ package net.pretronic.dkperms.minecraft;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.object.PermissionHolderFactory;
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.PermissionScopeManager;
 import net.pretronic.dkperms.common.DefaultDKPerms;
@@ -97,7 +98,7 @@ public class DKPermsPlugin extends MinecraftPlugin {
         scopeManager.initialise(dkPerms);
         objectManager.initialise(dkPerms);
 
-        objectManager.getTypeOrCreate(DKPermsConfig.OBJECT_PLAYER_TYPE_NAME,false).setLocalHolderFactory(new UserFactory());
+        PermissionObjectType.USER_ACCOUNT.setLocalHolderFactory(new UserFactory());
 
         DKPermsConfig.load();
 

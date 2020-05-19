@@ -10,13 +10,13 @@
 
 package net.pretronic.dkperms.api.graph;
 
-import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
+import net.pretronic.dkperms.api.entity.PermissionParentEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 
-public interface GroupGraph extends Graph<PermissionGroupEntity> {
+public interface ParentGraph extends Graph<PermissionParentEntity> {
 
-    PermissionGroupEntity getGroup(PermissionObject group);
+    PermissionParentEntity getGroup(PermissionObject group);
 
     boolean containsGroup(PermissionObject group);
 

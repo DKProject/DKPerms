@@ -12,12 +12,13 @@ package net.pretronic.dkperms.api.object;
 
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.entity.PermissionEntity;
-import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
+import net.pretronic.dkperms.api.entity.PermissionParentEntity;
 import net.pretronic.dkperms.api.graph.Graph;
-import net.pretronic.dkperms.api.graph.GroupGraph;
+import net.pretronic.dkperms.api.graph.ParentGraph;
 import net.pretronic.dkperms.api.graph.ObjectGraph;
 import net.pretronic.dkperms.api.graph.PermissionGraph;
 import net.pretronic.dkperms.api.object.meta.ObjectMeta;
+import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyse;
 import net.pretronic.dkperms.api.permission.analyse.track.PermissionTrackResult;
@@ -99,20 +100,25 @@ public interface PermissionObject extends Observable<PermissionObject,SyncAction
     // ----- Groups -----
 
 
-    ScopeBasedDataList<PermissionGroupEntity> getAllGroups();//Returns all groups
+    ScopeBasedDataList<PermissionParentEntity> getAllParents();//Returns all groups
 
-    default Collection<PermissionGroupEntity> getGroups(){//Returns all root groups
-        return getGroups(getScope());
+    default Collection<PermissionParentEntity> getParents(){//Returns all root groups
+        return getParents(getScope());
     }
 
-    Collection<PermissionGroupEntity> getGroups(PermissionScope scope);//Returns all groups from scope
+    Collection<PermissionParentEntity> getParents(PermissionScope scope);//Returns all groups from scope
 
-    ScopeBasedDataList<PermissionGroupEntity> getGroups(Graph<PermissionScope> range);
+    ScopeBasedDataList<PermissionParentEntity> getParents(Graph<PermissionScope> range);
 
 
-    GroupGraph newGroupGraph(Graph<PermissionScope> range);
+    ParentGraph newParentGraph(Graph<PermissionScope> range);
 
-    GroupGraph newGroupInheritanceGraph(Graph<PermissionScope> range);
+    ParentGraph newParentInheritanceGraph(Graph<PermissionScope> range);
+
+
+    ObjectGraph newEffectedParentGraph(Graph<PermissionScope> range);
+
+    ObjectGraph newEffectedParentInheritanceGraph(Graph<PermissionScope> range);
 
 
     ObjectGraph newEffectedGroupGraph(Graph<PermissionScope> range);
@@ -120,65 +126,70 @@ public interface PermissionObject extends Observable<PermissionObject,SyncAction
     ObjectGraph newEffectedGroupInheritanceGraph(Graph<PermissionScope> range);
 
 
-    default PermissionGroupEntity getGroup(PermissionObject object){
-        return getGroup(getScope(),object);
+    default PermissionParentEntity getParent(PermissionObject object){
+        return getParent(getScope(),object);
     }
 
-    PermissionGroupEntity getGroup(PermissionScope scope, PermissionObject object);
+    PermissionParentEntity getParent(PermissionScope scope, PermissionObject object);
 
 
-    PermissionGroupEntity setGroup(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, long timeout);
+    PermissionParentEntity setParent(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, long timeout);
 
-    default PermissionGroupEntity setGroup(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, long duration, TimeUnit unit){
-        return setGroup(executor,scope, group,action,duration>0?unit.toMillis(duration)+System.currentTimeMillis():duration);
+    default PermissionParentEntity setParent(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, long duration, TimeUnit unit){
+        return setParent(executor,scope, group,action,duration>0?unit.toMillis(duration)+System.currentTimeMillis():duration);
     }
 
-    default PermissionGroupEntity setGroup(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, Duration duration){
-        return setGroup(executor,scope, group,action,duration.getSeconds(),TimeUnit.SECONDS);
-    }
-
-
-    PermissionGroupEntity addGroup(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, long timeout);
-
-    default PermissionGroupEntity addGroup(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, Duration duration){
-        return addGroup(executor,scope, group,action,duration.getSeconds(),TimeUnit.SECONDS);
-    }
-
-    default PermissionGroupEntity addGroup(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, long duration, TimeUnit unit){
-        return addGroup(executor,scope, group,action,duration>0?unit.toMillis(duration)+System.currentTimeMillis():duration);
+    default PermissionParentEntity setParent(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, Duration duration){
+        return setParent(executor,scope, group,action,duration.getSeconds(),TimeUnit.SECONDS);
     }
 
 
-    default void removeGroup(PermissionObject executor,PermissionObject group){
-        removeGroup(executor,getScope(),group);
+    PermissionParentEntity addParent(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, long timeout);
+
+    default PermissionParentEntity addParent(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, Duration duration){
+        return addParent(executor,scope, group,action,duration.getSeconds(),TimeUnit.SECONDS);
     }
 
-    void removeGroup(PermissionObject executor,PermissionScope scope, PermissionObject group);
-
-    void removeGroup(PermissionObject executor,PermissionGroupEntity entity);
-
-
-    default void clearGroups(PermissionObject executor){
-        clearGroups(executor,getScope());
+    default PermissionParentEntity addParent(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, long duration, TimeUnit unit){
+        return addParent(executor,scope, group,action,duration>0?unit.toMillis(duration)+System.currentTimeMillis():duration);
     }
 
-    void clearGroups(PermissionObject executor,PermissionScope scope);
 
-    void clearAllGroups(PermissionObject executor);
-
-
-    default PermissionAction isInGroup(PermissionObject group){
-        return isInGroup(getScope(),group);
+    default void removeParent(PermissionObject executor,PermissionObject group){
+        removeParent(executor,getScope(),group);
     }
 
-    PermissionAction isInGroup(PermissionScope scope, PermissionObject group);
+    void removeParent(PermissionObject executor,PermissionScope scope, PermissionObject group);
+
+    void removeParent(PermissionObject executor, PermissionParentEntity entity);
 
 
-    PermissionObject promote(PermissionObject executor, PermissionScope scope);
+    default void clearParents(PermissionObject executor){
+        clearParents(executor,getScope());
+    }
+
+    void clearParents(PermissionObject executor,PermissionScope scope);
+
+    void clearAllParents(PermissionObject executor);
+
+
+    ObjectSearchResult getAllChildren();
+
+    default ObjectSearchResult getChildren(Graph<PermissionScope> range){
+        return getChildren(range.traverse());
+    }
+
+    ObjectSearchResult getChildren(Collection<PermissionScope> range);
+
+
+    default PermissionAction hasParent(PermissionObject group){
+        return hasParent(getScope(),group);
+    }
+
+    PermissionAction hasParent(PermissionScope scope, PermissionObject group);
+
 
     PermissionObject promote(PermissionObject executor,PermissionScope scope, PermissionGroupTrack track);
-
-    PermissionObject demote(PermissionObject executor,PermissionScope scope);
 
     PermissionObject demote(PermissionObject executor,PermissionScope scope, PermissionGroupTrack track);
 

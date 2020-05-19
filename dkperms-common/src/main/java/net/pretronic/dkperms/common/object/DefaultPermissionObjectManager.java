@@ -26,6 +26,7 @@ import net.pretronic.libraries.caching.synchronisation.SynchronizableCache;
 import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.Validate;
+import net.pretronic.libraries.utility.exception.OperationFailedException;
 import net.pretronic.libraries.utility.interfaces.Initializable;
 
 import java.util.ArrayList;
@@ -88,17 +89,17 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
     }
 
     @Override
-    public PermissionObjectType getTypeOrCreate(PermissionObject executor,String name, boolean group) {
+    public PermissionObjectType getTypeOrCreate(PermissionObject executor,String name,String displayName, boolean group) {
         PermissionObjectType type = getType(name);
-        if(type == null) type = createType(executor,name,group);
+        if(type == null) type = createType(executor,name,displayName,group);
         return type;
     }
 
     @Override
-    public PermissionObjectType createType(PermissionObject executor,String name, boolean group) {
+    public PermissionObjectType createType(PermissionObject executor,String name,String displayName, boolean group) {
         if(getType(name) != null) throw new IllegalArgumentException("The type with the name "+name+" does already exist");
-        int id = DKPerms.getInstance().getStorage().getObjectStorage().createObjectType(name,group);
-        PermissionObjectType type = new DefaultPermissionObjectType(id,name,group);
+        int id = DKPerms.getInstance().getStorage().getObjectStorage().createObjectType(name,displayName,group);
+        PermissionObjectType type = new DefaultPermissionObjectType(id,name,displayName,group);
         this.types.add(type);
         return type;
     }
@@ -168,6 +169,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
 
     @Override
     public Collection<PermissionObject> getDefaultGroups(Collection<PermissionScope> range) {
+        //check if type is a group type
         return search().hasMeta("default",true,range).directLoading().execute().getAll();//@Todo maybe optimize
     }
 
@@ -204,6 +206,15 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         this.objects.getCaller().createAndIgnore(object.getId(), Document.newDocument());
     }
 
+    @Override
+    public PermissionGroupTrack getPriorityTrack(PermissionObjectType type) {
+        throw new UnsupportedOperationException("Currently not supported");
+    }
+
+    @Override
+    public PermissionGroupTrack getPriorityTrack(PermissionObjectType type, PermissionScope scope) {
+        throw new UnsupportedOperationException("Currently not supported");
+    }
 
     @Override
     public Collection<PermissionGroupTrack> getTracks() {
@@ -258,10 +269,30 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
     public void initialise(DKPerms dkPerms) {
         if(types != null) throw new IllegalArgumentException("ObjectManager is already initialised");
         this.types = dkPerms.getStorage().getObjectStorage().getObjectTypes();
+
+        findOrCreateType(PermissionObjectType.SERVICE_ACCOUNT);
+        findOrCreateType(PermissionObjectType.USER_ACCOUNT);
+        findOrCreateType(PermissionObjectType.GROUP);
+
         this.superAdministrator = getObject(SUPER_ADMINISTRATOR_ACCOUNT_ID);
         if(this.superAdministrator == null){
-            PermissionObjectType type = getTypeOrCreate(SERVICE_ACCOUNT_NAME,false);
-            this.superAdministrator = createObject(dkPerms.getScopeManager().getRoot(),type,SUPER_ADMINISTRATOR_ACCOUNT_NAME);
+            this.superAdministrator = createObject(dkPerms.getScopeManager().getRoot(),PermissionObjectType.USER_ACCOUNT,SUPER_ADMINISTRATOR_ACCOUNT_NAME);
+        }
+    }
+
+    private void findOrCreateType(PermissionObjectType builtInType){
+        for (PermissionObjectType type : types) {
+            if(type.getId() == builtInType.getId()){
+                types.remove(type);
+                types.add(builtInType);
+                return;
+            }
+        }
+        types.add(builtInType);
+        int id = DKPerms.getInstance().getStorage().getObjectStorage()
+                .createObjectType(builtInType.getName(),builtInType.getDisplayName(),builtInType.isParentAble());
+        if(id != builtInType.getId()){
+            throw new OperationFailedException("Builtin type structure mismatch (Contact the Pretronic Support)");
         }
     }
 

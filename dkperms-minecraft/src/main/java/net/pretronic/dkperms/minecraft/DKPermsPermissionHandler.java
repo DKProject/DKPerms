@@ -13,7 +13,7 @@ package net.pretronic.dkperms.minecraft;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.entity.Entity;
 import net.pretronic.dkperms.api.entity.PermissionEntity;
-import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
+import net.pretronic.dkperms.api.entity.PermissionParentEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.SyncAction;
 import net.pretronic.dkperms.api.permission.PermissionAction;
@@ -44,7 +44,7 @@ public class DKPermsPermissionHandler implements PermissionHandler, ObserveCallb
         this.design = new DKPermsPlayerDesign(object);
 
         object.getCurrentSnapshot().subscribeObserver((snapshot, oldScope)
-                -> snapshot.getGroupInheritanceGraph().subscribeObserver(DKPermsPermissionHandler.this));
+                -> snapshot.getParentInheritanceGraph().subscribeObserver(DKPermsPermissionHandler.this));
     }
 
     @Override
@@ -119,10 +119,10 @@ public class DKPermsPermissionHandler implements PermissionHandler, ObserveCallb
         PermissionObject group = DKPerms.getInstance().getObjectManager()
                 .getObject(name,DKPermsConfig.OBJECT_GROUP_SCOPE,DKPermsConfig.OBJECT_GROUP_TYPE);
 
-        PermissionGroupEntity entity = object.getGroup(DKPermsConfig.MCNATIVE_MANAGEMENT_SCOPE_PERMISSION,group);
+        PermissionParentEntity entity = object.getParent(DKPermsConfig.MCNATIVE_MANAGEMENT_SCOPE_PERMISSION,group);
 
         if(entity == null){
-            object.addGroup(DKPerms.getInstance().getObjectManager().getSuperAdministrator()
+            object.addParent(DKPerms.getInstance().getObjectManager().getSuperAdministrator()
                     ,DKPermsConfig.MCNATIVE_MANAGEMENT_SCOPE_GROUP
                     ,group,PermissionAction.ALLOW,-1);
         }else if(entity.getAction() != PermissionAction.ALLOW){
@@ -134,7 +134,7 @@ public class DKPermsPermissionHandler implements PermissionHandler, ObserveCallb
     public void removeGroup(String name) {
         PermissionObject group = DKPerms.getInstance().getObjectManager()
                 .getObject(name,DKPermsConfig.OBJECT_GROUP_SCOPE,DKPermsConfig.OBJECT_GROUP_TYPE);
-        object.removeGroup(DKPerms.getInstance().getObjectManager().getSuperAdministrator()
+        object.removeParent(DKPerms.getInstance().getObjectManager().getSuperAdministrator()
                 ,DKPermsConfig.MCNATIVE_MANAGEMENT_SCOPE_GROUP,group);
     }
 

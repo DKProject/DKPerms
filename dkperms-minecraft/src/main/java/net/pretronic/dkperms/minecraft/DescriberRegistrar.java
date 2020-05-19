@@ -59,7 +59,7 @@ public class DescriberRegistrar {
             return entry != null ?entry.getLongValue(): "0";
         });
 
-        objectDescriber.registerFunction("globalGroups", PermissionObject::getGroups);
+        objectDescriber.registerFunction("globalGroups", PermissionObject::getParents);
     }
 
     private static void registerSnapshot(){

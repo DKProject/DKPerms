@@ -26,13 +26,13 @@ public interface PermissionObjectManager {
 
     PermissionObjectType getType(String name);
 
-    default PermissionObjectType getTypeOrCreate(String name, boolean group){
-        return getTypeOrCreate(getSuperAdministrator(),name,group);
+    default PermissionObjectType getTypeOrCreate(String name,String displayName, boolean parentAble){
+        return getTypeOrCreate(getSuperAdministrator(),name,displayName,parentAble);
     }
 
-    PermissionObjectType getTypeOrCreate(PermissionObject executor,String name, boolean group);
+    PermissionObjectType getTypeOrCreate(PermissionObject executor,String name,String displayName, boolean parentAble);
 
-    PermissionObjectType createType(PermissionObject executor,String name, boolean group);
+    PermissionObjectType createType(PermissionObject executor,String name,String displayName, boolean parentAble);
 
     void deleteType(PermissionObject executor, int id);
 
@@ -94,6 +94,11 @@ public interface PermissionObjectManager {
     }
 
     void deleteObject(PermissionObject executor,PermissionObject object);
+
+
+    PermissionGroupTrack getPriorityTrack(PermissionObjectType type);
+
+    PermissionGroupTrack getPriorityTrack(PermissionObjectType type,PermissionScope scope);
 
 
     Collection<PermissionGroupTrack> getTracks();

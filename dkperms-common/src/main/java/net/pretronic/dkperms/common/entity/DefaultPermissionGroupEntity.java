@@ -11,14 +11,14 @@
 package net.pretronic.dkperms.common.entity;
 
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
+import net.pretronic.dkperms.api.entity.PermissionParentEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.libraries.utility.Validate;
 
-public class DefaultPermissionGroupEntity implements PermissionGroupEntity {
+public class DefaultPermissionGroupEntity implements PermissionParentEntity {
 
     private final PermissionObject owner;
     private final int id;

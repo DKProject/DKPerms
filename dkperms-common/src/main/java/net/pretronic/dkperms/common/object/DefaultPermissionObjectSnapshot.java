@@ -14,11 +14,9 @@ import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.graph.*;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectSnapshot;
+import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.scope.PermissionScope;
-import net.pretronic.dkperms.common.graph.DefaultGroupGraph;
-import net.pretronic.dkperms.common.graph.DefaultObjectGraph;
-import net.pretronic.dkperms.common.graph.DefaultObjectMetaGraph;
-import net.pretronic.dkperms.common.graph.DefaultPermissionGraph;
+import net.pretronic.dkperms.common.graph.*;
 import net.pretronic.libraries.synchronisation.observer.AbstractObservable;
 import net.pretronic.libraries.utility.Validate;
 
@@ -32,8 +30,11 @@ public class DefaultPermissionObjectSnapshot extends AbstractObservable<Permissi
     private PermissionGraph permissionGraph;
     private PermissionGraph permissionInheritanceGraph;
 
-    private GroupGraph groupGraph;
-    private GroupGraph groupInheritanceGraph;
+    private ParentGraph groupGraph;
+    private ParentGraph groupInheritanceGraph;
+
+    private ObjectGraph effectedParentGraph;
+    private ObjectGraph effectedParentInheritanceGraph;
 
     private ObjectGraph effectedGroupGraph;
     private ObjectGraph effectedGroupInheritanceGraph;
@@ -73,11 +74,14 @@ public class DefaultPermissionObjectSnapshot extends AbstractObservable<Permissi
         this.scope = scope;
         this.scopeGraph = DKPerms.getInstance().getScopeManager().newGraph(scope);
 
-        this.groupGraph = new DefaultGroupGraph(object,scopeGraph,false);
-        this.groupInheritanceGraph = new DefaultGroupGraph(object,scopeGraph,true);
+        this.groupGraph = new DefaultParentGraph(object,scopeGraph,false);
+        this.groupInheritanceGraph = new DefaultParentGraph(object,scopeGraph,true);
 
-        this.effectedGroupGraph = new DefaultObjectGraph(this.groupGraph);
-        this.effectedGroupInheritanceGraph = new DefaultObjectGraph(this.groupInheritanceGraph);
+        this.effectedParentGraph = new DefaultObjectGraph(this.groupGraph);
+        this.effectedParentInheritanceGraph = new DefaultObjectGraph(this.groupInheritanceGraph);
+
+        this.effectedGroupGraph = new FilteredObjectGraph(this.effectedGroupGraph, PermissionObjectType.GROUP);
+        this.effectedGroupInheritanceGraph = new FilteredObjectGraph(this.effectedGroupInheritanceGraph, PermissionObjectType.GROUP);
 
         this.metaGraph = new DefaultObjectMetaGraph(object,scopeGraph,null);
         this.metaInheritanceGraph = new DefaultObjectMetaGraph(object,scopeGraph,effectedGroupInheritanceGraph);
@@ -90,11 +94,10 @@ public class DefaultPermissionObjectSnapshot extends AbstractObservable<Permissi
     }
 
     private void subscribe(){
-        System.out.println("Snapshot Subscribe");
         this.groupGraph.subscribeObservers();
         this.groupInheritanceGraph.subscribeObservers();
-        this.effectedGroupGraph.subscribeObservers();
-        this.effectedGroupInheritanceGraph.subscribeObservers();
+        this.effectedParentGraph.subscribeObservers();
+        this.effectedParentInheritanceGraph.subscribeObservers();
         this.metaGraph.subscribeObservers();
         this.metaInheritanceGraph.subscribeObservers();
         this.permissionGraph.subscribeObservers();
@@ -102,11 +105,10 @@ public class DefaultPermissionObjectSnapshot extends AbstractObservable<Permissi
     }
 
     private void unsubscribe(){
-        System.out.println("Snapshot unsubscribe");
         this.groupGraph.unsubscribeObservers();
         this.groupInheritanceGraph.unsubscribeObservers();
-        this.effectedGroupGraph.unsubscribeObservers();
-        this.effectedGroupInheritanceGraph.unsubscribeObservers();
+        this.effectedParentGraph.unsubscribeObservers();
+        this.effectedParentInheritanceGraph.unsubscribeObservers();
         this.metaGraph.unsubscribeObservers();
         this.metaInheritanceGraph.unsubscribeObservers();
         this.permissionGraph.unsubscribeObservers();
@@ -124,13 +126,23 @@ public class DefaultPermissionObjectSnapshot extends AbstractObservable<Permissi
     }
 
     @Override
-    public GroupGraph getGroupGraph() {
+    public ParentGraph getParentGraph() {
         return groupGraph;
     }
 
     @Override
-    public GroupGraph getGroupInheritanceGraph() {
+    public ParentGraph getParentInheritanceGraph() {
         return groupInheritanceGraph;
+    }
+
+    @Override
+    public ObjectGraph getEffectedParentGraph() {
+        return effectedParentGraph;
+    }
+
+    @Override
+    public ObjectGraph getEffectedParentInheritanceGraph() {
+        return effectedParentInheritanceGraph;
     }
 
     @Override

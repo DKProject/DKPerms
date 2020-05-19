@@ -10,7 +10,7 @@
 
 package net.pretronic.dkperms.common.graph;
 
-import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
+import net.pretronic.dkperms.api.entity.PermissionParentEntity;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.graph.ObjectGraph;
 import net.pretronic.dkperms.api.object.PermissionObject;
@@ -25,11 +25,11 @@ import java.util.List;
 
 public class DefaultObjectGraph extends AbstractObservable<PermissionObject, SyncAction> implements ObjectGraph, ObserveCallback<PermissionObject, SyncAction> {
 
-    private final Graph<PermissionGroupEntity> inheritanceGraph;
+    private final Graph<PermissionParentEntity> inheritanceGraph;
 
     private List<PermissionObject> result;
 
-    public DefaultObjectGraph(Graph<PermissionGroupEntity> inheritanceGraph) {
+    public DefaultObjectGraph(Graph<PermissionParentEntity> inheritanceGraph) {
         Validate.notNull(inheritanceGraph);
         this.inheritanceGraph = inheritanceGraph;
         this.result = new ArrayList<>();
@@ -43,9 +43,9 @@ public class DefaultObjectGraph extends AbstractObservable<PermissionObject, Syn
 
     private void traverse0() {
         List<PermissionObject> blocked = new ArrayList<>();
-        List<PermissionGroupEntity> inheritance = inheritanceGraph.traverse();
+        List<PermissionParentEntity> inheritance = inheritanceGraph.traverse();
 
-        for (PermissionGroupEntity entity : inheritance) {
+        for (PermissionParentEntity entity : inheritance) {
             if(!blocked.contains(entity.getGroup())){
                 if(entity.getAction() == PermissionAction.ALLOW){
                     result.remove(entity.getGroup());

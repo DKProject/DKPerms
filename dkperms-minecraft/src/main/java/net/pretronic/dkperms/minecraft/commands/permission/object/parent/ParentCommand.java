@@ -8,7 +8,7 @@
  * %license%
  */
 
-package net.pretronic.dkperms.minecraft.commands.permission.object.group;
+package net.pretronic.dkperms.minecraft.commands.permission.object.parent;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.minecraft.config.Messages;
@@ -19,10 +19,10 @@ import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
-public class GroupCommand extends MainObjectCommand<PermissionObject> implements DefinedNotFindable<PermissionObject> {
+public class ParentCommand extends MainObjectCommand<PermissionObject> implements DefinedNotFindable<PermissionObject> {
 
-    public GroupCommand(ObjectOwner owner) {
-        super(owner, CommandConfiguration.name("group","g"));
+    public ParentCommand(ObjectOwner owner) {
+        super(owner, CommandConfiguration.name("parent","p","group","g"));
 
         registerCommand(new SetCommand(owner));
         registerCommand(new AddCommand(owner));

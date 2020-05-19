@@ -11,14 +11,14 @@
 package net.pretronic.dkperms.common.cache;
 
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
+import net.pretronic.dkperms.api.entity.PermissionParentEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 
 import java.util.Collection;
 
-public final class GroupCache extends ScopeBasedCache<PermissionGroupEntity>{
+public final class GroupCache extends ScopeBasedCache<PermissionParentEntity>{
 
     private final PermissionObject object;
 
@@ -27,17 +27,17 @@ public final class GroupCache extends ScopeBasedCache<PermissionGroupEntity>{
     }
 
     @Override
-    protected Collection<PermissionGroupEntity> load(PermissionScope scope) {
+    protected Collection<PermissionParentEntity> load(PermissionScope scope) {
         return DKPerms.getInstance().getStorage().getGroupStorage().getGroupReferences(object,scope);
     }
 
     @Override
-    protected ScopeBasedDataList<PermissionGroupEntity> load(Collection<PermissionScope> scopes) {
+    protected ScopeBasedDataList<PermissionParentEntity> load(Collection<PermissionScope> scopes) {
         return DKPerms.getInstance().getStorage().getGroupStorage().getGroupReferences(object,scopes);
     }
 
     @Override
-    protected ScopeBasedDataList<PermissionGroupEntity> loadAll(Collection<PermissionScope> skipped) {
+    protected ScopeBasedDataList<PermissionParentEntity> loadAll(Collection<PermissionScope> skipped) {
         return DKPerms.getInstance().getStorage().getGroupStorage().getAllGroupReferences(object,skipped);
     }
 }

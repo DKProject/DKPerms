@@ -10,7 +10,7 @@
 
 package net.pretronic.dkperms.api.storage;
 
-import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
+import net.pretronic.dkperms.api.entity.PermissionParentEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
@@ -20,11 +20,11 @@ import java.util.Collection;
 
 public interface GroupStorage {
 
-    Collection<PermissionGroupEntity> getGroupReferences(PermissionObject object, PermissionScope scope);
+    Collection<PermissionParentEntity> getGroupReferences(PermissionObject object, PermissionScope scope);
 
-    ScopeBasedDataList<PermissionGroupEntity> getGroupReferences(PermissionObject object, Collection<PermissionScope> scope);
+    ScopeBasedDataList<PermissionParentEntity> getGroupReferences(PermissionObject object, Collection<PermissionScope> scope);
 
-    ScopeBasedDataList<PermissionGroupEntity> getAllGroupReferences(PermissionObject object, Collection<PermissionScope> skipped);
+    ScopeBasedDataList<PermissionParentEntity> getAllGroupReferences(PermissionObject object, Collection<PermissionScope> skipped);
 
     int createGroupReference(int objectId, int scopeId, int groupId, PermissionAction action, long timeout);
 

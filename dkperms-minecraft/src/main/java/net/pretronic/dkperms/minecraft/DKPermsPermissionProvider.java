@@ -28,20 +28,16 @@ public class DKPermsPermissionProvider implements PermissionProvider {
 
     private final PretronicLogger logger;
     private final PermissionObjectManager objectManager;
-    private final PermissionObjectType groupType;
-    private final PermissionObjectType userType;
 
     public DKPermsPermissionProvider() {
         this.logger = DKPerms.getInstance().getLogger();
         this.objectManager = DKPerms.getInstance().getObjectManager();
-        this.groupType = objectManager.getTypeOrCreate("group",true);
-        this.userType = objectManager.getTypeOrCreate("user",true);
     }
 
     @Override
     public Collection<MinecraftPlayer> getOperators() {
         return objectManager.search()
-                .withType(userType)
+                .withType(PermissionObjectType.USER_ACCOUNT)
                 .hasMeta("operator", true)
                 .execute().getAllHolders(MinecraftPlayer.class);
     }
@@ -49,7 +45,7 @@ public class DKPermsPermissionProvider implements PermissionProvider {
     @Override
     public Collection<String> getGroups() { ;
         return Iterators.map(DKPerms.getInstance().getObjectManager()
-                .getObjects(groupType, DKPermsConfig.OBJECT_GROUP_SCOPE).getAll()
+                .getObjects(PermissionObjectType.GROUP, DKPermsConfig.OBJECT_GROUP_SCOPE).getAll()
                 ,PermissionObject::getName);
     }
 
@@ -60,8 +56,8 @@ public class DKPermsPermissionProvider implements PermissionProvider {
 
     @Override
     public boolean createGroup(String group) {
-        if(objectManager.getObject(group,DKPermsConfig.OBJECT_GROUP_SCOPE,groupType) != null){
-            objectManager.createObject(DKPermsConfig.OBJECT_GROUP_SCOPE,groupType,group);
+        if(objectManager.getObject(group,DKPermsConfig.OBJECT_GROUP_SCOPE,PermissionObjectType.GROUP) != null){
+            objectManager.createObject(DKPermsConfig.OBJECT_GROUP_SCOPE,PermissionObjectType.GROUP,group);
             return true;
         }
         return false;
@@ -70,7 +66,7 @@ public class DKPermsPermissionProvider implements PermissionProvider {
     @Override
     public boolean deleteGroup(String group) {
         try{
-            PermissionObject result = objectManager.getObject(group,null,groupType);
+            PermissionObject result = objectManager.getObject(group,null,PermissionObjectType.GROUP);
             if(result != null){
                 objectManager.deleteObject(result);
                 return true;
@@ -83,7 +79,7 @@ public class DKPermsPermissionProvider implements PermissionProvider {
 
     @Override
     public void setGroupPermission(String group, String permission, boolean value) {
-        PermissionObject object = objectManager.getObject(group,DKPermsConfig.OBJECT_GROUP_SCOPE,groupType);
+        PermissionObject object = objectManager.getObject(group,DKPermsConfig.OBJECT_GROUP_SCOPE,PermissionObjectType.GROUP);
         if(object != null){
             PermissionAction action = value ? PermissionAction.ALLOW : PermissionAction.REJECT;
             object.setPermission(DKPerms.getInstance().getObjectManager().getSuperAdministrator()
@@ -96,7 +92,7 @@ public class DKPermsPermissionProvider implements PermissionProvider {
 
     @Override
     public void unsetGroupPermission(String group, String permission) {
-        PermissionObject object = objectManager.getObject(group,DKPermsConfig.OBJECT_GROUP_SCOPE,groupType);
+        PermissionObject object = objectManager.getObject(group,DKPermsConfig.OBJECT_GROUP_SCOPE,PermissionObjectType.GROUP);
         if(object != null){
             object.unsetPermission(DKPerms.getInstance().getObjectManager().getSuperAdministrator()
                     ,permission);
