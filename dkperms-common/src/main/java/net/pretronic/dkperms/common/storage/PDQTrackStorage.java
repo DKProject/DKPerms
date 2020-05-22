@@ -15,13 +15,13 @@ import net.pretronic.databasequery.api.query.QueryGroup;
 import net.pretronic.databasequery.api.query.result.QueryResult;
 import net.pretronic.databasequery.api.query.result.QueryResultEntry;
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.storage.TrackStorage;
-import net.pretronic.dkperms.common.object.DefaultPermissionObjectTrack;
 import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.dkperms.common.object.DefaultPermissionObjectManager;
+import net.pretronic.dkperms.common.object.DefaultPermissionObjectTrack;
 
 import java.util.ArrayList;
 import java.util.Collection;

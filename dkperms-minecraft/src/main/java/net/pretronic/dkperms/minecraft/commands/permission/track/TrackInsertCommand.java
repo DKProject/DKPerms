@@ -10,8 +10,8 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.track;
 
-import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
 import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;

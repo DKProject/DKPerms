@@ -15,7 +15,6 @@ import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.BasicCommand;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.sender.CommandSender;
-import net.pretronic.libraries.message.bml.Message;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
 public class SyncCommand extends BasicCommand {

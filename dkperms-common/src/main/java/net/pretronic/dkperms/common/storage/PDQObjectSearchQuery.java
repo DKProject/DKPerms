@@ -15,7 +15,6 @@ import net.pretronic.databasequery.api.query.SearchOrder;
 import net.pretronic.databasequery.api.query.result.QueryResult;
 import net.pretronic.databasequery.api.query.result.QueryResultEntry;
 import net.pretronic.databasequery.api.query.type.FindQuery;
-import net.pretronic.databasequery.api.query.type.SearchQuery;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.object.PermissionObject;

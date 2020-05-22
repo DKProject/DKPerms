@@ -15,7 +15,6 @@ import net.pretronic.libraries.command.command.configuration.CommandConfiguratio
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import org.mcnative.common.plugin.MinecraftPlugin;
-import org.mcnative.common.serviceprovider.message.builder.TextBuilder;
 import org.mcnative.common.text.Text;
 import org.mcnative.common.text.format.TextColor;
 

@@ -11,8 +11,8 @@
 package net.pretronic.dkperms.minecraft.commands.permission.user;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.minecraft.commands.permission.object.parent.ParentCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.object.meta.MetaCommand;
+import net.pretronic.dkperms.minecraft.commands.permission.object.parent.ParentCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.object.permission.PermissionCommand;
 import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;

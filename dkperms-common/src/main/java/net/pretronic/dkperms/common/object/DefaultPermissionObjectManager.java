@@ -11,9 +11,11 @@
 package net.pretronic.dkperms.common.object;
 
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.object.PermissionObjectTrack;
+import net.pretronic.dkperms.api.logging.LogAction;
+import net.pretronic.dkperms.api.logging.LogType;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectManager;
+import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.object.search.ObjectSearchQuery;
 import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
@@ -193,6 +195,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         if(!scope.isSaved()) scope.insert();
         PermissionObject object = DKPerms.getInstance().getStorage().getObjectStorage().createObject(scope,type,name,assignmentId);
         this.objects.insert(object);
+        DKPerms.getInstance().getAuditLog().createRecord(executor, LogType.OBJECT, LogAction.CREATE,null,scope,null,null,null);
         return object;
     }
 

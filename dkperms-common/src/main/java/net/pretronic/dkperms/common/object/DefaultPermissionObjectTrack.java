@@ -11,8 +11,8 @@
 package net.pretronic.dkperms.common.object;
 
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.libraries.message.bml.variable.describer.VariableObjectToString;
 import net.pretronic.libraries.utility.Validate;

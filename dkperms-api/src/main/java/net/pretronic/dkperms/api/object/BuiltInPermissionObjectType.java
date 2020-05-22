@@ -10,8 +10,6 @@
 
 package net.pretronic.dkperms.api.object;
 
-import net.pretronic.libraries.utility.annonations.Internal;
-
 import java.util.concurrent.CompletableFuture;
 
 public class BuiltInPermissionObjectType implements PermissionObjectType{

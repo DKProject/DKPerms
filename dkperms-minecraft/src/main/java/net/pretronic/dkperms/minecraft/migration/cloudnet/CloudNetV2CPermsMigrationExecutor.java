@@ -21,7 +21,6 @@ import de.dytanic.cloudnet.lib.utility.document.Document;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.entity.Entity;
 import net.pretronic.dkperms.api.migration.MigrationExecutor;
-import net.pretronic.dkperms.api.migration.PermissionMigration;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
@@ -32,7 +31,8 @@ import org.mcnative.common.McNative;
 import org.mcnative.common.player.MinecraftPlayer;
 import org.mcnative.common.player.data.PlayerDataProvider;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 public class CloudNetV2CPermsMigrationExecutor implements MigrationExecutor {
 

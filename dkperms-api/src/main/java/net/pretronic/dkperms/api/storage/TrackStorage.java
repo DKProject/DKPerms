@@ -10,8 +10,8 @@
 
 package net.pretronic.dkperms.api.storage;
 
-import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 
 import java.util.Collection;

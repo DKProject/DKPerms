@@ -124,7 +124,7 @@ public class DKPermsPlugin extends MinecraftPlugin {
         registerMigrations(dkPerms);
         DescriberRegistrar.register();
 
-        getLogger().info("DKPerms successfully started");
+        getLogger().info("DKPerms started successfully");
 
         if(DKPermsConfig.DELETE_TIMED_OUT_ENTRIES_ENABLED){
             Duration duration = DurationProcessor.getStandard().parse(DKPermsConfig.DELETE_TIMED_OUT_ENTRIES_INTERVAL);

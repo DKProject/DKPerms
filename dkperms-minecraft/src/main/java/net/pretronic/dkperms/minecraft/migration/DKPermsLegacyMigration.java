@@ -24,7 +24,6 @@ import ch.dkrieger.permissionsystem.lib.player.PermissionPlayer;
 import ch.dkrieger.permissionsystem.lib.player.PermissionPlayerStorage;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.entity.Entity;
-import net.pretronic.dkperms.api.migration.MigrationExecutor;
 import net.pretronic.dkperms.api.migration.PermissionMigration;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;

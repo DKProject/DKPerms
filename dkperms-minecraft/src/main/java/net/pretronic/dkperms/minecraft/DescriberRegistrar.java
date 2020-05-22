@@ -25,8 +25,6 @@ import net.pretronic.libraries.message.bml.variable.describer.VariableDescriber;
 import net.pretronic.libraries.message.bml.variable.describer.VariableDescriberRegistry;
 import org.mcnative.common.player.MinecraftPlayer;
 
-import java.util.function.Function;
-
 public class DescriberRegistrar {
 
     public static void register(){

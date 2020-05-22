@@ -12,11 +12,9 @@ package net.pretronic.dkperms.minecraft.migration.cloudnet;
 
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.driver.permission.*;
-import de.dytanic.cloudnet.lib.player.permission.PermissionGroup;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.entity.Entity;
 import net.pretronic.dkperms.api.migration.MigrationExecutor;
-import net.pretronic.dkperms.api.migration.PermissionMigration;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;

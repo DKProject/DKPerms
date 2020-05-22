@@ -11,8 +11,8 @@
 package net.pretronic.dkperms.minecraft.commands.rank;
 
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;

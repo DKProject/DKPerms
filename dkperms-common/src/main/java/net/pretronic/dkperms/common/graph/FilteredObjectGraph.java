@@ -21,7 +21,6 @@ import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.Validate;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 public class FilteredObjectGraph extends AbstractObservable<PermissionObject, SyncAction> implements ObjectGraph, ObserveCallback<PermissionObject, SyncAction> {
 
