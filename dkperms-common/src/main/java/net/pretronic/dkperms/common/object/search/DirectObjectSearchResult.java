@@ -68,8 +68,8 @@ public class DirectObjectSearchResult implements ObjectSearchResult {
     }
 
     @Override
-    public Collection<PermissionObject> get(int fromIndex, int toIndex) {
-        Collection<PermissionObject> result = new ArrayList<>();
+    public List<PermissionObject> get(int fromIndex, int toIndex) {
+        List<PermissionObject> result = new ArrayList<>();
         int index = fromIndex;
         for (PermissionObject object : objects) {
             if(index >= toIndex) break;
@@ -80,7 +80,7 @@ public class DirectObjectSearchResult implements ObjectSearchResult {
     }
 
     @Override
-    public Collection<PermissionObject> getAll() {
+    public List<PermissionObject> getAll() {
         return objects;
     }
 
