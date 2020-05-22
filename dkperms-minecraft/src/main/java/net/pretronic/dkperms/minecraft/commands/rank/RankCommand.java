@@ -33,6 +33,8 @@ public class RankCommand extends MainObjectCommand<PermissionObject> implements 
         registerCommand(new AddCommand(owner));
         registerCommand(new SetCommand(owner));
         registerCommand(new RemoveCommand(owner));
+        registerCommand(new PromoteCommand(owner));
+        registerCommand(new DemoteCommand(owner));
         registerCommand(listCommand);
     }
 

@@ -18,7 +18,5 @@ public class SortColumn {
 
     public static final String PRIORITY = "priority";
 
-    public static final String MEMBER_COUNT = "member_count";
-
 
 }

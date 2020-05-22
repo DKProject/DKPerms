@@ -10,7 +10,7 @@
 
 package net.pretronic.dkperms.api.storage;
 
-import net.pretronic.dkperms.api.object.PermissionGroupTrack;
+import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 
@@ -19,14 +19,14 @@ import java.util.List;
 
 public interface TrackStorage {
 
-    Collection<PermissionGroupTrack> getTracks();
+    Collection<PermissionObjectTrack> getTracks();
 
-    Collection<PermissionGroupTrack> getTracks(PermissionScope scope);
+    Collection<PermissionObjectTrack> getTracks(PermissionScope scope);
 
 
-    PermissionGroupTrack getTrack(int id);
+    PermissionObjectTrack getTrack(int id);
 
-    PermissionGroupTrack getTrack(String name);
+    PermissionObjectTrack getTrack(String name);
 
 
     int createTrack(String name,int scopeId);

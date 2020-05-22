@@ -11,25 +11,30 @@
 package net.pretronic.dkperms.common.storage;
 
 import net.pretronic.databasequery.api.collection.DatabaseCollection;
+import net.pretronic.databasequery.api.query.SearchOrder;
 import net.pretronic.databasequery.api.query.result.QueryResult;
 import net.pretronic.databasequery.api.query.result.QueryResultEntry;
 import net.pretronic.databasequery.api.query.type.FindQuery;
+import net.pretronic.databasequery.api.query.type.SearchQuery;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.object.search.ObjectSearchQuery;
 import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
+import net.pretronic.dkperms.api.object.search.sort.SortColumn;
 import net.pretronic.dkperms.api.object.search.sort.SortOrder;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.dkperms.common.object.DefaultPermissionObjectManager;
 import net.pretronic.dkperms.common.object.search.DirectObjectSearchResult;
+import net.pretronic.libraries.utility.Validate;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 //@Todo check if caching is working
 public class PDQObjectSearchQuery implements ObjectSearchQuery {
@@ -37,14 +42,16 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
     private final FindQuery query;
     private final DatabaseCollection objectCollection;
     private final DatabaseCollection metaCollection;
+    private final DatabaseCollection parentCollection;
 
     private boolean inheritance;
     private boolean directLoading;
 
-    public PDQObjectSearchQuery(FindQuery query, DatabaseCollection objectCollection, DatabaseCollection metaCollection) {
+    public PDQObjectSearchQuery(FindQuery query, DatabaseCollection objectCollection, DatabaseCollection metaCollection,DatabaseCollection parentCollection) {
         this.query = query;
         this.objectCollection = objectCollection;
         this.metaCollection = metaCollection;
+        this.parentCollection = parentCollection;
 
         this.inheritance = false;
         this.directLoading = false;
@@ -76,8 +83,7 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
 
     @Override
     public ObjectSearchQuery inheritance() {
-        this.inheritance = true;
-        return this;
+        throw new UnsupportedOperationException("Inheritance searching is currently not supported");
     }
 
     @Override
@@ -101,18 +107,26 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
     }
 
     @Override
-    public ObjectSearchQuery hasParent(PermissionObject group) {
-        throw new UnsupportedOperationException();
+    public ObjectSearchQuery hasParent(PermissionObject parent) {
+        query.join(parentCollection).on(objectCollection,"Id",parentCollection,"ObjectId")
+                .where("ParentId",parent.getId());
+        return this;
     }
 
     @Override
-    public ObjectSearchQuery hasParent(PermissionObject group, PermissionScope scope) {
-        throw new UnsupportedOperationException();
+    public ObjectSearchQuery hasParent(PermissionObject parent, PermissionScope scope) {
+        query.join(parentCollection).on(objectCollection,"Id",parentCollection,"ObjectId").and(query -> query
+                        .where("ParentId",parent.getId())
+                        .where(parentCollection.getName()+".ScopeId"));
+        return this;
     }
 
     @Override
     public ObjectSearchQuery hasParent(PermissionObject parent, Collection<PermissionScope> scopes) {
-        throw new UnsupportedOperationException();
+        query.join(parentCollection).on(objectCollection,"Id",parentCollection,"ObjectId").and(query -> query
+                        .where("ParentId",parent.getId())
+                        .whereIn("ParentId", scopes, (Function<PermissionScope, Object>) PermissionScope::getId));
+        return this;
     }
 
     @Override
@@ -159,8 +173,20 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
     }
 
     @Override
-    public ObjectSearchQuery sortBy(String column, SortOrder order) {
-        return null;
+    public ObjectSearchQuery sortBy(String column, SortOrder order0) {
+        Validate.notNull(column,order0);
+
+        SearchOrder order = order0 == SortOrder.ASC ? SearchOrder.ASC : SearchOrder.DESC;
+
+        if(column.equals(SortColumn.NAME)){
+            query.orderBy("Name",order);
+        }else if(column.equals(SortColumn.ID)){
+            query.orderBy("Id",order);
+        }else if(column.equals(SortColumn.PRIORITY)){
+            query.orderBy("Priority",order);
+        }else throw new IllegalArgumentException("Invalid order column");
+
+        return this;
     }
 
     @Override
@@ -171,7 +197,7 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
 
     @Override
     public ObjectSearchResult execute() {
-        directLoading();//Auto enable, passive loading not integrated
+        directLoading();//Auto enable, passive loading not integrated yet
         ObjectSearchResult cached = getObjectManager().getSearchResults().get("ByQuery",this);
         if(cached != null) return cached;
         if(directLoading){
@@ -179,6 +205,7 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
             query.get(objectCollection.getName()+".AssignmentId");
             query.get(objectCollection.getName()+".Name");
             query.get(objectCollection.getName()+".Disabled");
+            query.get(objectCollection.getName()+".Priority");
             query.get(objectCollection.getName()+".TypeId");
             query.get(objectCollection.getName()+".ScopeId");
 

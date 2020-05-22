@@ -11,7 +11,7 @@
 package net.pretronic.dkperms.minecraft.commands.permission.track;
 
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.object.PermissionGroupTrack;
+import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.BasicCommand;
@@ -30,7 +30,7 @@ public class TrackListCommand extends BasicCommand {
 
     @Override
     public void execute(CommandSender sender, String[] strings) {
-        Collection<PermissionGroupTrack> tracks = DKPerms.getInstance().getObjectManager().getTracks(DKPermsConfig.OBJECT_TRACK_SCOPE);
+        Collection<PermissionObjectTrack> tracks = DKPerms.getInstance().getObjectManager().getTracks(DKPermsConfig.OBJECT_TRACK_SCOPE);
         sender.sendMessage(Messages.TRACK_LIST, VariableSet.create()
                 .addDescribed("tracks",tracks));
     }

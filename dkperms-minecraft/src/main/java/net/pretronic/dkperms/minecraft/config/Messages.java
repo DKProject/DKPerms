@@ -44,7 +44,6 @@ public final class Messages {
     public static final MessageKeyComponent USER_NOTFOUND = Text.ofMessageKey("dkperms.user.notfound");
     public static final MessageKeyComponent USER_INFO = Text.ofMessageKey("dkperms.user.info");
 
-
     public static final MessageKeyComponent OBJECT_META_HELP = Text.ofMessageKey("dkperms.object.meta.help");
     public static final MessageKeyComponent OBJECT_META_SET = Text.ofMessageKey("dkperms.object.meta.set");
     public static final MessageKeyComponent OBJECT_META_UNSET = Text.ofMessageKey("dkperms.object.meta.unset");
@@ -95,9 +94,13 @@ public final class Messages {
     public static final MessageKeyComponent TRACK_REMOVE = Text.ofMessageKey("dkperms.track.remove");
 
     public static final MessageKeyComponent RANK_HELP = Text.ofMessageKey("dkperms.rank.help");
-    public static final MessageKeyComponent RANK_CHANGE_NO_PERMISSION_FOR_RANK = Text.ofMessageKey("dkperms.rank.noPermissionForRank");
     public static final MessageKeyComponent RANK_LIST = Text.ofMessageKey("dkperms.rank.list");
-
+    public static final MessageKeyComponent RANK_PROMOTED = Text.ofMessageKey("dkperms.rank.promoted");
+    public static final MessageKeyComponent RANK_DEMOTED = Text.ofMessageKey("dkperms.rank.demoted");
+    public static final MessageKeyComponent RANK_CHANGE_NO_PERMISSION_FOR_RANK = Text.ofMessageKey("dkperms.rank.noPermissionForRank");
+    public static final MessageKeyComponent RANK_CHANGE_NO_PERMISSION_FOR_PLAYER = Text.ofMessageKey("dkperms.rank.noPermissionForPlayer");
 
     public static final MessageKeyComponent SYNCHRONIZED = Text.ofMessageKey("dkperms.synchronized");
+
+    public static final MessageKeyComponent TEAM = Text.ofMessageKey("dkperms.team");
 }

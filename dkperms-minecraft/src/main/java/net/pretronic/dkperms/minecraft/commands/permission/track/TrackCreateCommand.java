@@ -11,7 +11,7 @@
 package net.pretronic.dkperms.minecraft.commands.permission.track;
 
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.object.PermissionGroupTrack;
+import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.dkperms.minecraft.config.Messages;
@@ -39,7 +39,7 @@ public class TrackCreateCommand extends ObjectCommand<String> {
             return;
         }
 
-        PermissionGroupTrack track = DKPerms.getInstance().getObjectManager().createTrack(name, DKPermsConfig.OBJECT_TRACK_SCOPE);
+        PermissionObjectTrack track = DKPerms.getInstance().getObjectManager().createTrack(name, DKPermsConfig.OBJECT_TRACK_SCOPE);
         sender.sendMessage(Messages.TRACK_CREATED, VariableSet.create()
                 .addDescribed("track",track));
     }

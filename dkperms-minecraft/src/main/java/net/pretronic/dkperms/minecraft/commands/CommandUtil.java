@@ -21,6 +21,7 @@ import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.duration.DurationProcessor;
+import org.mcnative.common.player.MinecraftPlayer;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -136,6 +137,32 @@ public class CommandUtil {
         variables.add("command",command);
         variables.add("usage",usage);
         sender.sendMessage(Messages.COMMAND_INVALID_SYNTAX,variables);
+    }
+
+    public static boolean canChangeRank(CommandSender sender, PermissionObject object, PermissionObject group) {
+        if(!sender.hasPermission("dkperms.rank.change.all")){
+            if(!sender.hasPermission("dkperms.rank.change.")){
+                sender.sendMessage(Messages.RANK_CHANGE_NO_PERMISSION_FOR_RANK, VariableSet.create()
+                        .addDescribed("group",group));
+                return true;
+            }
+            if(!sender.hasPermission("dkperms.rank.change.higher") && sender instanceof MinecraftPlayer){
+                PermissionObject senderObject = ((MinecraftPlayer) sender).getAs(PermissionObject.class);
+                PermissionObject senderGroup = senderObject.getHighestParent();
+                PermissionObject assignerGroup = object.getHighestParent();
+
+                if(senderGroup == null ||
+                        (Math.max(senderObject.getPriority(),senderGroup.getPriority())
+                                <= Math.max(object.getPriority(),assignerGroup != null ? assignerGroup.getPriority() : 0))){
+                    sender.sendMessage(Messages.RANK_CHANGE_NO_PERMISSION_FOR_PLAYER, VariableSet.create()
+                            .addDescribed("object",object)
+                            .addDescribed("user",object));
+                }
+
+                return true;
+            }
+        }
+        return false;
     }
 
 }

@@ -20,7 +20,7 @@ import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedData;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
-import net.pretronic.dkperms.common.entity.DefaultPermissionGroupEntity;
+import net.pretronic.dkperms.common.entity.DefaultPermissionParentEntity;
 import net.pretronic.libraries.synchronisation.observer.AbstractObservable;
 import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
 import net.pretronic.libraries.utility.SystemUtil;
@@ -64,8 +64,8 @@ public final class DefaultParentGraph extends AbstractObservable<PermissionObjec
         findNextGroups(owner,1);
 
         for (PermissionObject defaultGroup : DKPerms.getInstance().getObjectManager().getDefaultGroups(scopes)) {
-            DefaultPermissionGroupEntity defaultEntity =
-                    new DefaultPermissionGroupEntity(owner,-1,defaultGroup,PermissionAction.ALLOW,defaultGroup.getScope(),-1);
+            DefaultPermissionParentEntity defaultEntity =
+                    new DefaultPermissionParentEntity(owner,-1,defaultGroup,PermissionAction.ALLOW,defaultGroup.getScope(),-1);
 
             this.objectPriority.put(defaultEntity,Integer.MAX_VALUE);
             this.entities.add(defaultEntity);

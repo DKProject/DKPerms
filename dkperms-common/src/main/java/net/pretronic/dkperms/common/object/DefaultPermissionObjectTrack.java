@@ -11,7 +11,7 @@
 package net.pretronic.dkperms.common.object;
 
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.object.PermissionGroupTrack;
+import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.libraries.message.bml.variable.describer.VariableObjectToString;
@@ -20,14 +20,14 @@ import net.pretronic.libraries.utility.Validate;
 import java.util.List;
 import java.util.ListIterator;
 
-public class DefaultPermissionGroupTrack implements PermissionGroupTrack, VariableObjectToString {
+public class DefaultPermissionObjectTrack implements PermissionObjectTrack, VariableObjectToString {
 
     private final int id;
     private String name;
     private PermissionScope scope;
     private final List<PermissionObject> groups;
 
-    public DefaultPermissionGroupTrack(int id,String name, PermissionScope scope, List<PermissionObject> groups) {
+    public DefaultPermissionObjectTrack(int id, String name, PermissionScope scope, List<PermissionObject> groups) {
         Validate.notNull(scope,name,groups);
         this.id = id;
         this.name = name;

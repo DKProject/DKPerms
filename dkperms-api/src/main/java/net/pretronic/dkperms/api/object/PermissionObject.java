@@ -26,9 +26,11 @@ import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 import net.pretronic.libraries.synchronisation.observer.Observable;
 import net.pretronic.libraries.utility.annonations.Nullable;
+import net.pretronic.libraries.utility.map.Pair;
 
 import java.time.Duration;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -111,6 +113,13 @@ public interface PermissionObject extends Observable<PermissionObject,SyncAction
     ScopeBasedDataList<PermissionParentEntity> getParents(Graph<PermissionScope> range);
 
 
+    default PermissionObject getHighestParent(){
+        return getHighestParent(getScope());
+    }
+
+    PermissionObject getHighestParent(PermissionScope scope);
+
+
     ParentGraph newParentGraph(Graph<PermissionScope> range);
 
     ParentGraph newParentInheritanceGraph(Graph<PermissionScope> range);
@@ -175,6 +184,10 @@ public interface PermissionObject extends Observable<PermissionObject,SyncAction
 
     ObjectSearchResult getAllChildren();
 
+    default ObjectSearchResult getChildren(PermissionScope scope){
+        return getChildren(Collections.singleton(scope));
+    }
+
     default ObjectSearchResult getChildren(Graph<PermissionScope> range){
         return getChildren(range.traverse());
     }
@@ -189,9 +202,9 @@ public interface PermissionObject extends Observable<PermissionObject,SyncAction
     PermissionAction hasParent(PermissionScope scope, PermissionObject group);
 
 
-    PermissionObject promote(PermissionObject executor,PermissionScope scope, PermissionGroupTrack track);
+    Pair<PermissionObject,PermissionObject> promote(PermissionObject executor, PermissionScope scope, PermissionObjectTrack track);
 
-    PermissionObject demote(PermissionObject executor,PermissionScope scope, PermissionGroupTrack track);
+    Pair<PermissionObject,PermissionObject> demote(PermissionObject executor,PermissionScope scope, PermissionObjectTrack track);
 
 
     // ----- Permissions -----

@@ -188,8 +188,19 @@ messages:
    &7/rank <name>
    &7/rank <name> set <group> [duration] [scope] [modifier]
    &7/rank <name> add <group> [duration] [scope] [modifier]
-   &7/rank <name> remove <group>'
+   &7/rank <name> remove <group>
+   &7/rank <name> promote [scope]
+   &7/rank <name> demote [scope]'
   dkperms.rank.list: '${dkperms.prefix} &7Ranks of &e{object.name} @for("group" in {groups},${dkperms.rank.list.loop},"\n","\n")'
   dkperms.rank.list.loop: ' &8- &7{group.property.color}{group.name}'
+  dkperms.rank.promoted: '${dkperms.prefix} &e{user.name} &7was promoted to &7{newGroup.name}'
+  dkperms.rank.demoted: '${dkperms.prefix} &e{user.name} &7was demoted to &7{newGroup.name}'
+  dkperms.rank.noPermissionForRank: '${dkperms.prefix} &cYou are not allowed to use the rank &e{group.name}'
+  dkperms.rank.noPermissionForPlayer: '${dkperms.prefix} &cYou are not allowed to modify the rank of &{user.name}'
+  dkperms.team: '${dkperms.prefix} &7Team members&8:
+  @for("group" in {groups},${dkperms.team.loop},"\n")'
+  dkperms.team.loop: '&8» {group.displayName} &8| &7{group.property.description} @for("member" in {group.members},${dkperms.team.loop.member},"\n","\n")\n'
+  dkperms.team.loop.member: ' &8- {member.displayName}'
   dkperms.synchronized: '${dkperms.prefix} &7Synchronized DKPerms on the local server'
+
 

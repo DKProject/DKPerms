@@ -28,16 +28,16 @@ public final class GroupCache extends ScopeBasedCache<PermissionParentEntity>{
 
     @Override
     protected Collection<PermissionParentEntity> load(PermissionScope scope) {
-        return DKPerms.getInstance().getStorage().getGroupStorage().getGroupReferences(object,scope);
+        return DKPerms.getInstance().getStorage().getParentStorage().getParentReferences(object,scope);
     }
 
     @Override
     protected ScopeBasedDataList<PermissionParentEntity> load(Collection<PermissionScope> scopes) {
-        return DKPerms.getInstance().getStorage().getGroupStorage().getGroupReferences(object,scopes);
+        return DKPerms.getInstance().getStorage().getParentStorage().getParentReferences(object,scopes);
     }
 
     @Override
     protected ScopeBasedDataList<PermissionParentEntity> loadAll(Collection<PermissionScope> skipped) {
-        return DKPerms.getInstance().getStorage().getGroupStorage().getAllGroupReferences(object,skipped);
+        return DKPerms.getInstance().getStorage().getParentStorage().getAllParentReferences(object,skipped);
     }
 }

@@ -10,6 +10,7 @@
 
 package net.pretronic.dkperms.minecraft.commands.rank;
 
+import ch.dkrieger.permissionsystem.lib.group.PermissionGroup;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
 import net.pretronic.dkperms.minecraft.config.Messages;
@@ -18,6 +19,7 @@ import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
+import org.mcnative.common.player.MinecraftPlayer;
 
 //@Todo permission for preventing setting of higher prioritized accounts
 public class AddCommand extends ObjectCommand<PermissionObject> {
@@ -35,11 +37,7 @@ public class AddCommand extends ObjectCommand<PermissionObject> {
             PermissionObject group = CommandUtil.getGroup(sender, arguments[0]);
             if(group == null) return;
 
-            if(!sender.hasPermission("dkperms.rank.change.")){
-                sender.sendMessage(Messages.RANK_CHANGE_NO_PERMISSION_FOR_RANK, VariableSet.create()
-                        .addDescribed("group",group));
-                return;
-            }
+            if (CommandUtil.canChangeRank(sender, object, group)) return;
 
             CommandUtil.changeGroup(false,sender,object,group,arguments);
         }else{

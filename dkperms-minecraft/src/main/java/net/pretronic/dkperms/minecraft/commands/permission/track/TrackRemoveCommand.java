@@ -10,7 +10,7 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.track;
 
-import net.pretronic.dkperms.api.object.PermissionGroupTrack;
+import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
 import net.pretronic.dkperms.minecraft.config.Messages;
@@ -20,14 +20,14 @@ import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
-public class TrackRemoveCommand extends ObjectCommand<PermissionGroupTrack> {
+public class TrackRemoveCommand extends ObjectCommand<PermissionObjectTrack> {
 
     public TrackRemoveCommand(ObjectOwner owner) {
         super(owner, CommandConfiguration.name("remove","r"));
     }
 
     @Override
-    public void execute(CommandSender sender, PermissionGroupTrack track, String[] arguments) {
+    public void execute(CommandSender sender, PermissionObjectTrack track, String[] arguments) {
         if(arguments.length < 1){
             CommandUtil.sendInvalidSyntax(sender,"track remove","");
             return;

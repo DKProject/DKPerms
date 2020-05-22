@@ -39,6 +39,7 @@ public class PDQObjectStorage implements ObjectStorage {
     private DatabaseCollection object;
     private DatabaseCollection object_type;
     private DatabaseCollection object_meta;
+    private DatabaseCollection parent;
 
     @Override
     public Collection<PermissionObjectType> getObjectTypes() {
@@ -146,7 +147,7 @@ public class PDQObjectStorage implements ObjectStorage {
 
     @Override
     public ObjectSearchQuery createSearchQuery() {
-        return new PDQObjectSearchQuery(object.find(),object,object_meta);
+        return new PDQObjectSearchQuery(object.find(),object,object_meta,parent);
     }
 
     @Override
@@ -389,9 +390,10 @@ public class PDQObjectStorage implements ObjectStorage {
                 .whereLower("Timeout",System.currentTimeMillis()).execute();
     }
 
-    public void setCollections(DatabaseCollection object, DatabaseCollection object_type, DatabaseCollection object_meta){
+    public void setCollections(DatabaseCollection object, DatabaseCollection object_type, DatabaseCollection object_meta, DatabaseCollection parent){
         this.object = object;
         this.object_type = object_type;
         this.object_meta = object_meta;
+        this.parent = parent;
     }
 }

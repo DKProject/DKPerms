@@ -23,11 +23,14 @@ import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.dkperms.common.object.DefaultPermissionObjectManager;
 import net.pretronic.dkperms.common.scope.DefaultPermissionScopeManager;
 import net.pretronic.dkperms.common.storage.PDQStorage;
+import net.pretronic.dkperms.minecraft.commands.TeamCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.PermissionCommand;
 import net.pretronic.dkperms.minecraft.commands.rank.RankCommand;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.dkperms.minecraft.integration.DKPermsPlaceholders;
 import net.pretronic.dkperms.minecraft.migration.DKPermsLegacyMigration;
+import net.pretronic.dkperms.minecraft.migration.cloudnet.CloudNetV2CPermsMigration;
+import net.pretronic.dkperms.minecraft.migration.cloudnet.CloudNetV3CPermsMigration;
 import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.document.type.DocumentFileType;
 import net.pretronic.libraries.plugin.description.PluginVersion;
@@ -118,9 +121,8 @@ public class DKPermsPlugin extends MinecraftPlugin {
                 ,event -> event.getPlayer().getPermissionHandler());
 
         registerCommands();
+        registerMigrations(dkPerms);
         DescriberRegistrar.register();
-
-        dkPerms.getMigrationAssistant().registerMigration(new DKPermsLegacyMigration());
 
         getLogger().info("DKPerms successfully started");
 
@@ -202,6 +204,13 @@ public class DKPermsPlugin extends MinecraftPlugin {
     private void registerCommands(){
         getRuntime().getLocal().getCommandManager().registerCommand(new PermissionCommand(this,DKPermsConfig.COMMAND_PERMISSION));
         getRuntime().getLocal().getCommandManager().registerCommand(new RankCommand(this,DKPermsConfig.COMMAND_RANK));
+        getRuntime().getLocal().getCommandManager().registerCommand(new TeamCommand(this,DKPermsConfig.COMMAND_TEAM));
+    }
+
+    private void registerMigrations(DKPerms dkPerms){
+        dkPerms.getMigrationAssistant().registerMigration(new DKPermsLegacyMigration());
+        dkPerms.getMigrationAssistant().registerMigration(new CloudNetV2CPermsMigration());
+        dkPerms.getMigrationAssistant().registerMigration(new CloudNetV3CPermsMigration());
     }
 
     //@Todo update and optimize

@@ -24,6 +24,7 @@ import ch.dkrieger.permissionsystem.lib.player.PermissionPlayer;
 import ch.dkrieger.permissionsystem.lib.player.PermissionPlayerStorage;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.entity.Entity;
+import net.pretronic.dkperms.api.migration.MigrationExecutor;
 import net.pretronic.dkperms.api.migration.PermissionMigration;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
@@ -33,6 +34,7 @@ import org.mcnative.common.McNative;
 import org.mcnative.common.player.MinecraftPlayer;
 import org.mcnative.common.player.data.PlayerDataProvider;
 
+import java.io.File;
 import java.util.*;
 
 public class DKPermsLegacyMigration implements PermissionMigration {
@@ -51,13 +53,18 @@ public class DKPermsLegacyMigration implements PermissionMigration {
     }
 
     @Override
+    public String getDisplayName() {
+        return "DKPermsLegacy (DKPerms V1)";
+    }
+
+    @Override
     public String getName() {
         return "DKPermsLegacy";
     }
 
     @Override
     public boolean isAvailable() {
-        return true;
+        return new File("plugins/DKPerms/legacy-config.yml").exists();
     }
 
     @Override
@@ -73,7 +80,7 @@ public class DKPermsLegacyMigration implements PermissionMigration {
         }
 
         for (PermissionPlayer player : playerStorage.getPlayers()) {
-            MinecraftPlayer minecraftPlayer =  McNative.getInstance().getPlayerManager().getPlayer(player.getUUID());
+            MinecraftPlayer minecraftPlayer = McNative.getInstance().getPlayerManager().getPlayer(player.getUUID());
             if(minecraftPlayer == null){
                 McNative.getInstance().getRegistry().getService(PlayerDataProvider.class)
                         .createPlayerData(player.getName(),player.getUUID(),-1,-1,-1,null);
@@ -186,5 +193,4 @@ public class DKPermsLegacyMigration implements PermissionMigration {
             }
         }
     }
-
 }

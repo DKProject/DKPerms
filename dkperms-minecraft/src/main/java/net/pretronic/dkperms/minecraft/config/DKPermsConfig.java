@@ -99,6 +99,12 @@ public class DKPermsConfig {
             .permission("dkperms.rank")
             .create();
 
+    public static CommandConfiguration COMMAND_TEAM = CommandConfiguration.newBuilder()
+            .enabled(true)
+            .name("team")
+            .permission("dkperms.team")
+            .create();
+
     //Loaded Configuration
 
     public static transient PermissionScope SCOPE_CURRENT_INSTANCE_SCOPE;

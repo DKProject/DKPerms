@@ -12,7 +12,7 @@ package net.pretronic.dkperms.api.object;
 
 import net.pretronic.dkperms.api.scope.PermissionScope;
 
-public interface PermissionGroupTrack {
+public interface PermissionObjectTrack {
 
     int getId();
 

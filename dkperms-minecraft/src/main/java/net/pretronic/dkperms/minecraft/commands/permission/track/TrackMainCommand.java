@@ -11,8 +11,7 @@
 package net.pretronic.dkperms.minecraft.commands.permission.track;
 
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.object.PermissionGroupTrack;
-import net.pretronic.dkperms.minecraft.commands.permission.group.ListCommand;
+import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.NotFindable;
@@ -27,7 +26,7 @@ import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
 import java.util.Arrays;
 
-public class TrackMainCommand extends MainObjectCommand<PermissionGroupTrack> implements NotFindable, ObjectNotFindable {
+public class TrackMainCommand extends MainObjectCommand<PermissionObjectTrack> implements NotFindable, ObjectNotFindable {
 
     private final Command listCommand;
     private final ObjectCommand<String> createCommand;
@@ -47,7 +46,7 @@ public class TrackMainCommand extends MainObjectCommand<PermissionGroupTrack> im
     }
 
     @Override
-    public PermissionGroupTrack getObject(CommandSender commandSender, String name) {
+    public PermissionObjectTrack getObject(CommandSender commandSender, String name) {
         if(name.equalsIgnoreCase("list")) return null;
         return DKPerms.getInstance().getObjectManager().getTrack(name, DKPermsConfig.OBJECT_TRACK_SCOPE);
     }

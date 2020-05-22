@@ -18,7 +18,7 @@ import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.libraries.utility.Validate;
 
-public class DefaultPermissionGroupEntity implements PermissionParentEntity {
+public class DefaultPermissionParentEntity implements PermissionParentEntity {
 
     private final PermissionObject owner;
     private final int id;
@@ -28,7 +28,7 @@ public class DefaultPermissionGroupEntity implements PermissionParentEntity {
     private PermissionScope scope;
     private long timeout;
 
-    public DefaultPermissionGroupEntity(PermissionObject owner,int id, PermissionObject group, PermissionAction action, PermissionScope scope, long timeout) {
+    public DefaultPermissionParentEntity(PermissionObject owner, int id, PermissionObject group, PermissionAction action, PermissionScope scope, long timeout) {
         Validate.notNull(owner,group,action,scope);
         this.owner = owner;
         this.id = id;
@@ -56,7 +56,7 @@ public class DefaultPermissionGroupEntity implements PermissionParentEntity {
     @Override
     public void setAction(PermissionObject executor, PermissionAction action) {
         Validate.notNull(action);
-        DKPerms.getInstance().getStorage().getGroupStorage().updateGroupReferenceAction(this.id,action);
+        DKPerms.getInstance().getStorage().getParentStorage().updateParentReferenceAction(this.id,action);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class DefaultPermissionGroupEntity implements PermissionParentEntity {
     public void setScope(PermissionObject executor, PermissionScope scope) {
         Validate.notNull(scope);
         if(!scope.isSaved()) scope.insert();
-        DKPerms.getInstance().getStorage().getGroupStorage().updateGroupReferenceScope(this.id,scope.getId());
+        DKPerms.getInstance().getStorage().getParentStorage().updateParentReferenceScope(this.id,scope.getId());
     }
 
 
@@ -84,7 +84,7 @@ public class DefaultPermissionGroupEntity implements PermissionParentEntity {
 
     @Override
     public void setTimeout(PermissionObject executor, long timeout) {
-        DKPerms.getInstance().getStorage().getGroupStorage().updateGroupReferenceTimeout(this.id,timeout);
+        DKPerms.getInstance().getStorage().getParentStorage().updateParentReferenceTimeout(this.id,timeout);
         this.timeout = timeout;
     }
 
@@ -92,7 +92,7 @@ public class DefaultPermissionGroupEntity implements PermissionParentEntity {
     public void update(PermissionObject executor, PermissionAction action, PermissionScope scope, long timeout) {
         Validate.notNull(action,scope);
         if(!scope.isSaved()) scope.insert();
-        DKPerms.getInstance().getStorage().getGroupStorage().updateGroupReference(this.id,scope.getId(),action,timeout);
+        DKPerms.getInstance().getStorage().getParentStorage().updateParentReference(this.id,scope.getId(),action,timeout);
 
         if(owner instanceof DefaultPermissionObject){
             ((DefaultPermissionObject) owner).synchronizeGroups(scope);

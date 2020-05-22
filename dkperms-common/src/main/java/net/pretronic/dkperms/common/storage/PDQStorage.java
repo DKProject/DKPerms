@@ -24,7 +24,7 @@ public class PDQStorage implements DKPermsStorage {
     private final PDQAuditLogStorage auditLogStorage;
     private final PDQScopeStorage scopeStorage;
     private final PDQObjectStorage objectStorage;
-    private final PDQGroupStorage groupStorage;
+    private final PDQParentStorage parentStorage;
     private final PDQPermissionStorage permissionStorage;
     private final PDQTrackStorage trackStorage;
 
@@ -34,7 +34,7 @@ public class PDQStorage implements DKPermsStorage {
         this.auditLogStorage = new PDQAuditLogStorage();
         this.scopeStorage = new PDQScopeStorage();
         this.objectStorage = new PDQObjectStorage();
-        this.groupStorage = new PDQGroupStorage();
+        this.parentStorage = new PDQParentStorage();
         this.permissionStorage = new PDQPermissionStorage();
         this.trackStorage = new PDQTrackStorage();
         createTables();
@@ -61,8 +61,8 @@ public class PDQStorage implements DKPermsStorage {
     }
 
     @Override
-    public GroupStorage getGroupStorage() {
-        return groupStorage;
+    public ParentStorage getParentStorage() {
+        return parentStorage;
     }
 
     @Override
@@ -111,11 +111,11 @@ public class PDQStorage implements DKPermsStorage {
                 .field("Timeout",DataType.LONG,FieldOption.NOT_NULL)
                 .create();
 
-        DatabaseCollection object_groups = database.createCollection("DKPerms_Object_Groups")
+        DatabaseCollection object_groups = database.createCollection("DKPerms_Object_Parents")
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
                 .field("ObjectId",DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
                 .field("ScopeId",DataType.INTEGER,ForeignKey.of(scope,"Id"),FieldOption.NOT_NULL)
-                .field("GroupId",DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
+                .field("ParentId",DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
                 .field("Action",DataType.INTEGER,FieldOption.NOT_NULL)
                 .field("Timeout",DataType.LONG,FieldOption.NOT_NULL)
                 .create();
@@ -157,8 +157,8 @@ public class PDQStorage implements DKPermsStorage {
 
         this.auditLogStorage.setCollections(auditLog);
         this.scopeStorage.setCollections(scope);
-        this.objectStorage.setCollections(object,object_type,object_meta);
-        this.groupStorage.setCollections(object_groups);
+        this.objectStorage.setCollections(object,object_type,object_meta,object_groups);
+        this.parentStorage.setCollections(object_groups);
         this.permissionStorage.setCollections(object_permissions);
         this.trackStorage.setCollections(track,track_assignments);
     }

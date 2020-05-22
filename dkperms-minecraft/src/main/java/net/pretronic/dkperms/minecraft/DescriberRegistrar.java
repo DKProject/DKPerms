@@ -11,16 +11,21 @@
 package net.pretronic.dkperms.minecraft;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import net.pretronic.dkperms.common.entity.DefaultPermissionEntity;
-import net.pretronic.dkperms.common.entity.DefaultPermissionGroupEntity;
+import net.pretronic.dkperms.common.entity.DefaultPermissionParentEntity;
 import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.dkperms.common.object.DefaultPermissionObjectSnapshot;
 import net.pretronic.dkperms.common.object.DefaultPermissionObjectType;
 import net.pretronic.dkperms.common.object.meta.DefaultObjectMetaEntry;
 import net.pretronic.dkperms.common.scope.DefaultPermissionScope;
+import net.pretronic.dkperms.minecraft.commands.TeamCommand;
 import net.pretronic.libraries.message.bml.variable.describer.VariableDescriber;
 import net.pretronic.libraries.message.bml.variable.describer.VariableDescriberRegistry;
+import org.mcnative.common.player.MinecraftPlayer;
+
+import java.util.function.Function;
 
 public class DescriberRegistrar {
 
@@ -34,6 +39,7 @@ public class DescriberRegistrar {
         VariableDescriberRegistry.registerDescriber(DefaultPermissionEntity.class);
         VariableDescriberRegistry.registerDescriber(DefaultPermissionObjectType.class);
         VariableDescriberRegistry.registerDescriber(DKPermsPlayerDesign.class);
+        VariableDescriberRegistry.registerDescriber(TeamCommand.TeamTree.class);
     }
 
     private static void registerObject(){
@@ -60,6 +66,17 @@ public class DescriberRegistrar {
         });
 
         objectDescriber.registerFunction("globalGroups", PermissionObject::getParents);
+
+        objectDescriber.registerFunction("displayName", object -> {
+            if(object.getType().equals(PermissionObjectType.USER_ACCOUNT)){
+                MinecraftPlayer player = object.getHolder(MinecraftPlayer.class);
+                if(player != null) return player.getDisplayName();
+                return object.getName();
+            }else {
+                ObjectMetaEntry color = object.getMeta().getHighest("color");
+                return (color != null ? color.getValue() : "")+object.getName();
+            }
+        });
     }
 
     private static void registerSnapshot(){
@@ -83,8 +100,8 @@ public class DescriberRegistrar {
     }
 
     private static void registerGroupEntity(){
-        VariableDescriber<DefaultPermissionGroupEntity> groupEntityDescriber = VariableDescriberRegistry.registerDescriber(DefaultPermissionGroupEntity.class);
-        groupEntityDescriber.setForwardFunction(DefaultPermissionGroupEntity::getGroup);
+        VariableDescriber<DefaultPermissionParentEntity> groupEntityDescriber = VariableDescriberRegistry.registerDescriber(DefaultPermissionParentEntity.class);
+        groupEntityDescriber.setForwardFunction(DefaultPermissionParentEntity::getGroup);
     }
 
 }

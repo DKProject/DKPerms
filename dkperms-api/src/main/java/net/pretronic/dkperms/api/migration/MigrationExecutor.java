@@ -2,13 +2,16 @@
  * (C) Copyright 2020 The DKPerms Project (Davide Wietlisbach & Philipp Elvin Friedhoff)
  *
  * @author Davide Wietlisbach
- * @since 11.05.20, 19:45
+ * @since 21.05.20, 14:55
  * @website %web%
  *
  * %license%
  */
 
-package net.pretronic.dkperms.minecraft.commands.permission.user;
+package net.pretronic.dkperms.api.migration;
 
-public class DemoteCommand {
+public interface MigrationExecutor {
+
+    boolean migrate() throws Exception;
+
 }

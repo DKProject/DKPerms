@@ -34,11 +34,7 @@ public class SetCommand extends ObjectCommand<PermissionObject> {
             PermissionObject group = CommandUtil.getGroup(sender, arguments[0]);
             if(group == null) return;
 
-            if(!sender.hasPermission("dkperms.rank.change.")){
-                sender.sendMessage(Messages.RANK_CHANGE_NO_PERMISSION_FOR_RANK, VariableSet.create()
-                        .addDescribed("group",group));
-                return;
-            }
+            if (CommandUtil.canChangeRank(sender, object, group)) return;
 
             CommandUtil.changeGroup(false,sender,object,group,arguments);
         }else{

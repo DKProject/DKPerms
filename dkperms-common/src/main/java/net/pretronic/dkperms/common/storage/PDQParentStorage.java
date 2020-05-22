@@ -20,8 +20,8 @@ import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
-import net.pretronic.dkperms.api.storage.GroupStorage;
-import net.pretronic.dkperms.common.entity.DefaultPermissionGroupEntity;
+import net.pretronic.dkperms.api.storage.ParentStorage;
+import net.pretronic.dkperms.common.entity.DefaultPermissionParentEntity;
 import net.pretronic.dkperms.common.scope.data.ArrayScopeBasedDataList;
 import net.pretronic.libraries.utility.Iterators;
 
@@ -29,46 +29,46 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class PDQGroupStorage implements GroupStorage {
+public class PDQParentStorage implements ParentStorage {
 
-    private DatabaseCollection group_entities;
+    private DatabaseCollection parent_entities;
 
     @Override
-    public Collection<PermissionParentEntity> getGroupReferences(PermissionObject object, PermissionScope scope) {
+    public Collection<PermissionParentEntity> getParentReferences(PermissionObject object, PermissionScope scope) {
         List<PermissionParentEntity> entities = new ArrayList<>();
-        group_entities.find()
+        parent_entities.find()
                 .where("ObjectId",object.getId())
                 .where("ScopeId",scope.getId())
                 .execute()
                 .loadIn(entities, entry
-                -> new DefaultPermissionGroupEntity(object,entry.getInt("Id")
-                ,DKPerms.getInstance().getObjectManager().getObject(entry.getInt("GroupId"))
+                -> new DefaultPermissionParentEntity(object,entry.getInt("Id")
+                ,DKPerms.getInstance().getObjectManager().getObject(entry.getInt("ParentId"))
                 ,PermissionAction.of(entry.getInt("Action")),scope,entry.getLong("Timeout")));
         return entities;
     }
 
     @Override
-    public ScopeBasedDataList<PermissionParentEntity> getGroupReferences(PermissionObject object, Collection<PermissionScope> scope) {
+    public ScopeBasedDataList<PermissionParentEntity> getParentReferences(PermissionObject object, Collection<PermissionScope> scope) {
         if(scope.isEmpty()) return new ArrayScopeBasedDataList<>();
-        QueryResult result = group_entities.find()
+        QueryResult result = parent_entities.find()
                 .where("ObjectId",object.getId())
                 .whereIn("ScopeId", scope, PermissionScope::getId)
                 .orderBy("ScopeId", SearchOrder.ASC)
                 .execute();
-        return getGroupReferences(object,result,scope);
+        return getParentReferences(object,result,scope);
     }
 
     @Override
-    public ScopeBasedDataList<PermissionParentEntity> getAllGroupReferences(PermissionObject object, Collection<PermissionScope> skipped) {
-        QueryResult result = group_entities.find()
+    public ScopeBasedDataList<PermissionParentEntity> getAllParentReferences(PermissionObject object, Collection<PermissionScope> skipped) {
+        QueryResult result = parent_entities.find()
                 .where("ObjectId",object.getId())
                 .not(query -> query.whereIn("ScopeId", skipped, PermissionScope::getId))
                 .orderBy("ScopeId", SearchOrder.ASC)
                 .execute();
-        return getGroupReferences(object,result,null);
+        return getParentReferences(object,result,null);
     }
 
-    private ScopeBasedDataList<PermissionParentEntity> getGroupReferences(PermissionObject object, QueryResult result, Collection<PermissionScope> scopes) {
+    private ScopeBasedDataList<PermissionParentEntity> getParentReferences(PermissionObject object, QueryResult result, Collection<PermissionScope> scopes) {
         ScopeBasedDataList<PermissionParentEntity> response = new ArrayScopeBasedDataList<>();
 
         PermissionScope last = null;
@@ -82,8 +82,8 @@ public class PDQGroupStorage implements GroupStorage {
                 entities = new ArrayList<>();
                 response.put(last,entities);
             }
-            entities.add(new DefaultPermissionGroupEntity(object,entry.getInt("Id")
-                    ,DKPerms.getInstance().getObjectManager().getObject(entry.getInt("GroupId"))
+            entities.add(new DefaultPermissionParentEntity(object,entry.getInt("Id")
+                    ,DKPerms.getInstance().getObjectManager().getObject(entry.getInt("ParentId"))
                     ,PermissionAction.of(entry.getInt("Action"))
                     ,last,entry.getLong("Timeout")));
         }
@@ -91,41 +91,41 @@ public class PDQGroupStorage implements GroupStorage {
     }
 
     @Override
-    public int createGroupReference(int objectId, int scopeId, int groupId, PermissionAction action, long timeout) {
-        return this.group_entities.insert()
+    public int createParentReference(int objectId, int scopeId, int ParentId, PermissionAction action, long timeout) {
+        return this.parent_entities.insert()
                 .set("ObjectId",objectId)
                 .set("ScopeId",scopeId)
-                .set("GroupId",groupId)
+                .set("ParentId",ParentId)
                 .set("Action",action.ordinal())
                 .set("Timeout",timeout)
                 .executeAndGetGeneratedKeyAsInt("id");
     }
 
     @Override
-    public void removeGroupReference(int entityId) {
-        this.group_entities.delete()
+    public void removeParentReference(int entityId) {
+        this.parent_entities.delete()
                 .where("Id")
                 .execute();
     }
 
     @Override
-    public void clearGroupReferences(int objectId) {
-        this.group_entities.delete()
+    public void clearParentReferences(int objectId) {
+        this.parent_entities.delete()
                 .where("ObjectId",objectId)
                 .execute();
     }
 
     @Override
-    public void clearGroupReferences(int objectId, int scopeId) {
-        this.group_entities.delete()
+    public void clearParentReferences(int objectId, int scopeId) {
+        this.parent_entities.delete()
                 .where("ObjectId",objectId)
                 .where("ScopeId",scopeId)
                 .execute();
     }
 
     @Override
-    public void updateGroupReference(int entityId, int scopeId, PermissionAction action, long timeout) {
-        this.group_entities.update()
+    public void updateParentReference(int entityId, int scopeId, PermissionAction action, long timeout) {
+        this.parent_entities.update()
                 .set("ScopeId",scopeId)
                 .set("Action",action.ordinal())
                 .set("Timeout",timeout)
@@ -134,38 +134,38 @@ public class PDQGroupStorage implements GroupStorage {
     }
 
     @Override
-    public void updateGroupReferenceScope(int entityId, int scopeId) {
-        this.group_entities.update()
+    public void updateParentReferenceScope(int entityId, int scopeId) {
+        this.parent_entities.update()
                 .set("ScopeId",scopeId)
                 .where("Id",entityId)
                 .execute();
     }
 
     @Override
-    public void updateGroupReferenceAction(int entityId, PermissionAction action) {
-        this.group_entities.update()
+    public void updateParentReferenceAction(int entityId, PermissionAction action) {
+        this.parent_entities.update()
                 .set("Action",action.ordinal())
                 .where("Id",entityId)
                 .execute();
     }
 
     @Override
-    public void updateGroupReferenceTimeout(int entityId, long timeout) {
-        this.group_entities.update()
+    public void updateParentReferenceTimeout(int entityId, long timeout) {
+        this.parent_entities.update()
                 .set("Timeout",timeout)
                 .where("Id",entityId)
                 .execute();
     }
 
     @Override
-    public void deleteTimedOutGroupReferences() {
-        this.group_entities.delete()
+    public void deleteTimedOutParentReferences() {
+        this.parent_entities.delete()
                 .whereHigher("Timeout",0)
                 .whereLower("Timeout",System.currentTimeMillis()).execute();
     }
 
-    public void setCollections(DatabaseCollection group_entities){
-        this.group_entities = group_entities;
+    public void setCollections(DatabaseCollection parent_entities){
+        this.parent_entities = parent_entities;
     }
 
 }

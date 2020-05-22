@@ -10,7 +10,7 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.track;
 
-import net.pretronic.dkperms.api.object.PermissionGroupTrack;
+import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
 import net.pretronic.dkperms.minecraft.config.Messages;
@@ -21,14 +21,14 @@ import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.GeneralUtil;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
-public class TrackInsertCommand extends ObjectCommand<PermissionGroupTrack> {
+public class TrackInsertCommand extends ObjectCommand<PermissionObjectTrack> {
 
     public TrackInsertCommand(ObjectOwner owner) {
         super(owner, CommandConfiguration.name("insert","i"));
     }
 
     @Override
-    public void execute(CommandSender sender, PermissionGroupTrack track, String[] arguments) {
+    public void execute(CommandSender sender, PermissionObjectTrack track, String[] arguments) {
         if(arguments.length < 2){
             CommandUtil.sendInvalidSyntax(sender,"track insert","");
             return;

@@ -15,11 +15,11 @@ import net.pretronic.databasequery.api.query.QueryGroup;
 import net.pretronic.databasequery.api.query.result.QueryResult;
 import net.pretronic.databasequery.api.query.result.QueryResultEntry;
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.object.PermissionGroupTrack;
+import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.storage.TrackStorage;
-import net.pretronic.dkperms.common.object.DefaultPermissionGroupTrack;
+import net.pretronic.dkperms.common.object.DefaultPermissionObjectTrack;
 import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.dkperms.common.object.DefaultPermissionObjectManager;
 
@@ -33,9 +33,9 @@ public class PDQTrackStorage implements TrackStorage {
     private DatabaseCollection track_assignments;
 
     @Override
-    public Collection<PermissionGroupTrack> getTracks() {
+    public Collection<PermissionObjectTrack> getTracks() {
         QueryResult result = tracks.find().execute();
-        Collection<PermissionGroupTrack> tracks = new ArrayList<>();
+        Collection<PermissionObjectTrack> tracks = new ArrayList<>();
         for (QueryResultEntry entry : result) {
             tracks.add(createTrack(entry));
         }
@@ -43,9 +43,9 @@ public class PDQTrackStorage implements TrackStorage {
     }
 
     @Override
-    public Collection<PermissionGroupTrack> getTracks(PermissionScope scope) {
+    public Collection<PermissionObjectTrack> getTracks(PermissionScope scope) {
         QueryResult result = tracks.find().where("ScopeId",scope.getId()).execute();
-        Collection<PermissionGroupTrack> tracks = new ArrayList<>();
+        Collection<PermissionObjectTrack> tracks = new ArrayList<>();
         for (QueryResultEntry entry : result) {
             tracks.add(createTrack(entry));
         }
@@ -53,21 +53,21 @@ public class PDQTrackStorage implements TrackStorage {
     }
 
     @Override
-    public PermissionGroupTrack getTrack(int id) {
+    public PermissionObjectTrack getTrack(int id) {
         QueryResult result = tracks.find().where("Id",id).limit(1).execute();
         if(!result.isEmpty()) return createTrack(result.first());
         return null;
     }
 
     @Override
-    public PermissionGroupTrack getTrack(String name) {
+    public PermissionObjectTrack getTrack(String name) {
         QueryResult result = tracks.find().where("Name",name).limit(1).execute();
         if(!result.isEmpty()) return createTrack(result.first());
         return null;
     }
 
-    private PermissionGroupTrack createTrack(QueryResultEntry entry){
-        return new DefaultPermissionGroupTrack(entry.getInt("Id")
+    private PermissionObjectTrack createTrack(QueryResultEntry entry){
+        return new DefaultPermissionObjectTrack(entry.getInt("Id")
                 ,entry.getString("Name")
                 ,DKPerms.getInstance().getScopeManager().getScope(entry.getInt("ScopeId"))
                 ,loadGroups(entry.getInt("Id")));
