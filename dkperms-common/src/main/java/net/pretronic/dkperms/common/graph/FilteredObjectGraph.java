@@ -35,7 +35,7 @@ public class FilteredObjectGraph extends AbstractObservable<PermissionObject, Sy
 
     @Override
     public List<PermissionObject> traverse() {
-        return Iterators.filter(traverse(), object -> object.getType().equals(filteredType));
+        return Iterators.filter(graph.traverse(), object -> object.getType().equals(filteredType));
     }
 
     @Override
