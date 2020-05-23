@@ -86,10 +86,11 @@ public class PDQStorage implements DKPermsStorage {
         DatabaseCollection object_type = database.createCollection("DKPerms_Object_Type")
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
                 .field("Name",DataType.STRING,64,FieldOption.NOT_NULL,FieldOption.UNIQUE)
-                .field("IsGroup",DataType.BOOLEAN,FieldOption.NOT_NULL)
+                .field("DisplayName",DataType.STRING,64,FieldOption.NOT_NULL)
+                .field("IsParentAble",DataType.BOOLEAN,FieldOption.NOT_NULL)
                 .create();
 
-        DatabaseCollection object = database.createCollection("DKPerms_Object")
+        DatabaseCollection object = database.createCollection("DKPerms_Object")//@Todo check inconsistent with displayName and description
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL,FieldOption.INDEX)
                 .field("AssignmentId", DataType.UUID,FieldOption.INDEX)
                 .field("Name",DataType.STRING,64,FieldOption.NOT_NULL,FieldOption.INDEX)
@@ -140,6 +141,7 @@ public class PDQStorage implements DKPermsStorage {
                 .field("Field",DataType.STRING,32,FieldOption.NOT_NULL)
                 .field("OldValue",DataType.STRING,500,FieldOption.NOT_NULL)
                 .field("NewValue",DataType.STRING,500,FieldOption.NOT_NULL)
+                .field("Data",DataType.STRING,1024,FieldOption.NOT_NULL)
                 .create();
 
         DatabaseCollection track = database.createCollection("DKPerms_Track")

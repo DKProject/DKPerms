@@ -53,6 +53,7 @@ public class DefaultPermissionObjectType implements PermissionObjectType, Variab
         Objects.requireNonNull(name,"Name can't be null");
         DKPerms.getInstance().getStorage().getObjectStorage().updateObjectType(this.id,name,displayName);
         this.name = name;
+        this.displayName = displayName;
     }
 
     @Override

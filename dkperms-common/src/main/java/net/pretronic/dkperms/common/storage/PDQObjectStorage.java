@@ -48,7 +48,7 @@ public class PDQObjectStorage implements ObjectStorage {
                 -> new DefaultPermissionObjectType(entry.getInt("Id")
                 ,entry.getString("Name")
                 ,entry.getString("DisplayName")
-                ,entry.getBoolean("IsGroup")));
+                ,entry.getBoolean("IsParentAble")));
         return types;
     }
 
@@ -59,7 +59,7 @@ public class PDQObjectStorage implements ObjectStorage {
                 -> new DefaultPermissionObjectType(entry.getInt("Id")
                 ,entry.getString("Name")
                 ,entry.getString("DisplayName")
-                ,entry.getBoolean("IsGroup")));
+                ,entry.getBoolean("IsParentAble")));
         return null;
     }
 
@@ -70,7 +70,7 @@ public class PDQObjectStorage implements ObjectStorage {
                 -> new DefaultPermissionObjectType(entry.getInt("Id")
                 ,entry.getString("Name")
                 ,entry.getString("DisplayName")
-                ,entry.getBoolean("IsGroup")));
+                ,entry.getBoolean("IsParentAble")));
         return null;
     }
 
@@ -79,7 +79,7 @@ public class PDQObjectStorage implements ObjectStorage {
         return this.object_type.insert()
                 .set("Name",name)
                 .set("DisplayName",displayName)
-                .set("IsGroup",group)
+                .set("IsParentAble",group)
                 .executeAndGetGeneratedKeys("id").first().getInt("id");
     }
 

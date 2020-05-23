@@ -16,7 +16,7 @@ public interface PermissionObjectType {
 
     PermissionObjectType SERVICE_ACCOUNT = new BuiltInPermissionObjectType(1,"BUILTIN/SERVICE_ACCOUNT","Service",false);
 
-    PermissionObjectType USER_ACCOUNT = new BuiltInPermissionObjectType(1,"BUILTIN/SERVICE_ACCOUNT","User",false);
+    PermissionObjectType USER_ACCOUNT = new BuiltInPermissionObjectType(1,"BUILTIN/USER_ACCOUNT","User",false);
 
     PermissionObjectType GROUP = new BuiltInPermissionObjectType(1,"BUILTIN/GROUP","Group",true);
 
