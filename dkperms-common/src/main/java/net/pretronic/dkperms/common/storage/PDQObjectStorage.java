@@ -178,7 +178,6 @@ public class PDQObjectStorage implements ObjectStorage {
                 .set("AssignmentId",assignmentId)
                 .set("Disabled",false)
                 .set("DisplayName",name)
-                .set("Description","")
                 .executeAndGetGeneratedKeys("id").first().getInt("id");
         return new DefaultPermissionObject(id,assignmentId,name,false,0,type,scope);
     }

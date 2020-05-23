@@ -195,7 +195,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         if(!scope.isSaved()) scope.insert();
         PermissionObject object = DKPerms.getInstance().getStorage().getObjectStorage().createObject(scope,type,name,assignmentId);
         this.objects.insert(object);
-        DKPerms.getInstance().getAuditLog().createRecord(executor, LogType.OBJECT, LogAction.CREATE,null,scope,null,null,null);
+        DKPerms.getInstance().getAuditLog().createRecord(executor, LogType.OBJECT, LogAction.CREATE,null,scope,null,null,null,null);
         return object;
     }
 

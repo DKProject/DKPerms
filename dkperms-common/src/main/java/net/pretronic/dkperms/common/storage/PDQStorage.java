@@ -99,7 +99,6 @@ public class PDQStorage implements DKPermsStorage {
                 .field("ScopeId",DataType.INTEGER,ForeignKey.of(scope,"Id"),FieldOption.NOT_NULL)
                 .field("Disabled",DataType.BOOLEAN,FieldOption.NOT_NULL)
                 .field("DisplayName",DataType.STRING,64,FieldOption.NOT_NULL)
-                .field("Description",DataType.LONG_TEXT,FieldOption.NOT_NULL)
                 .create();
 
         DatabaseCollection object_meta = database.createCollection("DKPerms_Object_Meta")

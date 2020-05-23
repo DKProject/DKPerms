@@ -84,10 +84,10 @@ public class DefaultPermissionObjectSnapshot extends AbstractObservable<Permissi
         this.effectedGroupInheritanceGraph = new FilteredObjectGraph(this.effectedParentInheritanceGraph, PermissionObjectType.GROUP);
 
         this.metaGraph = new DefaultObjectMetaGraph(object,scopeGraph,null);
-        this.metaInheritanceGraph = new DefaultObjectMetaGraph(object,scopeGraph,effectedGroupInheritanceGraph);
+        this.metaInheritanceGraph = new DefaultObjectMetaGraph(object,scopeGraph,effectedParentInheritanceGraph);
 
         this.permissionGraph = new DefaultPermissionGraph(object,scopeGraph,null);
-        this.permissionInheritanceGraph = new DefaultPermissionGraph(object,scopeGraph,effectedGroupInheritanceGraph);
+        this.permissionInheritanceGraph = new DefaultPermissionGraph(object,scopeGraph,effectedParentInheritanceGraph);
 
         subscribe();
         callObservers(this,oldScope);

@@ -18,7 +18,6 @@ public interface AuditLog {
     //ExecutorObjectId | Time | Action | ObjectId | ScopeId | Collection | Field | PrimaryKey | OldValue | NewValue | restore
 
     //ExecutorObjectId | (ExecutorObjectName) | Time | Action | ObjectId | ScopeId | Type | Field | PrimaryKey | OldValue | NewValue  | ObjectData | ValueData
-    void createRecord(PermissionObject executor, LogType type, LogAction action, PermissionObject owner
-            ,PermissionScope scope ,String field,Object oldValue, Object newValue);
+    void createRecord(PermissionObject executor, LogType type, LogAction action, PermissionObject owner,Object key, String field,Object oldValue, Object newValue, Object data);
 
 }
