@@ -224,7 +224,7 @@ public class DKPermsPlugin extends MinecraftPlugin {
             if(object == null){
                 object = DKPerms.getInstance().getObjectManager().createObject(
                         DKPermsConfig.OBJECT_PLAYER_SCOPE
-                        ,DKPermsConfig.OBJECT_PLAYER_TYPE
+                        ,PermissionObjectType.USER_ACCOUNT
                         ,player.getName(),player.getUniqueId());
             }else if(!object.getName().equals(player.getName())){
                 object.setName(null,player.getName());

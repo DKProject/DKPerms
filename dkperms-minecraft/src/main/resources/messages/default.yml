@@ -111,7 +111,7 @@ messages:
    &8- &7group &8- &7Manage inheritance groups'
   dkperms.user.notfound: '${dkperms.prefix} &cThe user &c{user} &cwas not found.'
   dkperms.user.info: '${dkperms.prefix} &7Player information
-  &8» &7Id&8: &e{snapshot.id}
+  &8» &7Id&8: &e{user.id}
   &8» &7Name&8: &e{snapshot.property.color}{user.name}
   &8» &7UniqueId&8: &e{user.uniqueId}
   &8» &7Scope&8: &e{user.scope}
@@ -122,7 +122,7 @@ messages:
   &8» &7Tablist&8: &e{snapshot.property.prefix}{user.name}{snapshot.property.suffix}
   &8
   &8» &7Groups&8:
-  @for("group" in {user.groups},${dkperms.user.info.groups.loop},"\n")'
+  @for("group" in {snapshot.groups},${dkperms.user.info.groups.loop},"\n")'
   dkperms.user.info.groups.loop: '  &8- {group.property.color}{group.name}'
 
   dkperms.group.help: '${dkperms.prefix} &7Group commands&8:

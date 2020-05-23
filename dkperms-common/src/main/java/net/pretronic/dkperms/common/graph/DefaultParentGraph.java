@@ -76,7 +76,6 @@ public final class DefaultParentGraph extends AbstractObservable<PermissionObjec
                 .thenComparing(((Comparator<PermissionParentEntity>) (o1, o2) -> Integer.compare(objectPriority.get(o1), objectPriority.get(o2))).reversed())
                 .thenComparing(Comparator.comparingInt((ToIntFunction<PermissionParentEntity>) entity -> entity.getGroup().getPriority()).reversed()));
 
-        System.out.println("-> Traversed Group Graph");
         trySubscribe();
     }
 
@@ -98,13 +97,11 @@ public final class DefaultParentGraph extends AbstractObservable<PermissionObjec
     @Override
     public void subscribeObservers() {
         subscribe = true;
-        System.out.println("Enabled subscriber subscription");
         trySubscribe();
     }
 
     @Override
     public void unsubscribeObservers() {
-        System.out.println("Unsubscribing from observers "+this+" | "+subGroups);
         subscribe = false;
         owner.unsubscribeObserver(this);
         if(subGroups){
@@ -117,27 +114,21 @@ public final class DefaultParentGraph extends AbstractObservable<PermissionObjec
     private void trySubscribe(){
         if(!subscribe) return;
         looked = true;
-        System.out.println("-----------------");
-        System.out.println("Subscribing to observers "+this+" | "+subGroups);
         if(!owner.isObserverSubscribed(this)){
             owner.subscribeObserver(this);
-            System.out.println("Subscribing to owner");
         }
         if(subGroups){
             for (PermissionParentEntity object : objectPriority.keySet()) {
                 if(!object.getGroup().isObserverSubscribed(this)){
-                    System.out.println("Subscribing to group observer "+object.getGroup().getName());
                     object.getGroup().subscribeObserver(this);
                 }
             }
         }
-        System.out.println("-----------------");
         looked = false;
     }
 
     @Override
     public void callback(PermissionObject observable, SyncAction action) {
-        System.out.println("GROUP GRAPH CALLBACK "+action);
         if(action == SyncAction.OBJECT_GROUP_UPDATE){
             if(subGroups && subscribe){
                 for (PermissionParentEntity object : objectPriority.keySet()) {

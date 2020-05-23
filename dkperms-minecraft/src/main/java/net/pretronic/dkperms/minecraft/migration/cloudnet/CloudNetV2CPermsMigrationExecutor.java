@@ -22,6 +22,7 @@ import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.entity.Entity;
 import net.pretronic.dkperms.api.migration.MigrationExecutor;
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
@@ -53,11 +54,11 @@ public class CloudNetV2CPermsMigrationExecutor implements MigrationExecutor {
             PermissionObject object = DKPerms.getInstance().getObjectManager()
                     .getObject(group.getName()
                             , DKPermsConfig.OBJECT_GROUP_SCOPE
-                            ,DKPermsConfig.OBJECT_GROUP_TYPE);
+                            ,PermissionObjectType.GROUP);
             if(object == null){
                 object = DKPerms.getInstance().getObjectManager()
                         .createObject(DKPermsConfig.OBJECT_GROUP_SCOPE
-                                ,DKPermsConfig.OBJECT_GROUP_TYPE,group.getName());
+                                ,PermissionObjectType.GROUP,group.getName());
             }
             object.setPriority(admin,group.getTagId());
 
@@ -121,7 +122,7 @@ public class CloudNetV2CPermsMigrationExecutor implements MigrationExecutor {
                 if(object == null){
                     object = DKPerms.getInstance().getObjectManager()
                             .createObject(DKPermsConfig.OBJECT_PLAYER_SCOPE
-                                    ,DKPermsConfig.OBJECT_PLAYER_TYPE,player.getName(),player.getUniqueId());
+                                    , PermissionObjectType.USER_ACCOUNT,player.getName(),player.getUniqueId());
                 }
 
                 for (Map.Entry<String, Boolean> entry : entity.getPermissions().entrySet()) {

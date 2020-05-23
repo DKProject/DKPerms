@@ -51,14 +51,9 @@ public class DKPermsConfig {
 
     //Object Configuration
 
-    @DocumentKey("object.player.type")
-    public static String OBJECT_PLAYER_TYPE_NAME = "user";
     @DocumentKey("object.player.scope")
     public static String OBJECT_PLAYER_SCOPE_NAME = "\\\\namespace=minecraft";
 
-    @DocumentKey("object.group.type")
-    public static String OBJECT_GROUP_TYPE_NAME = "group";
-    @DocumentKey("object.group.scope")
     public static String OBJECT_GROUP_SCOPE_NAME = "\\\\namespace=minecraft";
 
     @DocumentKey("object.track.scope")
@@ -114,21 +109,16 @@ public class DKPermsConfig {
     public static transient PermissionScope MCNATIVE_MANAGEMENT_SCOPE_PERMISSION;
     public static transient PermissionScope MCNATIVE_MANAGEMENT_SCOPE_OPERATOR;
 
-    public static transient PermissionObjectType OBJECT_PLAYER_TYPE;
     public static transient PermissionScope OBJECT_PLAYER_SCOPE;
 
-    public static transient PermissionObjectType OBJECT_GROUP_TYPE;
     public static transient PermissionScope OBJECT_GROUP_SCOPE;
     public static transient PermissionScope OBJECT_TRACK_SCOPE;
 
     public static transient SimpleDateFormat FORMAT_DATE;
 
 
-    public static void load(){//@Todo error messages
-        OBJECT_PLAYER_TYPE = DKPerms.getInstance().getObjectManager().getType(DKPermsConfig.OBJECT_PLAYER_TYPE_NAME);
+    public static void load(){
         OBJECT_PLAYER_SCOPE = DKPerms.getInstance().getScopeManager().get(DKPermsConfig.OBJECT_PLAYER_SCOPE_NAME);
-
-        OBJECT_GROUP_TYPE = DKPerms.getInstance().getObjectManager().getType(DKPermsConfig.OBJECT_GROUP_TYPE_NAME);
         OBJECT_GROUP_SCOPE = DKPerms.getInstance().getScopeManager().get(DKPermsConfig.OBJECT_GROUP_SCOPE_NAME);
         OBJECT_TRACK_SCOPE = DKPerms.getInstance().getScopeManager().get(DKPermsConfig.OBJECT_TRACK_SCOPE_NAME);
 

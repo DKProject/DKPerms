@@ -12,6 +12,7 @@ package net.pretronic.dkperms.minecraft.commands.permission.group;
 
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.minecraft.commands.permission.object.SetPriorityCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.object.meta.MetaCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.object.parent.ParentCommand;
@@ -51,7 +52,8 @@ public class GroupMainCommand extends MainObjectCommand<PermissionObject> implem
     @Override
     public PermissionObject getObject(CommandSender sender, String name) {//@Todo check multiples
         if(name.equalsIgnoreCase("list")) return null;
-        return DKPerms.getInstance().getObjectManager().getObject(name,DKPermsConfig.OBJECT_GROUP_SCOPE, DKPermsConfig.OBJECT_GROUP_TYPE);
+        return DKPerms.getInstance().getObjectManager().getObject(name
+                ,DKPermsConfig.OBJECT_GROUP_SCOPE, PermissionObjectType.GROUP);
     }
 
     @Override

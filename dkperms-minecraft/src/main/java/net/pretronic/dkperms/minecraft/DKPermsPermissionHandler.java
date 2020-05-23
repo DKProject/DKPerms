@@ -15,6 +15,7 @@ import net.pretronic.dkperms.api.entity.Entity;
 import net.pretronic.dkperms.api.entity.PermissionEntity;
 import net.pretronic.dkperms.api.entity.PermissionParentEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.object.SyncAction;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
@@ -117,7 +118,7 @@ public class DKPermsPermissionHandler implements PermissionHandler, ObserveCallb
     @Override
     public void addGroup(String name) {
         PermissionObject group = DKPerms.getInstance().getObjectManager()
-                .getObject(name,DKPermsConfig.OBJECT_GROUP_SCOPE,DKPermsConfig.OBJECT_GROUP_TYPE);
+                .getObject(name,DKPermsConfig.OBJECT_GROUP_SCOPE, PermissionObjectType.GROUP);
 
         PermissionParentEntity entity = object.getParent(DKPermsConfig.MCNATIVE_MANAGEMENT_SCOPE_PERMISSION,group);
 
@@ -133,7 +134,7 @@ public class DKPermsPermissionHandler implements PermissionHandler, ObserveCallb
     @Override
     public void removeGroup(String name) {
         PermissionObject group = DKPerms.getInstance().getObjectManager()
-                .getObject(name,DKPermsConfig.OBJECT_GROUP_SCOPE,DKPermsConfig.OBJECT_GROUP_TYPE);
+                .getObject(name,DKPermsConfig.OBJECT_GROUP_SCOPE, PermissionObjectType.GROUP);
         object.removeParent(DKPerms.getInstance().getObjectManager().getSuperAdministrator()
                 ,DKPermsConfig.MCNATIVE_MANAGEMENT_SCOPE_GROUP,group);
     }
@@ -173,7 +174,6 @@ public class DKPermsPermissionHandler implements PermissionHandler, ObserveCallb
 
     @Override
     public void callback(PermissionObject object, SyncAction action) {
-        System.out.println("Player design callback");
         OnlineMinecraftPlayer player =  McNative.getInstance().getLocal().getOnlinePlayer(this.object.getAssignmentId());
         if(player != null){
             McNative.getInstance().getScheduler()

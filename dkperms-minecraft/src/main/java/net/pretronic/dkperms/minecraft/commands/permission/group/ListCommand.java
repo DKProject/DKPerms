@@ -11,6 +11,7 @@
 package net.pretronic.dkperms.minecraft.commands.permission.group;
 
 import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
@@ -34,7 +35,7 @@ public class ListCommand extends BasicCommand {
         if(scope == null) return;
 
         ObjectSearchResult result = DKPerms.getInstance().getObjectManager()
-                .getObjects(DKPermsConfig.OBJECT_GROUP_TYPE,DKPermsConfig.OBJECT_GROUP_SCOPE);
+                .getObjects(PermissionObjectType.GROUP,DKPermsConfig.OBJECT_GROUP_SCOPE);
 
         sender.sendMessage(Messages.GROUP_LIST, VariableSet.create()
                 .add("groups",result.getAll())

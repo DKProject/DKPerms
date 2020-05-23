@@ -122,7 +122,6 @@ public class DefaultObjectMetaGraph extends AbstractObservable<PermissionObject,
 
     @Override
     public void callback(PermissionObject observable, SyncAction action) {
-        System.out.println("META GRAPH CALLBACK "+action);
         if(action == SyncAction.OBJECT_GROUP_UPDATE || action == SyncAction.OBJECT_META_UPDATE){
             this.result.clear();
         }

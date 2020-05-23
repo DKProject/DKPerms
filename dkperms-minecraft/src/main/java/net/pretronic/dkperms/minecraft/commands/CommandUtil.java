@@ -13,6 +13,7 @@ package net.pretronic.dkperms.minecraft.commands;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.entity.PermissionParentEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
@@ -55,7 +56,7 @@ public class CommandUtil {
     }
 
     public static PermissionObject getGroup(CommandSender sender, String argument) {
-        ObjectSearchResult result = DKPerms.getInstance().getObjectManager().getObjects(argument, DKPermsConfig.OBJECT_GROUP_TYPE);
+        ObjectSearchResult result = DKPerms.getInstance().getObjectManager().getObjects(argument,  PermissionObjectType.GROUP);
         Collection<PermissionObject> groups = result.getAll();
 
         if(groups.isEmpty()){

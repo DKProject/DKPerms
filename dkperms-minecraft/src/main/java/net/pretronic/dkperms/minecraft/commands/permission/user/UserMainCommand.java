@@ -27,12 +27,17 @@ import org.mcnative.common.player.MinecraftPlayer;
 
 public class UserMainCommand extends MainObjectCommand<PermissionObject> implements ObjectNotFindable, DefinedNotFindable<PermissionObject> {
 
+    private final InfoCommand infoCommand;
+
     public UserMainCommand(ObjectOwner owner) {
         super(owner, CommandConfiguration.name("user","u","player","p"));
+
+        infoCommand = new InfoCommand(owner);
 
         registerCommand(new ParentCommand(owner));
         registerCommand(new MetaCommand(owner));
         registerCommand(new PermissionCommand(owner));
+        registerCommand(infoCommand);
     }
 
     @Override
@@ -48,14 +53,15 @@ public class UserMainCommand extends MainObjectCommand<PermissionObject> impleme
             sender.sendMessage(Messages.COMMAND_PERMS_HELP);
         }else{
             sender.sendMessage(Messages.USER_NOTFOUND,VariableSet.create()
-                    .add("user",value).add("player",value));
+                    .add("user",value)
+                    .add("player",value));
         }
     }
 
     @Override
     public void commandNotFound(CommandSender sender, PermissionObject object, String command, String[] arguments) {
         if(command == null && object != null) {
-            sender.sendMessage(Messages.USER_INFO, VariableSet.create().addDescribed("user", object));
+            infoCommand.execute(sender,object,arguments);
         }else{
             sender.sendMessage(Messages.USER_HELP);
         }

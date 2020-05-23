@@ -16,6 +16,7 @@ import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.entity.Entity;
 import net.pretronic.dkperms.api.migration.MigrationExecutor;
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
@@ -44,11 +45,11 @@ public class CloudNetV3CPermsMigrationExecutor implements MigrationExecutor {
             PermissionObject object = DKPerms.getInstance().getObjectManager()
                     .getObject(group.getName()
                             , DKPermsConfig.OBJECT_GROUP_SCOPE
-                            ,DKPermsConfig.OBJECT_GROUP_TYPE);
+                            ,PermissionObjectType.GROUP);
             if(object == null){
                 object = DKPerms.getInstance().getObjectManager()
                         .createObject(DKPermsConfig.OBJECT_GROUP_SCOPE
-                                ,DKPermsConfig.OBJECT_GROUP_TYPE,group.getName());
+                                ,PermissionObjectType.GROUP,group.getName());
             }
 
             migratePermissions(group,object);
@@ -86,7 +87,7 @@ public class CloudNetV3CPermsMigrationExecutor implements MigrationExecutor {
             if(object == null){
                 object = DKPerms.getInstance().getObjectManager()
                         .createObject(DKPermsConfig.OBJECT_PLAYER_SCOPE
-                                ,DKPermsConfig.OBJECT_PLAYER_TYPE,user.getName(),user.getUniqueId());
+                                , PermissionObjectType.USER_ACCOUNT,user.getName(),user.getUniqueId());
             }
 
             migratePermissions(user,object);

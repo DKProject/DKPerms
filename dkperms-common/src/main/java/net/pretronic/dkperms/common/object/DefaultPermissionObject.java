@@ -553,7 +553,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     @Internal
     public void executeSynchronisationUpdate(SyncAction action,Document data){
         data.set("action", action.ordinal());
-        SYNCHRONISATION_CALLER.update(getId(),data);
+        SYNCHRONISATION_CALLER.updateAndIgnore(getId(),data);
         callObservers(action);
     }
 
