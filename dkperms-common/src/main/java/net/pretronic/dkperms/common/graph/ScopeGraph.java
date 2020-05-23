@@ -14,6 +14,7 @@ import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.SyncAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
+import net.pretronic.dkperms.common.scope.DefaultPermissionScope;
 import net.pretronic.libraries.synchronisation.observer.UnusedObservable;
 
 import java.util.ArrayList;

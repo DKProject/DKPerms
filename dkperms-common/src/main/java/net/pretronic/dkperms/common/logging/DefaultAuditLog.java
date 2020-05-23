@@ -20,12 +20,12 @@ import net.pretronic.dkperms.api.scope.PermissionScope;
 public class DefaultAuditLog implements AuditLog {
 
     @Override
-    public void createRecord(PermissionObject executor, LogType type, LogAction action
-            ,PermissionObject owner, PermissionScope scope, String field, Object oldValue, Object newValue) {
-
+    public void createRecord(PermissionObject executor, LogType type, LogAction action, PermissionObject owner, Object key, String field, Object oldValue, Object newValue, Object data) {
+       /*
         DKPerms.getInstance().getStorage().getAuditLogStorage().createRecord(
                 executor.getId(),System.currentTimeMillis(),type,action,owner.getId()
                 ,scope.getId(),field,oldValue,newValue);
+        */
     }
 }
 
