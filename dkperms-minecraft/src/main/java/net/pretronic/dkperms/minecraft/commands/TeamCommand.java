@@ -48,7 +48,7 @@ public class TeamCommand extends BasicCommand {
                 cached.add(team);
                 for (PermissionObject child : object.getChildren(object.getScope())) {
                     if(child.getType().equals(PermissionObjectType.USER_ACCOUNT)){
-                        team.member.add(child);
+                        team.members.add(child);
                     }
                 }
             }
@@ -62,19 +62,19 @@ public class TeamCommand extends BasicCommand {
     public static class TeamTree {
 
         private final PermissionObject group;
-        private final Collection<PermissionObject> member;
+        private final Collection<PermissionObject> members;
 
-        public TeamTree(PermissionObject group, Collection<PermissionObject> member) {
+        public TeamTree(PermissionObject group, Collection<PermissionObject> members) {
             this.group = group;
-            this.member = member;
+            this.members = members;
         }
 
         public PermissionObject getGroup() {
             return group;
         }
 
-        public Collection<PermissionObject> getMember() {
-            return member;
+        public Collection<PermissionObject> getMembers() {
+            return members;
         }
     }
 }

@@ -11,6 +11,8 @@
 package net.pretronic.dkperms.common.object.meta;
 
 import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.logging.LogAction;
+import net.pretronic.dkperms.api.logging.LogType;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.SyncAction;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
@@ -78,9 +80,10 @@ public class DefaultObjectMetaEntry implements ObjectMetaEntry {
 
     @Override
     public void setTimeout(PermissionObject executor, long timeout) {
-        this.timeout = timeout;
         DKPerms.getInstance().getStorage().getObjectStorage().updateMetaTimeout(id,timeout);
         executeMetaSync(scope);
+        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_META, LogAction.UPDATE,id,id,"Timeout",this.timeout,timeout,this);
+        this.timeout = timeout;
     }
 
     @Override
@@ -130,6 +133,7 @@ public class DefaultObjectMetaEntry implements ObjectMetaEntry {
         DKPerms.getInstance().getStorage().getObjectStorage().updateMetaScope(id,scope.getId());
         executeMetaSync(scope);
         executeMetaSync(this.scope);
+        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_META, LogAction.UPDATE,id,id,"Scope",this.scope.getId(),scope.getId(),this);
         this.scope = scope;
     }
 

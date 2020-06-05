@@ -16,44 +16,62 @@ import net.pretronic.dkperms.api.object.SyncAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.common.scope.DefaultPermissionScope;
 import net.pretronic.libraries.synchronisation.observer.UnusedObservable;
+import net.pretronic.libraries.utility.SystemUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 public class ScopeGraph extends UnusedObservable<PermissionObject,SyncAction> implements Graph<PermissionScope> {
 
     private final PermissionScope start;
     private final PermissionScope end;
 
+    private List<PermissionScope> result;
+
+    private boolean traversing;
+    private final BooleanSupplier sleeper = () -> traversing;
+
     public ScopeGraph(PermissionScope start, PermissionScope end) {
         this.start = start;
         this.end = end;
+        result = new ArrayList<>();
     }
 
     @Override
     public List<PermissionScope> traverse() {
-        List<PermissionScope> result = new ArrayList<>();
-        result.add(start);
-        PermissionScope[] scopes = new PermissionScope[end.getLevel()-start.getLevel()];
-        PermissionScope current = end;
-        for (int i = scopes.length - 1; i >= 0; i--) {
-            scopes[i] = current;
-            current = current.getParent();
-        }
-        findValidScopes(start,0,scopes,result);
-
-        result.sort((o1, o2) -> {
-            if(o1.getLevel() > o2.getLevel()) return 1;
-            else if(o1.getLevel() < o2.getLevel()) return -1;
-            else{
-                int level1 = findScopeLevel(o1,scopes);
-                int level2 = findScopeLevel(o2,scopes);
-                return Integer.compare(level1, level2);
-            }
-        });
-
+        if(traversing) SystemUtil.sleepAsLong(sleeper);
+        if(result.isEmpty()) traverse0();
         return result;
+    }
+
+    private void traverse0(){
+        try{
+            traversing = true;
+            result.add(start);
+            PermissionScope[] scopes = new PermissionScope[end.getLevel()-start.getLevel()];
+            PermissionScope current = end;
+            for (int i = scopes.length - 1; i >= 0; i--) {
+                scopes[i] = current;
+                current = current.getParent();
+            }
+            findValidScopes(start,0,scopes,result);
+
+            result.sort((o1, o2) -> {
+                if(o1.getLevel() > o2.getLevel()) return 1;
+                else if(o1.getLevel() < o2.getLevel()) return -1;
+                else{
+                    int level1 = findScopeLevel(o1,scopes);
+                    int level2 = findScopeLevel(o2,scopes);
+                    return Integer.compare(level1, level2);
+                }
+            });
+            traversing = false;
+        }catch (Exception e){
+            traversing = false;
+            throw  e;
+        }
     }
 
     private void findValidScopes(PermissionScope start, int index, PermissionScope[] current, Collection<PermissionScope> result){

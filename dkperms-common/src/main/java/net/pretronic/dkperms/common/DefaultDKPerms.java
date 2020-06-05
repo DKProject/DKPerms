@@ -15,7 +15,7 @@ import net.pretronic.dkperms.api.DKPermsFormatter;
 import net.pretronic.dkperms.api.logging.AuditLog;
 import net.pretronic.dkperms.api.migration.MigrationAssistant;
 import net.pretronic.dkperms.api.object.PermissionObjectManager;
-import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyse;
+import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyser;
 import net.pretronic.dkperms.api.scope.PermissionScopeManager;
 import net.pretronic.dkperms.api.storage.DKPermsStorage;
 import net.pretronic.libraries.logging.PretronicLogger;
@@ -33,9 +33,10 @@ public class DefaultDKPerms extends DKPerms {
     private final PermissionObjectManager objectManager;
     private final AsyncExecutor executor;
     private final DKPermsFormatter formatter;
+    private final PermissionAnalyser analyser;
 
     public DefaultDKPerms(String version, int build, PretronicLogger logger,MigrationAssistant migrationAssistant,DKPermsStorage storage,AuditLog auditLog
-            , PermissionScopeManager scopeManager,PermissionObjectManager objectManager, AsyncExecutor executor,DKPermsFormatter formatter) {
+            , PermissionScopeManager scopeManager,PermissionObjectManager objectManager, AsyncExecutor executor,DKPermsFormatter formatter,PermissionAnalyser analyser) {
         this.version = version;
         this.build = build;
         this.logger = logger;
@@ -46,6 +47,7 @@ public class DefaultDKPerms extends DKPerms {
         this.objectManager = objectManager;
         this.executor = executor;
         this.formatter = formatter;
+        this.analyser = analyser;
     }
 
     @Override
@@ -99,7 +101,7 @@ public class DefaultDKPerms extends DKPerms {
     }
 
     @Override
-    public PermissionAnalyse startAnalyse() {
-        return null;
+    public PermissionAnalyser getAnalyser() {
+        return analyser;
     }
 }

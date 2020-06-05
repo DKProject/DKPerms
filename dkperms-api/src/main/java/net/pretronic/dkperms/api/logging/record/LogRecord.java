@@ -16,6 +16,8 @@ import net.pretronic.dkperms.api.object.PermissionObject;
 
 public interface LogRecord {
 
+    int getId();
+
     PermissionObject getExecutor();
 
     long getTime();
@@ -26,7 +28,6 @@ public interface LogRecord {
 
     PermissionObject getOwner();
 
-    PermissionObject getScope();
 
     String getField();
 
@@ -35,7 +36,6 @@ public interface LogRecord {
     Object getOldValue();
 
     Object getNewValue();
-
 
 
 

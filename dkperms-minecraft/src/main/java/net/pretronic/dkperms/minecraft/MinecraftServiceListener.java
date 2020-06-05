@@ -10,14 +10,18 @@
 
 package net.pretronic.dkperms.minecraft;
 
+import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.scope.PermissionScope;
+import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.libraries.event.Listener;
 import org.mcnative.common.player.MinecraftPlayer;
 import org.mcnative.service.event.player.MinecraftPlayerJoinEvent;
 import org.mcnative.service.event.player.MinecraftPlayerWorldChangedEvent;
 import org.mcnative.service.world.World;
+
+import java.util.Collection;
 
 public class MinecraftServiceListener {
 
@@ -40,6 +44,12 @@ public class MinecraftServiceListener {
         PermissionScope scope = DKPermsConfig.SCOPE_CURRENT_INSTANCE_SCOPE
                 .getChild(DKPermsConfig.SCOPE_WORLD_KEY,world.getName());
         permissionObject.setCurrentScope(scope);
+
+        Collection<PermissionObject> result = DKPerms.getInstance().getObjectManager()
+                .getDefaultGroups(permissionObject.getCurrentSnapshot().getScopeRange());
+        if(permissionObject instanceof DefaultPermissionObject){
+            permissionObject.checkDefaultGroupAssignment(result,permissionObject.getCurrentSnapshot().getScopeRange());
+        }
     }
 
 }

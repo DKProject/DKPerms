@@ -35,7 +35,7 @@ public class SetCommand extends ObjectCommand<PermissionObject> {
 
             if (CommandUtil.canChangeRank(sender, object, group)) return;
 
-            CommandUtil.changeGroup(false,sender,object,group,arguments);
+            CommandUtil.changeGroup(true,sender,object,group,arguments);
         }else{
             sender.sendMessage(Messages.RANK_HELP);
         }

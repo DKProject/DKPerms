@@ -1,8 +1,8 @@
 /*
- * (C) Copyright 2019 The DKPerms Project (Davide Wietlisbach & Philipp Elvin Friedhoff)
+ * (C) Copyright 2020 The DKPerms Project (Davide Wietlisbach & Philipp Elvin Friedhoff)
  *
  * @author Davide Wietlisbach
- * @since 28.10.19, 19:40
+ * @since 30.05.20, 20:38
  * @website %web%
  *
  * %license%
@@ -10,27 +10,29 @@
 
 package net.pretronic.dkperms.api.permission.analyse;
 
+import net.pretronic.dkperms.api.entity.PermissionEntity;
+import net.pretronic.dkperms.api.graph.Graph;
+import net.pretronic.dkperms.api.graph.PermissionGraph;
+import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
-import net.pretronic.dkperms.api.permission.analyse.track.PermissionTrackResult;
-import net.pretronic.libraries.utility.interfaces.ObjectOwner;
+import net.pretronic.dkperms.api.scope.PermissionScope;
 
 public interface PermissionRequest {
 
-    ObjectOwner getExecutor();
+    long getTime();
 
-    String getType();
+    PermissionObject getTarget();
 
-    String getValue();
+    PermissionGraph getGraph();
 
-
-    //PermissionUser getTarget();
+    Graph<PermissionScope> getScopeRange();
 
     String getPermission();
 
-    PermissionAction getAction();
+    PermissionAction getResult();
 
-    String getStackTrace();
+    StackTraceElement[] getStackTrace();
 
-    PermissionTrackResult track();
+    PermissionAnalyseResult<PermissionEntity> track();
 
 }

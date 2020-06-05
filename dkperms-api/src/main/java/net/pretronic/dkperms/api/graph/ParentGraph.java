@@ -10,16 +10,19 @@
 
 package net.pretronic.dkperms.api.graph;
 
-import net.pretronic.dkperms.api.entity.PermissionParentEntity;
+import net.pretronic.dkperms.api.entity.ParentEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
+import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyseResult;
 
-public interface ParentGraph extends Graph<PermissionParentEntity> {
+public interface ParentGraph extends Graph<ParentEntity> {
 
-    PermissionParentEntity getGroup(PermissionObject group);
+    ParentEntity getParent(PermissionObject group);
 
     boolean containsGroup(PermissionObject group);
 
     PermissionAction calculateGroup(PermissionObject group);
+
+    PermissionAnalyseResult<ParentEntity> analyze(PermissionObject group);
 
 }

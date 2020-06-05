@@ -21,6 +21,8 @@ import java.util.List;
 
 public class PermissionCalculator {
 
+    private final static String ALL = "*";
+
     public static PermissionEntity findBestPermissionEntity(Graph<PermissionEntity> permissions,String permission){
         return findBestPermissionEntity(permissions.traverse(),permission);
     }
@@ -51,6 +53,21 @@ public class PermissionCalculator {
     public static PermissionAction calculate(Collection<PermissionEntity> permissions, String permission){
         PermissionEntity entity = findBestPermissionEntity(permissions,permission);
         return entity != null ? entity.getAction() : PermissionAction.NEUTRAL;
+    }
+
+    public static boolean compare(String[] nodes1, String[] nodes2){
+        if(nodes1.length <= nodes2.length){
+            for (int i = 0; i < nodes2.length; i++) {
+                if(nodes1[i].equals(ALL)) return true;
+                else{
+                    if(!nodes1[i].equalsIgnoreCase(nodes2[i])){
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     public static boolean containsPermission(Graph<PermissionEntity> permissions,String permission){

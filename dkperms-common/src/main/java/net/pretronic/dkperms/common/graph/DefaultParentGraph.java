@@ -11,16 +11,19 @@
 package net.pretronic.dkperms.common.graph;
 
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.entity.PermissionParentEntity;
+import net.pretronic.dkperms.api.entity.ParentEntity;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.graph.ParentGraph;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.SyncAction;
 import net.pretronic.dkperms.api.permission.PermissionAction;
+import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyseResult;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedData;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
+import net.pretronic.dkperms.common.calculator.ParentCalculator;
 import net.pretronic.dkperms.common.entity.DefaultPermissionParentEntity;
+import net.pretronic.dkperms.common.permission.DefaultPermissionCheckResult;
 import net.pretronic.libraries.synchronisation.observer.AbstractObservable;
 import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
 import net.pretronic.libraries.utility.SystemUtil;
@@ -28,6 +31,7 @@ import net.pretronic.libraries.utility.Validate;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BooleanSupplier;
 import java.util.function.ToIntFunction;
 
 public final class DefaultParentGraph extends AbstractObservable<PermissionObject, SyncAction> implements ParentGraph, ObserveCallback<PermissionObject, SyncAction> {
@@ -36,12 +40,13 @@ public final class DefaultParentGraph extends AbstractObservable<PermissionObjec
     private final Graph<PermissionScope> scopes;
     private final boolean subGroups;
 
-    private final List<PermissionParentEntity> entities;
-    private final Map<PermissionParentEntity,Integer> objectPriority;
+    private final List<ParentEntity> entities;
+    private final Map<ParentEntity,Integer> objectPriority;
 
     private boolean subscribe;
 
-    private boolean looked;
+    private boolean traversing;
+    private final BooleanSupplier sleeper = () -> traversing;
 
     public DefaultParentGraph(PermissionObject owner, Graph<PermissionScope> scopes, boolean subGroups) {
         Validate.notNull(owner,scopes);
@@ -54,40 +59,51 @@ public final class DefaultParentGraph extends AbstractObservable<PermissionObjec
     }
 
     @Override
-    public List<PermissionParentEntity> traverse() {
-        if(this.objectPriority.isEmpty()) traverse0();
-        return this.entities;
+    public List<ParentEntity> traverse() {
+        if(traversing) SystemUtil.sleepAsLong(sleeper);
+        if(objectPriority.isEmpty()) traverseInternal();
+        return entities;
+    }
+
+    private void traverseInternal(){
+        traversing = true;
+        try{
+            traverse0();
+            traversing = false;
+        }catch (Exception e){
+            traversing = false;
+            throw e;
+        }
     }
 
     private void traverse0(){
-        while (looked) SystemUtil.sleepUninterruptible(300, TimeUnit.MILLISECONDS);
         findNextGroups(owner,1);
 
         for (PermissionObject defaultGroup : DKPerms.getInstance().getObjectManager().getDefaultGroups(scopes)) {
-            DefaultPermissionParentEntity defaultEntity =
-                    new DefaultPermissionParentEntity(owner,-1,defaultGroup,PermissionAction.ALLOW,defaultGroup.getScope(),-1);
+            DefaultPermissionParentEntity defaultEntity = new DefaultPermissionParentEntity(owner,-1
+                    ,defaultGroup,PermissionAction.ALLOW,defaultGroup.getScope(),-1);
 
             this.objectPriority.put(defaultEntity,Integer.MAX_VALUE);
             this.entities.add(defaultEntity);
         }
 
         entities.sort(Comparator
-                .comparingInt((PermissionParentEntity o) -> o.getScope().getLevel())
-                .thenComparing(((Comparator<PermissionParentEntity>) (o1, o2) -> Integer.compare(objectPriority.get(o1), objectPriority.get(o2))).reversed())
-                .thenComparing(Comparator.comparingInt((ToIntFunction<PermissionParentEntity>) entity -> entity.getGroup().getPriority()).reversed()));
+                .comparingInt((ParentEntity o) -> o.getScope().getLevel())
+                .thenComparing(((Comparator<ParentEntity>) (o1, o2) -> Integer.compare(objectPriority.get(o1), objectPriority.get(o2))).reversed())
+                .thenComparing(Comparator.comparingInt((ToIntFunction<ParentEntity>) entity -> entity.getParent().getPriority()).reversed()));
 
         trySubscribe();
     }
 
     private void findNextGroups(PermissionObject object, int level){
-        ScopeBasedDataList<PermissionParentEntity> dataList = object.getParents(scopes);
-        for (ScopeBasedData<PermissionParentEntity> groupData : dataList) {
-            for (PermissionParentEntity group : groupData.getData()) {
+        ScopeBasedDataList<ParentEntity> dataList = object.getParents(scopes);
+        for (ScopeBasedData<ParentEntity> groupData : dataList) {
+            for (ParentEntity group : groupData.getData()) {
                 if(!group.hasTimeout()){
                     if(!entities.contains(group)){
                         entities.add(group);
                         objectPriority.put(group,level);
-                        if(subGroups) findNextGroups(group.getGroup(),level+1);
+                        if(subGroups) findNextGroups(group.getParent(),level+1);
                     }
                 }
             }
@@ -105,34 +121,32 @@ public final class DefaultParentGraph extends AbstractObservable<PermissionObjec
         subscribe = false;
         owner.unsubscribeObserver(this);
         if(subGroups){
-            for (PermissionParentEntity object : objectPriority.keySet()) {
-                object.getGroup().unsubscribeObserver(this);
+            for (ParentEntity object : objectPriority.keySet()) {
+                object.getParent().unsubscribeObserver(this);
             }
         }
     }
 
     private void trySubscribe(){
         if(!subscribe) return;
-        looked = true;
         if(!owner.isObserverSubscribed(this)){
             owner.subscribeObserver(this);
         }
         if(subGroups){
-            for (PermissionParentEntity object : objectPriority.keySet()) {
-                if(!object.getGroup().isObserverSubscribed(this)){
-                    object.getGroup().subscribeObserver(this);
+            for (ParentEntity object : objectPriority.keySet()) {
+                if(!object.getParent().isObserverSubscribed(this)){
+                    object.getParent().subscribeObserver(this);
                 }
             }
         }
-        looked = false;
     }
 
     @Override
     public void callback(PermissionObject observable, SyncAction action) {
         if(action == SyncAction.OBJECT_GROUP_UPDATE){
             if(subGroups && subscribe){
-                for (PermissionParentEntity object : objectPriority.keySet()) {
-                    object.getGroup().unsubscribeObserver(this);
+                for (ParentEntity object : objectPriority.keySet()) {
+                    object.getParent().unsubscribeObserver(this);
                 }
             }
             this.objectPriority.clear();
@@ -142,17 +156,30 @@ public final class DefaultParentGraph extends AbstractObservable<PermissionObjec
     }
 
     @Override
-    public PermissionParentEntity getGroup(PermissionObject group) {
-        return null;
+    public ParentEntity getParent(PermissionObject group) {
+        return ParentCalculator.findBestParentEntity(this,group);
     }
 
     @Override
     public boolean containsGroup(PermissionObject group) {
-        return false;
+        return ParentCalculator.containsParent(this,group);
     }
 
     @Override
     public PermissionAction calculateGroup(PermissionObject group) {
-        return null;
+        return ParentCalculator.calculate(this,group);
+    }
+
+    @Override
+    public PermissionAnalyseResult<ParentEntity> analyze(PermissionObject group) {
+        List<ParentEntity> result = new ArrayList<>();
+        for (ParentEntity entity : traverse()) {
+            if(entity.getParent().equals(group)){
+                result.add(entity);
+            }
+        }
+        PermissionAction finalAction = PermissionAction.NEUTRAL;
+        if(!result.isEmpty()) finalAction = result.get(result.size()-1).getAction();
+        return new DefaultPermissionCheckResult<>(finalAction,result);
     }
 }

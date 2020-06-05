@@ -11,6 +11,7 @@
 package net.pretronic.dkperms.minecraft.commands.permission.group;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.minecraft.commands.CommandUtil;
 import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.ObjectCommand;
@@ -26,7 +27,7 @@ public class DeleteCommand extends ObjectCommand<PermissionObject> {
 
     @Override
     public void execute(CommandSender sender, PermissionObject object, String[] arguments) {
-        object.delete(null);
+        object.delete(CommandUtil.getExecutor(sender));
         sender.sendMessage(Messages.GROUP_DELETED, VariableSet.create()
                 .addDescribed("group",object)
                 .addDescribed("object",object));

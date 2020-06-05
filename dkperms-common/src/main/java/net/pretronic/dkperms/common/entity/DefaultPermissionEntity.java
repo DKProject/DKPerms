@@ -15,13 +15,12 @@ import net.pretronic.dkperms.api.entity.PermissionEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
+import net.pretronic.dkperms.common.calculator.PermissionCalculator;
 import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.libraries.utility.StringUtil;
 import net.pretronic.libraries.utility.Validate;
 
 public class DefaultPermissionEntity implements PermissionEntity {
-
-    private final static String ALL = "*";
 
     private final PermissionObject owner;
     private final int id;
@@ -75,18 +74,8 @@ public class DefaultPermissionEntity implements PermissionEntity {
     @Override
     public PermissionAction check(String[] nodes) {
         Validate.notNull((Object) nodes);
-        if(this.nodes.length <= nodes.length){
-            for (int i = 0; i < this.nodes.length; i++) {
-                if(this.nodes[i].equals(ALL)) return action;
-                else{
-                    if(!this.nodes[i].equalsIgnoreCase(nodes[i])){
-                        return PermissionAction.NEUTRAL;
-                    }
-                }
-            }
-            return action;
-        }
-        return PermissionAction.NEUTRAL;
+        boolean result = PermissionCalculator.compare(this.nodes,nodes);
+        return result ? action : PermissionAction.NEUTRAL;
     }
 
     @Override

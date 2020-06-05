@@ -10,7 +10,6 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission;
 
-import net.pretronic.dkperms.minecraft.commands.MigrationCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.group.GroupMainCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.group.ListCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.track.TrackMainCommand;
@@ -41,6 +40,7 @@ public class PermissionCommand extends MainCommand implements NotFindable, NoPer
         registerCommand(new ListCommand(owner));
         registerCommand(new MigrationCommand(owner));
         registerCommand(new SyncCommand(owner));
+        registerCommand(new AnalyseCommand(owner));
         registerCommand(infoCommand);
     }
 

@@ -51,7 +51,7 @@ public class SetCommand extends ObjectCommand<PermissionObject> {
             }
 
             //@Todo Commands do currently only support one entry, multiple entries should be implemented in future
-            ObjectMetaEntry entry = object.getMeta().set(null,key,value,0,scope,duration);
+            ObjectMetaEntry entry = object.getMeta().set(CommandUtil.getExecutor(sender),key,value,0,scope,duration);
 
             VariableSet variables = VariableSet.create();
             variables.addDescribed("entry",entry);

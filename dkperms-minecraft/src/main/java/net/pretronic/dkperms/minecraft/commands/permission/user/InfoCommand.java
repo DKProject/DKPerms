@@ -36,8 +36,6 @@ public class InfoCommand extends ObjectCommand<PermissionObject> {
         }
         PermissionScope scope = CommandUtil.readScope(sender,fallback,arguments,0);
 
-        object.getMeta().clear(null,scope);
-
         PermissionObjectSnapshot snapshot;
         if(object.getCurrentSnapshot() != null && object.getCurrentSnapshot().getScope() == scope) snapshot = object.getCurrentSnapshot();
         else snapshot = object.newSnapshot(scope);

@@ -13,6 +13,7 @@ package net.pretronic.dkperms.minecraft;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
+import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyseResult;
 import net.pretronic.dkperms.common.entity.DefaultPermissionEntity;
 import net.pretronic.dkperms.common.entity.DefaultPermissionParentEntity;
 import net.pretronic.dkperms.common.object.DefaultPermissionObject;
@@ -35,9 +36,11 @@ public class DescriberRegistrar {
         VariableDescriberRegistry.registerDescriber(DefaultPermissionScope.class);
         VariableDescriberRegistry.registerDescriber(DefaultObjectMetaEntry.class);
         VariableDescriberRegistry.registerDescriber(DefaultPermissionEntity.class);
+        VariableDescriberRegistry.registerDescriber(DefaultPermissionParentEntity.class);
         VariableDescriberRegistry.registerDescriber(DefaultPermissionObjectType.class);
         VariableDescriberRegistry.registerDescriber(DKPermsPlayerDesign.class);
         VariableDescriberRegistry.registerDescriber(TeamCommand.TeamTree.class);
+        VariableDescriberRegistry.registerDescriber(PermissionAnalyseResult.class);
     }
 
     private static void registerObject(){
@@ -45,11 +48,6 @@ public class DescriberRegistrar {
         objectDescriber.registerFunction("uniqueId", DefaultPermissionObject::getAssignmentId);
         objectDescriber.registerParameterFunction("property", (object, key) ->{
             ObjectMetaEntry entry =  object.getMeta().getHighest(key);
-            /*
-            if(result.length() == 2 && result.charAt(0) == '&'){
-                result += "█";//Add for showing colors
-            }
- */
             return entry != null ?entry.getValue() : "";
         });
 
@@ -99,7 +97,7 @@ public class DescriberRegistrar {
 
     private static void registerGroupEntity(){
         VariableDescriber<DefaultPermissionParentEntity> groupEntityDescriber = VariableDescriberRegistry.registerDescriber(DefaultPermissionParentEntity.class);
-        groupEntityDescriber.setForwardFunction(DefaultPermissionParentEntity::getGroup);
+        groupEntityDescriber.setForwardFunction(DefaultPermissionParentEntity::getParent);
     }
 
 }

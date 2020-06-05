@@ -34,7 +34,7 @@ public class UnsetCommand extends ObjectCommand<PermissionObject> {
             PermissionScope scope = CommandUtil.readScope(sender,object,arguments,1);
             if(scope == null) return;
 
-            object.getMeta().unset(null,key,scope);
+            object.getMeta().unset(CommandUtil.getExecutor(sender),key,scope);
 
             VariableSet variables = VariableSet.create();
             variables.add("type",object.getType().getName().toLowerCase());

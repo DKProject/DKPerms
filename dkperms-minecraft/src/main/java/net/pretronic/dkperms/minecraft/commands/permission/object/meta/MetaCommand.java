@@ -30,6 +30,7 @@ public class MetaCommand extends MainObjectCommand<PermissionObject> implements 
         registerCommand(new ShowCommand(owner));
         registerCommand(new ListCommand(owner));
         registerCommand(new TreeCommand(owner));
+        registerCommand(new CheckCommand(owner));
     }
 
     @Override

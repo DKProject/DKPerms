@@ -31,7 +31,7 @@ public class ClearCommand extends ObjectCommand<PermissionObject> {
         PermissionScope scope = CommandUtil.readScope(sender,object,arguments,0);
         if(scope == null) return;
 
-        object.getMeta().clear(null,scope);
+        object.getMeta().clear(CommandUtil.getExecutor(sender),scope);
 
         VariableSet variables = VariableSet.create();
         variables.addDescribed("object",object);

@@ -10,5 +10,4 @@
 
 package net.pretronic.dkperms.api.minecraft.event;
 
-public class PermissionGroupCreateEvent {
-}
+public interface DKPermsPermissionObjectCreateEvent extends PermissionObjectEvent {}

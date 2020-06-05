@@ -10,7 +10,7 @@
 
 package net.pretronic.dkperms.api.storage;
 
-import net.pretronic.dkperms.api.entity.PermissionParentEntity;
+import net.pretronic.dkperms.api.entity.ParentEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
@@ -20,11 +20,11 @@ import java.util.Collection;
 
 public interface ParentStorage {
 
-    Collection<PermissionParentEntity> getParentReferences(PermissionObject object, PermissionScope scope);
+    Collection<ParentEntity> getParentReferences(PermissionObject object, PermissionScope scope);
 
-    ScopeBasedDataList<PermissionParentEntity> getParentReferences(PermissionObject object, Collection<PermissionScope> scope);
+    ScopeBasedDataList<ParentEntity> getParentReferences(PermissionObject object, Collection<PermissionScope> scope);
 
-    ScopeBasedDataList<PermissionParentEntity> getAllParentReferences(PermissionObject object, Collection<PermissionScope> skipped);
+    ScopeBasedDataList<ParentEntity> getAllParentReferences(PermissionObject object, Collection<PermissionScope> skipped);
 
     int createParentReference(int objectId, int scopeId, int ParentId, PermissionAction action, long timeout);
 

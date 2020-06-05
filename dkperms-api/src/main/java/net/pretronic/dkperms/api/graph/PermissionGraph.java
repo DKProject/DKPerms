@@ -12,6 +12,7 @@ package net.pretronic.dkperms.api.graph;
 
 import net.pretronic.dkperms.api.entity.PermissionEntity;
 import net.pretronic.dkperms.api.permission.PermissionAction;
+import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyseResult;
 
 import java.util.List;
 
@@ -24,5 +25,7 @@ public interface PermissionGraph extends Graph<PermissionEntity> {
     PermissionAction calculatePermission(String permission);
 
     List<String> toStringList();
+
+    PermissionAnalyseResult<PermissionEntity> analyze(String permission);
 
 }

@@ -12,7 +12,7 @@ package net.pretronic.dkperms.api.entity;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
 
-public interface PermissionParentEntity extends Entity {
+public interface ParentEntity extends Entity {
 
-    PermissionObject getGroup();
+    PermissionObject getParent();
 }

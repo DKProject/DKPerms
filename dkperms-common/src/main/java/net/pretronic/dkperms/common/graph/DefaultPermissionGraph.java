@@ -10,21 +10,28 @@
 
 package net.pretronic.dkperms.common.graph;
 
+import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.entity.PermissionEntity;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.graph.PermissionGraph;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.SyncAction;
 import net.pretronic.dkperms.api.permission.PermissionAction;
+import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyseResult;
+import net.pretronic.dkperms.api.permission.analyse.PermissionRequest;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 import net.pretronic.dkperms.common.calculator.PermissionCalculator;
+import net.pretronic.dkperms.common.permission.DefaultPermissionCheckResult;
+import net.pretronic.dkperms.common.permission.DefaultPermissionRequest;
 import net.pretronic.libraries.synchronisation.observer.AbstractObservable;
 import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
+import net.pretronic.libraries.utility.SystemUtil;
 import net.pretronic.libraries.utility.Validate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 public class DefaultPermissionGraph extends AbstractObservable<PermissionObject,SyncAction> implements PermissionGraph, ObserveCallback<PermissionObject, SyncAction> {
 
@@ -33,6 +40,9 @@ public class DefaultPermissionGraph extends AbstractObservable<PermissionObject,
     private final Graph<PermissionObject> groups;
 
     private final List<PermissionEntity> result;
+
+    private boolean traversing;
+    private final BooleanSupplier sleeper = () -> traversing;
 
     public DefaultPermissionGraph(PermissionObject owner, Graph<PermissionScope> scopes, Graph<PermissionObject> groups) {
         Validate.notNull(owner,scopes);
@@ -44,11 +54,21 @@ public class DefaultPermissionGraph extends AbstractObservable<PermissionObject,
 
     @Override
     public List<PermissionEntity> traverse() {
-        if(result.isEmpty()){
+        if(traversing) SystemUtil.sleepAsLong(sleeper);
+        if(result.isEmpty()) traverseInternal();
+        return result;
+    }
+
+    private void traverseInternal(){
+        traversing = true;
+        try{
             if(groups == null) traverseOne();
             else traverseMany();
+            traversing = false;
+        }catch (Exception e){
+            traversing = false;
+            throw e;
         }
-        return result;
     }
 
     @SuppressWarnings("unchecked")
@@ -89,12 +109,33 @@ public class DefaultPermissionGraph extends AbstractObservable<PermissionObject,
 
     @Override
     public PermissionAction calculatePermission(String permission) {
-        return PermissionCalculator.calculate(traverse(),permission);
+        PermissionAction result =  PermissionCalculator.calculate(traverse(),permission);
+        if(DKPerms.getInstance().getAnalyser().isEnabled()){
+            if(DKPerms.getInstance().getAnalyser().canPermissionBeAnalysed(permission)){
+                StackTraceElement[] stackTrace= Thread.currentThread().getStackTrace();
+                PermissionRequest request = new DefaultPermissionRequest(owner,this,scopes,permission,result,stackTrace);
+                DKPerms.getInstance().getAnalyser().offerRequest(request);
+            }
+        }
+        return result;
     }
 
     @Override
     public List<String> toStringList() {
         return PermissionCalculator.toStringList(this);
+    }
+
+    @Override
+    public PermissionAnalyseResult<PermissionEntity> analyze(String permission) {
+        List<PermissionEntity> result = new ArrayList<>();
+        for (PermissionEntity entity : traverse()) {
+            if(entity.check(permission) != PermissionAction.NEUTRAL){
+                result.add(entity);
+            }
+        }
+        PermissionAction finalAction = PermissionAction.NEUTRAL;
+        if(!result.isEmpty()) finalAction = result.get(result.size()-1).getAction();
+        return new DefaultPermissionCheckResult<>(finalAction,result);
     }
 
     @Override

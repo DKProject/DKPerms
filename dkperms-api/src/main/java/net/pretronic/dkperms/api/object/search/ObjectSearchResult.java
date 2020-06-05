@@ -11,6 +11,7 @@
 package net.pretronic.dkperms.api.object.search;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.scope.PermissionScope;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,6 +31,11 @@ public interface ObjectSearchResult extends Iterable<PermissionObject> {
     PermissionObject getLastOrNull();
 
     PermissionObject get(int index);
+
+    default List<PermissionObject> getPage(int page, int sizePerPage){
+        int skip = sizePerPage*(page-1);
+        return get(skip,page);
+    }
 
     List<PermissionObject> get(int fromIndex, int toIndex);
 

@@ -111,15 +111,7 @@ public class DKPermsLegacyMigration implements PermissionMigration {
     private void migrateGroups(){
         Collection<PermissionGroup> groups = groupStorage.loadGroups();
         for (PermissionGroup group : groups) {
-            PermissionObject object = DKPerms.getInstance().getObjectManager()
-                    .getObject(group.getName()
-                    ,DKPermsConfig.OBJECT_GROUP_SCOPE
-                    , PermissionObjectType.GROUP);
-            if(object == null){
-                object = DKPerms.getInstance().getObjectManager()
-                        .createObject(DKPermsConfig.OBJECT_GROUP_SCOPE
-                                , PermissionObjectType.GROUP,group.getName());
-            }
+            PermissionObject object = MigrationUtil.createOrGetGroup(group.getName());
             object.setPriority(admin,group.getPriority());
 
             if(group.getDescription() != null && group.getDescription().isEmpty()){

@@ -32,12 +32,15 @@ public final class Messages {
     public static final MessageKeyComponent GROUP_DELETE_CONFIRM = Text.ofMessageKey("dkperms.group.delete.confirm");
     public static final MessageKeyComponent GROUP_DELETED = Text.ofMessageKey("dkperms.group.deleted");
     public static final MessageKeyComponent GROUP_RENAMED = Text.ofMessageKey("dkperms.group.renamed");
+    public static final MessageKeyComponent GROUP_COPY = Text.ofMessageKey("dkperms.group.copy");
 
     public static final MessageKeyComponent GROUP_LIST = Text.ofMessageKey("dkperms.group.list");
     public static final MessageKeyComponent GROUP_TREE_HEADER = Text.ofMessageKey("dkperms.group.tree.header");
     public static final MessageKeyComponent GROUP_TREE_SCOPE = Text.ofMessageKey("dkperms.group.tree.scope");
     public static final MessageKeyComponent GROUP_TREE_ENTRY = Text.ofMessageKey("dkperms.group.tree.entry");
     public static final MessageKeyComponent OBJECT_GROUP_INFO = Text.ofMessageKey("dkperms.group.info");
+
+    public static final MessageKeyComponent GROUP_LIST_MEMBERS = Text.ofMessageKey("dkperms.group.listMembers");
 
 
     public static final MessageKeyComponent USER_HELP = Text.ofMessageKey("dkperms.user.help");
@@ -53,6 +56,7 @@ public final class Messages {
     public static final MessageKeyComponent OBJECT_META_TREE_HEADER = Text.ofMessageKey("dkperms.object.meta.tree.header");
     public static final MessageKeyComponent OBJECT_META_TREE_SCOPE = Text.ofMessageKey("dkperms.object.meta.tree.scope");
     public static final MessageKeyComponent OBJECT_META_TREE_ENTRY = Text.ofMessageKey("dkperms.object.meta.tree.entry");
+    public static final MessageKeyComponent OBJECT_META_CHECK = Text.ofMessageKey("dkperms.object.meta.check");
 
 
     public static final MessageKeyComponent OBJECT_PERMISSION_HELP = Text.ofMessageKey("dkperms.object.permission.help");
@@ -65,6 +69,7 @@ public final class Messages {
     public static final MessageKeyComponent OBJECT_PERMISSION_TREE_SCOPE = Text.ofMessageKey("dkperms.object.permission.tree.scope");
     public static final MessageKeyComponent OBJECT_PERMISSION_TREE_ENTRY = Text.ofMessageKey("dkperms.object.permission.tree.entry");
     public static final MessageKeyComponent OBJECT_PERMISSION_NOT_SET = Text.ofMessageKey("dkperms.object.permission.notSet");
+    public static final MessageKeyComponent OBJECT_PERMISSION_CHECK = Text.ofMessageKey("dkperms.object.permission.check");
 
 
     public static final MessageKeyComponent OBJECT_GROUP_HELP = Text.ofMessageKey("dkperms.object.group.help");
@@ -79,6 +84,7 @@ public final class Messages {
     public static final MessageKeyComponent OBJECT_GROUP_TREE_ENTRY = Text.ofMessageKey("dkperms.object.group.tree.entry");
     public static final MessageKeyComponent OBJECT_GROUP_NOT_SET = Text.ofMessageKey("dkperms.object.group.notSet");
     public static final MessageKeyComponent OBJECT_GROUP_PRIORITY_SET = Text.ofMessageKey("dkperms.object.group.priority.set");//Add
+    public static final MessageKeyComponent OBJECT_GROUP_CHECK = Text.ofMessageKey("dkperms.object.group.check");
 
     public static final MessageKeyComponent TRACK_HELP = Text.ofMessageKey("dkperms.track.help");
     public static final MessageKeyComponent TRACK_ALREADY_EXISTS = Text.ofMessageKey("dkperms.track.alreadyExists");
@@ -101,6 +107,11 @@ public final class Messages {
     public static final MessageKeyComponent RANK_CHANGE_NO_PERMISSION_FOR_PLAYER = Text.ofMessageKey("dkperms.rank.noPermissionForPlayer");
 
     public static final MessageKeyComponent SYNCHRONIZED = Text.ofMessageKey("dkperms.synchronized");
+
+    public static final MessageKeyComponent ANALYSE_ENABLED = Text.ofMessageKey("dkperms.analyse.enabled");
+    public static final MessageKeyComponent ANALYSE_DISABLED = Text.ofMessageKey("dkperms.analyse.disabled");
+    public static final MessageKeyComponent ANALYSE_JOINED = Text.ofMessageKey("dkperms.analyse.joined");
+    public static final MessageKeyComponent ANALYSE_LEAVED = Text.ofMessageKey("dkperms.analyse.leaved");
 
     public static final MessageKeyComponent TEAM = Text.ofMessageKey("dkperms.team");
 }

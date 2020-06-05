@@ -39,11 +39,13 @@ public class GroupMainCommand extends MainObjectCommand<PermissionObject> implem
 
         registerCommand(new DeleteCommand(owner));
         registerCommand(new RenameCommand(owner));
+        registerCommand(new CopyCommand(owner));
+        registerCommand(new SetPriorityCommand(owner));
+        registerCommand(new MemberCommand(owner));
 
         registerCommand(new ParentCommand(owner));
         registerCommand(new MetaCommand(owner));
         registerCommand(new PermissionCommand(owner));
-        registerCommand(new SetPriorityCommand(owner));
 
         this.listCommand = new ListCommand(owner);
         this.createCommand = new CreateCommand(owner);

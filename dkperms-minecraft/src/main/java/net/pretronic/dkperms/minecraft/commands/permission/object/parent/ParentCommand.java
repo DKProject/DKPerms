@@ -31,6 +31,7 @@ public class ParentCommand extends MainObjectCommand<PermissionObject> implement
         registerCommand(new ClearCommand(owner));
         registerCommand(new ListCommand(owner));
         registerCommand(new TreeCommand(owner));
+        registerCommand(new CheckCommand(owner));
     }
 
     @Override

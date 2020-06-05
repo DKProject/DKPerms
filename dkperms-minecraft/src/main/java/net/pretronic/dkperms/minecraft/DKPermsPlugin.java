@@ -14,6 +14,7 @@ import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.object.PermissionHolderFactory;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
+import net.pretronic.dkperms.api.permission.analyse.PermissionRequest;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.PermissionScopeManager;
 import net.pretronic.dkperms.common.DefaultDKPerms;
@@ -21,6 +22,7 @@ import net.pretronic.dkperms.common.DefaultMigrationAssistant;
 import net.pretronic.dkperms.common.logging.DefaultAuditLog;
 import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.dkperms.common.object.DefaultPermissionObjectManager;
+import net.pretronic.dkperms.common.permission.DefaultPermissionAnalyser;
 import net.pretronic.dkperms.common.scope.DefaultPermissionScopeManager;
 import net.pretronic.dkperms.common.storage.PDQStorage;
 import net.pretronic.dkperms.minecraft.commands.TeamCommand;
@@ -31,6 +33,8 @@ import net.pretronic.dkperms.minecraft.integration.DKPermsPlaceholders;
 import net.pretronic.dkperms.minecraft.migration.DKPermsLegacyMigration;
 import net.pretronic.dkperms.minecraft.migration.cloudnet.CloudNetV2CPermsMigration;
 import net.pretronic.dkperms.minecraft.migration.cloudnet.CloudNetV3CPermsMigration;
+import net.pretronic.dkperms.minecraft.migration.luckperms.LuckPermsMigration;
+import net.pretronic.dkperms.minecraft.migration.permissionsex.PermissionsExMigration;
 import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.document.type.DocumentFileType;
 import net.pretronic.libraries.plugin.description.PluginVersion;
@@ -54,6 +58,7 @@ import org.mcnative.common.serviceprovider.placeholder.PlaceholderProvider;
 import java.io.File;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class DKPermsPlugin extends MinecraftPlugin {
@@ -83,7 +88,9 @@ public class DKPermsPlugin extends MinecraftPlugin {
                 ,scopeManager
                 ,objectManager
                 ,new AsyncExecutor(GeneralUtil.getDefaultExecutorService())
-                ,new MinecraftFormatter());
+                ,new MinecraftFormatter()
+                ,new DefaultPermissionAnalyser());
+        dkPerms.getAnalyser().addListener(request -> getLogger().info("[Analyser] "+request.getTarget().getName()+" | "+request.getPermission()+" -> "+request.getResult()));
 
         DKPerms.setInstance(dkPerms);
 
@@ -211,9 +218,10 @@ public class DKPermsPlugin extends MinecraftPlugin {
         dkPerms.getMigrationAssistant().registerMigration(new DKPermsLegacyMigration());
         dkPerms.getMigrationAssistant().registerMigration(new CloudNetV2CPermsMigration());
         dkPerms.getMigrationAssistant().registerMigration(new CloudNetV3CPermsMigration());
+        dkPerms.getMigrationAssistant().registerMigration(new PermissionsExMigration());
+        dkPerms.getMigrationAssistant().registerMigration(new LuckPermsMigration());
     }
 
-    //@Todo update and optimize
     private static class PlayerAdapter implements Function<MinecraftPlayer, PermissionObject> {
 
         private PlayerAdapter(){}
@@ -227,7 +235,7 @@ public class DKPermsPlugin extends MinecraftPlugin {
                         ,PermissionObjectType.USER_ACCOUNT
                         ,player.getName(),player.getUniqueId());
             }else if(!object.getName().equals(player.getName())){
-                object.setName(null,player.getName());
+                object.setName(DKPerms.getInstance().getObjectManager().getSuperAdministrator(),player.getName());
             }
             return object;
         }

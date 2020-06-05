@@ -60,12 +60,10 @@ public class TrackMainCommand extends MainObjectCommand<PermissionObjectTrack> i
     public void objectNotFound(CommandSender sender, String name, String[] arguments) {
         if(name.equalsIgnoreCase("list") || name.equalsIgnoreCase("l")){
             this.listCommand.execute(sender,arguments);
-            return;
         }else if(arguments.length >= 1
                 && (arguments[0].equalsIgnoreCase("create")
                 || arguments[0].equalsIgnoreCase("c"))){
             this.createCommand.execute(sender,name, Arrays.copyOfRange(arguments, 1, arguments.length));
-            return;
         }else{
             sender.sendMessage(Messages.TRACK_NOT_FOUND, VariableSet.create().add("name",name));
         }

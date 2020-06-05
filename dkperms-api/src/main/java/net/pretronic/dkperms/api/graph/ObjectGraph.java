@@ -17,8 +17,6 @@ public interface ObjectGraph extends Graph<PermissionObject> {
 
     boolean contains(PermissionObject group);
 
-    PermissionAction calculate(PermissionObject group);
-
     PermissionObject getHighest();
 
 }

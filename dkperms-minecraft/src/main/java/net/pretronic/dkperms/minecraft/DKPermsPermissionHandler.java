@@ -13,7 +13,7 @@ package net.pretronic.dkperms.minecraft;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.entity.Entity;
 import net.pretronic.dkperms.api.entity.PermissionEntity;
-import net.pretronic.dkperms.api.entity.PermissionParentEntity;
+import net.pretronic.dkperms.api.entity.ParentEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.object.SyncAction;
@@ -120,7 +120,7 @@ public class DKPermsPermissionHandler implements PermissionHandler, ObserveCallb
         PermissionObject group = DKPerms.getInstance().getObjectManager()
                 .getObject(name,DKPermsConfig.OBJECT_GROUP_SCOPE, PermissionObjectType.GROUP);
 
-        PermissionParentEntity entity = object.getParent(DKPermsConfig.MCNATIVE_MANAGEMENT_SCOPE_PERMISSION,group);
+        ParentEntity entity = object.getParent(DKPermsConfig.MCNATIVE_MANAGEMENT_SCOPE_PERMISSION,group);
 
         if(entity == null){
             object.addParent(DKPerms.getInstance().getObjectManager().getSuperAdministrator()

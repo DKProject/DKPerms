@@ -20,6 +20,8 @@ import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
 import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.Validate;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class FilteredObjectGraph extends AbstractObservable<PermissionObject, SyncAction> implements ObjectGraph, ObserveCallback<PermissionObject, SyncAction> {
@@ -44,12 +46,11 @@ public class FilteredObjectGraph extends AbstractObservable<PermissionObject, Sy
     }
 
     @Override
-    public PermissionAction calculate(PermissionObject group) {
-        return null;
-    }
-
-    @Override
     public PermissionObject getHighest() {
+        List<PermissionObject> result = traverse();
+        if(!result.isEmpty()){
+            return result.get(result.size()-1);
+        }
         return null;
     }
 

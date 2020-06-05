@@ -10,7 +10,7 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.object.parent;
 
-import net.pretronic.dkperms.api.entity.PermissionParentEntity;
+import net.pretronic.dkperms.api.entity.ParentEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
@@ -34,7 +34,7 @@ public class ListCommand extends ObjectCommand<PermissionObject> {
         PermissionScope scope = CommandUtil.readScope(sender,object,arguments,0);
         if(scope == null) return;
 
-        Collection<PermissionParentEntity> entries = object.getParents(scope);
+        Collection<ParentEntity> entries = object.getParents(scope);
 
         sender.sendMessage(Messages.OBJECT_GROUP_LIST, VariableSet.create()
                 .add("type",object.getType().getName().toLowerCase())

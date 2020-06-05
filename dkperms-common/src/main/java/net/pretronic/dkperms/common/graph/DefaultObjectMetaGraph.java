@@ -19,11 +19,15 @@ import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 import net.pretronic.libraries.synchronisation.observer.AbstractObservable;
 import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
+import net.pretronic.libraries.utility.GeneralUtil;
+import net.pretronic.libraries.utility.SystemUtil;
 import net.pretronic.libraries.utility.Validate;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 public class DefaultObjectMetaGraph extends AbstractObservable<PermissionObject,SyncAction> implements ObjectMetaGraph, ObserveCallback<PermissionObject, SyncAction> {
 
@@ -34,6 +38,9 @@ public class DefaultObjectMetaGraph extends AbstractObservable<PermissionObject,
     private final Graph<PermissionObject> groups;
 
     private final List<ObjectMetaEntry> result;
+
+    private boolean traversing;
+    private final BooleanSupplier sleeper = () -> traversing;
 
     public DefaultObjectMetaGraph(PermissionObject owner, Graph<PermissionScope> scopes, Graph<PermissionObject> groups) {
         Validate.notNull(owner,scopes);
@@ -46,11 +53,21 @@ public class DefaultObjectMetaGraph extends AbstractObservable<PermissionObject,
 
     @Override
     public List<ObjectMetaEntry> traverse() {
-        if(result.isEmpty()){
+        if(traversing) SystemUtil.sleepAsLong(sleeper);
+        if(result.isEmpty()) traverseInternal();
+        return result;
+    }
+
+    private void traverseInternal(){
+        traversing = true;
+        try{
             if(groups == null) traverseOne();
             else traverseMany();
+            traversing = false;
+        }catch (Exception e){
+            traversing = false;
+            throw e;
         }
-        return result;
     }
 
     @SuppressWarnings("unchecked")

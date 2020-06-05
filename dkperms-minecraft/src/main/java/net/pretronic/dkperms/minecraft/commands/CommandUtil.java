@@ -11,7 +11,7 @@
 package net.pretronic.dkperms.minecraft.commands;
 
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.entity.PermissionParentEntity;
+import net.pretronic.dkperms.api.entity.ParentEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
@@ -38,7 +38,6 @@ public class CommandUtil {
         if(arguments.length > index) return readScope(sender,arguments[index]);
         return fallback;
     }
-
 
     public static PermissionScope readScope(CommandSender sender, String argument) {
         try{
@@ -91,7 +90,7 @@ public class CommandUtil {
             }
         }
 
-        PermissionParentEntity entity = object.getParent(scope,group);
+        ParentEntity entity = object.getParent(scope,group);
 
         if(entity != null){
             if(modifier == UpdateModifier.FAIL) return; //@Todo send message
@@ -99,10 +98,10 @@ public class CommandUtil {
         }
 
         if(entity == null || set){
-            if(set) entity = object.setParent(null,scope,group,action,duration);
-            else entity = object.addParent(null,scope,group,action,duration);
+            if(set) entity = object.setParent(CommandUtil.getExecutor(sender),scope,group,action,duration);
+            else entity = object.addParent(CommandUtil.getExecutor(sender),scope,group,action,duration);
         }else{
-            entity.update(null,action,scope,duration);
+            entity.update(CommandUtil.getExecutor(sender),action,scope,duration);
         }
 
         sender.sendMessage(set ? Messages.OBJECT_GROUP_SET: Messages.OBJECT_GROUP_ADD,
@@ -120,7 +119,7 @@ public class CommandUtil {
         PermissionScope scope = CommandUtil.readScope(sender,object,arguments,1);
         if(scope == null) return;
 
-        object.removeParent(null,scope,group);
+        object.removeParent(CommandUtil.getExecutor(sender),scope,group);
 
         VariableSet variables = VariableSet.create()
                 .add("type",object.getType().getName().toLowerCase())
@@ -164,6 +163,14 @@ public class CommandUtil {
             }
         }
         return false;
+    }
+
+    public static PermissionObject getExecutor(CommandSender sender){
+        if(sender instanceof MinecraftPlayer){
+            return ((MinecraftPlayer) sender).getAs(PermissionObject.class);
+        }else {
+            return DKPerms.getInstance().getObjectManager().getSuperAdministrator();
+        }
     }
 
 }

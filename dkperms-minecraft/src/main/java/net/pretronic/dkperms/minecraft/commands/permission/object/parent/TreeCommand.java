@@ -10,7 +10,7 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.object.parent;
 
-import net.pretronic.dkperms.api.entity.PermissionParentEntity;
+import net.pretronic.dkperms.api.entity.ParentEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.common.tree.TreeListBuilder;
@@ -34,7 +34,7 @@ public class TreeCommand extends ObjectCommand<PermissionObject> {
     public void execute(CommandSender sender, PermissionObject object, String[] arguments) {
         PermissionScope root = CommandUtil.readScope(sender,object,arguments,0);
         if(root == null) return;
-        TreeListBuilder<PermissionParentEntity> builder = new TreeListBuilder<>(root,object.getAllParents());
+        TreeListBuilder<ParentEntity> builder = new TreeListBuilder<>(root,object.getAllParents());
 
         sender.sendMessage(Messages.OBJECT_GROUP_TREE_HEADER, VariableSet.create()
                 .add("type",object.getType().getName().toLowerCase())

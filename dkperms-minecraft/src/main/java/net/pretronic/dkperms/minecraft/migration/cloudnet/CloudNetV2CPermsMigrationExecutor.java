@@ -26,6 +26,7 @@ import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
+import net.pretronic.dkperms.minecraft.migration.MigrationUtil;
 import net.pretronic.libraries.utility.exception.OperationFailedException;
 import net.pretronic.libraries.utility.map.caseintensive.CaseIntensiveHashMap;
 import org.mcnative.common.McNative;
@@ -51,15 +52,7 @@ public class CloudNetV2CPermsMigrationExecutor implements MigrationExecutor {
         if(pool == null) throw new OperationFailedException("CloudNet permission pool is not available");
 
         for (PermissionGroup group : pool.getGroups().values()) {
-            PermissionObject object = DKPerms.getInstance().getObjectManager()
-                    .getObject(group.getName()
-                            , DKPermsConfig.OBJECT_GROUP_SCOPE
-                            ,PermissionObjectType.GROUP);
-            if(object == null){
-                object = DKPerms.getInstance().getObjectManager()
-                        .createObject(DKPermsConfig.OBJECT_GROUP_SCOPE
-                                ,PermissionObjectType.GROUP,group.getName());
-            }
+            PermissionObject object = MigrationUtil.createOrGetGroup(group.getName());
             object.setPriority(admin,group.getTagId());
 
             object.getMeta().set(admin,"color",group.getColor(),0,object.getScope(), Entity.PERMANENTLY);
@@ -143,4 +136,5 @@ public class CloudNetV2CPermsMigrationExecutor implements MigrationExecutor {
 
         return false;
     }
+
 }

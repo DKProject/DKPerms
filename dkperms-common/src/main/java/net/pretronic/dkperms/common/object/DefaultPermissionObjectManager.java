@@ -43,13 +43,14 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
 
     private static final int SUPER_ADMINISTRATOR_ACCOUNT_ID = 1;
     private static final String SUPER_ADMINISTRATOR_ACCOUNT_NAME = "Super Administrator";
-    private static final String SERVICE_ACCOUNT_NAME = "SERVICE_ACCOUNT";
 
     private final SynchronizableCache<PermissionObject,Integer> objects;
     private final Cache<ObjectSearchResult> searchResults;
+    private final Collection<PermissionObjectTrack> tracks;//Currently pre loaded, maybe change in future
+
+    private DKPerms dkperms;
     private PermissionObject superAdministrator;
     private Collection<PermissionObjectType> types;
-    private final Collection<PermissionObjectTrack> tracks;//Currently pre loaded, maybe change in future
 
     public DefaultPermissionObjectManager() {
         this.objects = new ShadowArraySynchronizableCache<>(1000);
@@ -102,23 +103,31 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
 
     @Override
     public PermissionObjectType createType(PermissionObject executor,String name,String displayName, boolean group) {
+        Validate.notNull(group,displayName,name);
+        if(this.superAdministrator != null) Validate.notNull(executor);
         if(getType(name) != null) throw new IllegalArgumentException("The type with the name "+name+" does already exist");
-        int id = DKPerms.getInstance().getStorage().getObjectStorage().createObjectType(name,displayName,group);
+        int id = dkperms.getStorage().getObjectStorage().createObjectType(name,displayName,group);
         PermissionObjectType type = new DefaultPermissionObjectType(id,name,displayName,group);
         this.types.add(type);
+
+        dkperms.getAuditLog().createRecordAsync(executor,LogType.OBJECT_TYPE,LogAction.CREATE,-1,id,null,null,null,this);
+
         return type;
     }
 
     @Override
-    public void deleteType(PermissionObject executor,int id) {
-        DKPerms.getInstance().getStorage().getObjectStorage().deleteObjectType(id);
+    public void deleteType(PermissionObject executor,int id) {//@Todo check to previous delete objects and log into autdit log
+        Validate.notNull(executor);
+        dkperms.getStorage().getObjectStorage().deleteObjectType(id);
         Iterators.removeOne(this.types, type -> type.getId() == id);
+        dkperms.getAuditLog().createRecordAsync(executor,LogType.OBJECT_TYPE,LogAction.DELETE,-1,id,null,null,null,this);
     }
 
     @Override
     public void deleteType(PermissionObject executor,String name) {
-        DKPerms.getInstance().getStorage().getObjectStorage().deleteObjectType(name);
-        Iterators.removeOne(this.types, type -> type.getName().equalsIgnoreCase(name));
+        Validate.notNull(executor);
+        PermissionObjectType type = getType(name);
+        if(type != null) deleteType(executor,type.getId());
     }
 
     @Override
@@ -181,7 +190,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
 
     @Override
     public ObjectSearchQuery search() {
-        return DKPerms.getInstance().getStorage().getObjectStorage().createSearchQuery();
+        return dkperms.getStorage().getObjectStorage().createSearchQuery();
     }
 
     @Override
@@ -192,25 +201,30 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
     @Override
     public PermissionObject createObject(PermissionObject executor,PermissionScope scope, PermissionObjectType type, String name, UUID assignmentId) {
         Validate.notNull(scope, type,name);
+        if(superAdministrator != null) Validate.notNull(executor);
         if(!scope.isSaved()) scope.insert();
+        if(getObject(name,scope,type) != null) throw new IllegalArgumentException("There is already an object with the same name in the same scope");
         PermissionObject object = DKPerms.getInstance().getStorage().getObjectStorage().createObject(scope,type,name,assignmentId);
         this.objects.insert(object);
-        DKPerms.getInstance().getAuditLog().createRecord(executor, LogType.OBJECT, LogAction.CREATE,null,scope,null,null,null,null);
+        dkperms.getAuditLog().createRecordAsync(executor,LogType.OBJECT,LogAction.CREATE,object.getId(),object.getId(),null,null,null,this);
         return object;
     }
 
     @Override
     public void deleteObject(PermissionObject executor,int id) {
+        Validate.notNull(executor);
         this.objects.remove("ById",id);
-        DKPerms.getInstance().getStorage().getObjectStorage().deleteObject(id);
+        dkperms.getStorage().getObjectStorage().deleteObject(id);
         this.objects.getCaller().createAndIgnore(id, Document.newDocument());
+        dkperms.getAuditLog().createRecordAsync(executor,LogType.OBJECT,LogAction.DELETE,id,id,null,null,null,this);
     }
 
     @Override
     public void deleteObject(PermissionObject executor,PermissionObject object) {
         this.objects.remove(object);
-        DKPerms.getInstance().getStorage().getObjectStorage().deleteObject(object.getId());
+        this.dkperms.getStorage().getObjectStorage().deleteObject(object.getId());
         this.objects.getCaller().createAndIgnore(object.getId(), Document.newDocument());
+        this.dkperms.getAuditLog().createRecordAsync(executor,LogType.OBJECT,LogAction.DELETE,object.getId(),object.getId(),null,null,null,this);
     }
 
     @Override
@@ -258,7 +272,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         Validate.notNull(name,scope);
         if(!scope.isSaved()) scope.insert();
         if(getTrack(name,scope) != null) throw new IllegalArgumentException("A track with the name "+name+" does already exist");
-        int id = DKPerms.getInstance().getStorage().getTrackStorage().createTrack(name,scope.getId());
+        int id = dkperms.getStorage().getTrackStorage().createTrack(name,scope.getId());
         PermissionObjectTrack track = new DefaultPermissionObjectTrack(id,name,scope,new ArrayList<>());
         this.tracks.add(track);
         return track;
@@ -267,7 +281,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
     @Override
     public void deleteTrack(PermissionObjectTrack track) {
         Validate.notNull(track);
-        DKPerms.getInstance().getStorage().getTrackStorage().deleteTrack(track.getId());
+        dkperms.getStorage().getTrackStorage().deleteTrack(track.getId());
         this.tracks.remove(track);
     }
 
@@ -284,6 +298,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
     @Override
     public void initialise(DKPerms dkPerms) {
         if(types != null) throw new IllegalArgumentException("ObjectManager is already initialised");
+        this.dkperms = dkPerms;
         this.types = dkPerms.getStorage().getObjectStorage().getObjectTypes();
 
         findOrCreateType(PermissionObjectType.SERVICE_ACCOUNT);
@@ -305,7 +320,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
             }
         }
         types.add(builtInType);
-        int id = DKPerms.getInstance().getStorage().getObjectStorage()
+        int id = dkperms.getStorage().getObjectStorage()
                 .createObjectType(builtInType.getName(),builtInType.getDisplayName(),builtInType.isParentAble());
         if(id != builtInType.getId()){
             throw new OperationFailedException("Builtin type structure mismatch (Contact the Pretronic Support)");

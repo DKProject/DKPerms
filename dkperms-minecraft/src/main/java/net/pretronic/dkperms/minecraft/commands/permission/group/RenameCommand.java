@@ -30,7 +30,7 @@ public class RenameCommand extends ObjectCommand<PermissionObject> {
         if(arguments.length >= 1){
             String name = arguments[0];
             String oldName = object.getName();
-            object.setName(null,name);
+            object.setName(CommandUtil.getExecutor(sender),name);
             sender.sendMessage(Messages.GROUP_RENAMED,VariableSet.create()
                     .add("oldName",oldName)
                     .add("newName",name)

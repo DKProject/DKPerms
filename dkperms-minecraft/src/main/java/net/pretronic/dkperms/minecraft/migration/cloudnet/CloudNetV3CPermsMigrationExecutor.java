@@ -20,6 +20,7 @@ import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
+import net.pretronic.dkperms.minecraft.migration.MigrationUtil;
 import net.pretronic.libraries.utility.map.caseintensive.CaseIntensiveHashMap;
 import org.mcnative.common.McNative;
 import org.mcnative.common.player.MinecraftPlayer;
@@ -42,15 +43,7 @@ public class CloudNetV3CPermsMigrationExecutor implements MigrationExecutor {
     public boolean migrate() throws Exception {
         IPermissionManagement permissionManagement = CloudNetDriver.getInstance().getPermissionManagement();
         for (IPermissionGroup group : permissionManagement.getGroups()) {
-            PermissionObject object = DKPerms.getInstance().getObjectManager()
-                    .getObject(group.getName()
-                            , DKPermsConfig.OBJECT_GROUP_SCOPE
-                            ,PermissionObjectType.GROUP);
-            if(object == null){
-                object = DKPerms.getInstance().getObjectManager()
-                        .createObject(DKPermsConfig.OBJECT_GROUP_SCOPE
-                                ,PermissionObjectType.GROUP,group.getName());
-            }
+            PermissionObject object = MigrationUtil.createOrGetGroup(group.getName());
 
             migratePermissions(group,object);
 

@@ -30,6 +30,7 @@ public class PermissionCommand extends MainObjectCommand<PermissionObject> imple
         registerCommand(new ShowCommand(owner));
         registerCommand(new ListCommand(owner));
         registerCommand(new TreeCommand(owner));
+        registerCommand(new CheckCommand(owner));
     }
 
     @Override

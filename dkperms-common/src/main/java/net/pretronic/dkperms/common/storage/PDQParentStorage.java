@@ -15,7 +15,7 @@ import net.pretronic.databasequery.api.query.SearchOrder;
 import net.pretronic.databasequery.api.query.result.QueryResult;
 import net.pretronic.databasequery.api.query.result.QueryResultEntry;
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.entity.PermissionParentEntity;
+import net.pretronic.dkperms.api.entity.ParentEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
@@ -34,8 +34,8 @@ public class PDQParentStorage implements ParentStorage {
     private DatabaseCollection parent_entities;
 
     @Override
-    public Collection<PermissionParentEntity> getParentReferences(PermissionObject object, PermissionScope scope) {
-        List<PermissionParentEntity> entities = new ArrayList<>();
+    public Collection<ParentEntity> getParentReferences(PermissionObject object, PermissionScope scope) {
+        List<ParentEntity> entities = new ArrayList<>();
         parent_entities.find()
                 .where("ObjectId",object.getId())
                 .where("ScopeId",scope.getId())
@@ -48,7 +48,7 @@ public class PDQParentStorage implements ParentStorage {
     }
 
     @Override
-    public ScopeBasedDataList<PermissionParentEntity> getParentReferences(PermissionObject object, Collection<PermissionScope> scope) {
+    public ScopeBasedDataList<ParentEntity> getParentReferences(PermissionObject object, Collection<PermissionScope> scope) {
         if(scope.isEmpty()) return new ArrayScopeBasedDataList<>();
         QueryResult result = parent_entities.find()
                 .where("ObjectId",object.getId())
@@ -59,7 +59,7 @@ public class PDQParentStorage implements ParentStorage {
     }
 
     @Override
-    public ScopeBasedDataList<PermissionParentEntity> getAllParentReferences(PermissionObject object, Collection<PermissionScope> skipped) {
+    public ScopeBasedDataList<ParentEntity> getAllParentReferences(PermissionObject object, Collection<PermissionScope> skipped) {
         QueryResult result = parent_entities.find()
                 .where("ObjectId",object.getId())
                 .not(query -> query.whereIn("ScopeId", skipped, PermissionScope::getId))
@@ -68,11 +68,11 @@ public class PDQParentStorage implements ParentStorage {
         return getParentReferences(object,result,null);
     }
 
-    private ScopeBasedDataList<PermissionParentEntity> getParentReferences(PermissionObject object, QueryResult result, Collection<PermissionScope> scopes) {
-        ScopeBasedDataList<PermissionParentEntity> response = new ArrayScopeBasedDataList<>();
+    private ScopeBasedDataList<ParentEntity> getParentReferences(PermissionObject object, QueryResult result, Collection<PermissionScope> scopes) {
+        ScopeBasedDataList<ParentEntity> response = new ArrayScopeBasedDataList<>();
 
         PermissionScope last = null;
-        Collection<PermissionParentEntity> entities = null;
+        Collection<ParentEntity> entities = null;
         for (QueryResultEntry entry : result) {
             int id = entry.getInt("ScopeId");
             if(last == null || last.getId() != id){

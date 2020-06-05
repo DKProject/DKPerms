@@ -31,7 +31,7 @@ public class SetPriorityCommand extends ObjectCommand<PermissionObject> {
         if(arguments.length >= 1){
             if(GeneralUtil.isNaturalNumber(arguments[0])){
                 int priority = Integer.parseInt(arguments[0]);
-                object.setPriority(null,priority);
+                object.setPriority(CommandUtil.getExecutor(sender),priority);
                 sender.sendMessage(Messages.OBJECT_GROUP_PRIORITY_SET,VariableSet.create()
                         .addDescribed("object",object)
                         .addDescribed("priority",priority));
