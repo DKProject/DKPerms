@@ -34,6 +34,7 @@ public class PermissionCommand extends MainCommand implements NotFindable, NoPer
         super(owner, configuration);
         infoCommand = new InfoCommand(owner);
 
+        registerCommand(new InfoCommand(owner));
         registerCommand(new UserMainCommand(owner));
         registerCommand(new GroupMainCommand(owner));
         registerCommand(new TrackMainCommand(owner));

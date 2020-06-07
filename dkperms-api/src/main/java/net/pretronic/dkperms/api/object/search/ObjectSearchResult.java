@@ -11,7 +11,6 @@
 package net.pretronic.dkperms.api.object.search;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.api.scope.PermissionScope;
 
 import java.util.Collection;
 import java.util.List;

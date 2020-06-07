@@ -14,14 +14,11 @@ import net.pretronic.dkperms.api.graph.ObjectGraph;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.object.SyncAction;
-import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.libraries.synchronisation.observer.AbstractObservable;
 import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
 import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.Validate;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class FilteredObjectGraph extends AbstractObservable<PermissionObject, SyncAction> implements ObjectGraph, ObserveCallback<PermissionObject, SyncAction> {

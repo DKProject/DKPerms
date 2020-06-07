@@ -10,8 +10,8 @@
 
 package net.pretronic.dkperms.common.calculator;
 
-import net.pretronic.dkperms.api.entity.PermissionEntity;
 import net.pretronic.dkperms.api.entity.ParentEntity;
+import net.pretronic.dkperms.api.entity.PermissionEntity;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;

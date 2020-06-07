@@ -10,13 +10,11 @@
 
 package net.pretronic.dkperms.common.logging;
 
-import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.logging.AuditLog;
 import net.pretronic.dkperms.api.logging.LogAction;
 import net.pretronic.dkperms.api.logging.LogType;
 import net.pretronic.dkperms.api.logging.record.LogRecordResult;
 import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.api.scope.PermissionScope;
 
 public class DefaultAuditLog implements AuditLog {
 

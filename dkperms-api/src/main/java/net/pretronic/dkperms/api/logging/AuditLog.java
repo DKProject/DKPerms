@@ -12,7 +12,6 @@ package net.pretronic.dkperms.api.logging;
 
 import net.pretronic.dkperms.api.logging.record.LogRecordResult;
 import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.api.scope.PermissionScope;
 
 public interface AuditLog {
 

@@ -33,10 +33,12 @@ public class DescriberRegistrar {
         registerGroupEntity();
         registerSnapshot();
 
+        VariableDescriberRegistry.registerDescriber(DefaultPermissionParentEntity.class)
+                .setForwardFunction(DefaultPermissionParentEntity::getParent);
+
         VariableDescriberRegistry.registerDescriber(DefaultPermissionScope.class);
         VariableDescriberRegistry.registerDescriber(DefaultObjectMetaEntry.class);
         VariableDescriberRegistry.registerDescriber(DefaultPermissionEntity.class);
-        VariableDescriberRegistry.registerDescriber(DefaultPermissionParentEntity.class);
         VariableDescriberRegistry.registerDescriber(DefaultPermissionObjectType.class);
         VariableDescriberRegistry.registerDescriber(DKPermsPlayerDesign.class);
         VariableDescriberRegistry.registerDescriber(TeamCommand.TeamTree.class);

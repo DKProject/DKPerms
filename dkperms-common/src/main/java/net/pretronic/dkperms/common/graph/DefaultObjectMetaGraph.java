@@ -19,7 +19,6 @@ import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 import net.pretronic.libraries.synchronisation.observer.AbstractObservable;
 import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
-import net.pretronic.libraries.utility.GeneralUtil;
 import net.pretronic.libraries.utility.SystemUtil;
 import net.pretronic.libraries.utility.Validate;
 
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
 
 public class DefaultObjectMetaGraph extends AbstractObservable<PermissionObject,SyncAction> implements ObjectMetaGraph, ObserveCallback<PermissionObject, SyncAction> {
 

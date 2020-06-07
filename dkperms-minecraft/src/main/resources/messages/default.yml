@@ -132,7 +132,7 @@ messages:
   &8
   &8» &7Groups&8:
   @for("group" in {snapshot.groups},${dkperms.user.info.groups.loop},"\n")'
-  dkperms.user.info.groups.loop: '  &8- {group.property.color}{group.name}'
+  dkperms.user.info.groups.loop: '  &8- {group.displayName}'
 
   dkperms.group.help: '${dkperms.prefix} &7Group commands&8:
   &7/perms group <name>
@@ -169,7 +169,7 @@ messages:
   dkperms.group.copy: '${dkperms.prefix} &7The group &e{object.name} &7was copied to &e{newObject.name}&7.'
   dkperms.group.list: '${dkperms.prefix} &7Available permission groups&8:
   &8» &7Scope&8: &e{scope} @for("group" in {groups},${dkperms.group.list.loop},"\n","\n")'
-  dkperms.group.list.loop: '&8- &7{group.property.color}{group.name}'
+  dkperms.group.list.loop: '&8- &7{group.displayName}'
 
   dkperms.group.listMembers: '${dkperms.prefix} &7Members of group {group.property.color}{group.name} &8| &7Page&8: &7{page}
   @for("member" in {dkperms.group.listMembers.loop},"\n")'
