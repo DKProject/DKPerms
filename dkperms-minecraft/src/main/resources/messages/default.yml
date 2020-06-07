@@ -105,7 +105,7 @@ messages:
   &8» &7Scope&8: &e{scope}'
   dkperms.object.group.list: '${dkperms.prefix} &7Groups of {object.type} &e{object.name}
   &8» &7Scope&8: &e{scope} @for("entry" in {entries},${dkperms.object.group.list.loop},"\n","\n")'
-  dkperms.object.group.list.loop: ' &8- &7{entry.group.property.color}{entry.group.name} &8(&e{entry.action}&8)'
+  dkperms.object.group.list.loop: ' &8- &7{entry.displayName} &8(&e{entry.action}&8)'
   dkperms.object.group.tree.header: '${dkperms.prefix} &7Group tree of {object.type} &e{object}'
   dkperms.object.group.tree.scope: '{spaces}&8» &9{scope.key}&8=&9{scope.name} &8(&7{scope.level}&8)'
   dkperms.object.group.tree.entry: '{spaces}  &8- {entry.group.property.color}&7{entry.group.name} &8(&e{entry.action}&8)'

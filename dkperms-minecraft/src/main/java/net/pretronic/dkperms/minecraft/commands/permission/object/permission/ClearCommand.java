@@ -34,7 +34,7 @@ public class ClearCommand extends ObjectCommand<PermissionObject> {
         object.clearPermission(CommandUtil.getExecutor(sender),scope);
 
         VariableSet variables = VariableSet.create();
-        variables.add("type",object.getType().getName().toLowerCase());
+        variables.add("type",object.getType().getDisplayName().toLowerCase());
         variables.addDescribed("object",object);
         variables.addDescribed("scope",scope);
         sender.sendMessage(Messages.OBJECT_PERMISSION_CLEAR,variables);

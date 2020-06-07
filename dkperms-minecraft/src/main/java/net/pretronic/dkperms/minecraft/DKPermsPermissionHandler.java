@@ -178,7 +178,7 @@ public class DKPermsPermissionHandler implements PermissionHandler, ObserveCallb
         if(player != null){
             McNative.getInstance().getScheduler()
                     .createTask(ObjectOwner.SYSTEM)
-                    .delay(2, TimeUnit.SECONDS)
+                    .delay(1, TimeUnit.SECONDS)
                     .execute(() -> {
                 MinecraftPlayerDesignUpdateEvent event = new MinecraftPlayerDesignUpdateEvent(player,design);
                 McNative.getInstance().getLocal().getEventBus().callEvent(event);

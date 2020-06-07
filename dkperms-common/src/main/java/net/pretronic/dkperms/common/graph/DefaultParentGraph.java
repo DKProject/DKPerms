@@ -61,7 +61,7 @@ public final class DefaultParentGraph extends AbstractObservable<PermissionObjec
     public List<ParentEntity> traverse() {
         if(traversing) SystemUtil.sleepAsLong(sleeper);
         if(objectPriority.isEmpty()) traverseInternal();
-        return entities;
+        return Collections.unmodifiableList(entities);
     }
 
     private void traverseInternal(){

@@ -10,9 +10,11 @@
 
 package net.pretronic.dkperms.api.object;
 
+import net.pretronic.libraries.message.bml.variable.describer.VariableObjectToString;
+
 import java.util.concurrent.CompletableFuture;
 
-public class BuiltInPermissionObjectType implements PermissionObjectType{
+public class BuiltInPermissionObjectType implements PermissionObjectType, VariableObjectToString {
 
     private final int fixedId;
     private final String name;
@@ -71,5 +73,10 @@ public class BuiltInPermissionObjectType implements PermissionObjectType{
     @Override
     public void setLocalHolderFactory(PermissionHolderFactory factory) {
         this.factory = factory;
+    }
+
+    @Override
+    public String toStringVariable() {
+        return displayName;
     }
 }

@@ -55,11 +55,11 @@ public class SetCommand extends ObjectCommand<PermissionObject> {
 
             VariableSet variables = VariableSet.create();
             variables.addDescribed("entry",entry);
-            variables.addDescribed("type",object.getType().getName().toLowerCase());
+            variables.addDescribed("type",object.getType().getDisplayName().toLowerCase());
             variables.addDescribed("object",object);
+            variables.addDescribed("scope",scope);
             variables.add("key",key);
             variables.add("value",value);
-            variables.add("scope",scope);
             sender.sendMessage(Messages.OBJECT_META_SET,variables);
         }else{
             CommandUtil.sendInvalidSyntax(sender,"meta set","/perms <user/group> <name> meta set <key> <value> [scope]");

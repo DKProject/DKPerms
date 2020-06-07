@@ -37,7 +37,7 @@ public class ListCommand extends ObjectCommand<PermissionObject> {
         Collection<ParentEntity> entries = object.getParents(scope);
 
         sender.sendMessage(Messages.OBJECT_GROUP_LIST, VariableSet.create()
-                .add("type",object.getType().getName().toLowerCase())
+                .add("type",object.getType().getDisplayName().toLowerCase())
                 .addDescribed("object",object)
                 .addDescribed("scope",scope)
                 .add("entries",entries));

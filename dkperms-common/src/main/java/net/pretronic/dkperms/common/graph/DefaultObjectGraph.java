@@ -22,6 +22,7 @@ import net.pretronic.libraries.utility.SystemUtil;
 import net.pretronic.libraries.utility.Validate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
@@ -44,7 +45,7 @@ public class DefaultObjectGraph extends AbstractObservable<PermissionObject, Syn
     public List<PermissionObject> traverse() {
         if(traversing) SystemUtil.sleepAsLong(sleeper);
         if(result.isEmpty()) traverse0();
-        return result;
+        return Collections.unmodifiableList(result);
     }
 
     private void traverse0() {

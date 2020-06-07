@@ -83,7 +83,7 @@ public class SetCommand extends ObjectCommand<PermissionObject> {
             }
 
             sender.sendMessage(Messages.OBJECT_PERMISSION_SET, VariableSet.create()
-                    .add("type", object.getType().getName().toLowerCase())
+                    .add("type", object.getType().getDisplayName().toLowerCase())
                     .addDescribed("object", object)
                     .addDescribed("scope", scope)
                     .addDescribed("entry", entity)

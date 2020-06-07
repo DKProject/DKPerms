@@ -39,7 +39,7 @@ public class UnsetCommand extends ObjectCommand<PermissionObject> {
             object.unsetPermission(CommandUtil.getExecutor(sender),permission);
 
             VariableSet variables = VariableSet.create();
-            variables.add("type",object.getType().getName().toLowerCase());
+            variables.add("type",object.getType().getDisplayName().toLowerCase());
             variables.addDescribed("object",object);
             variables.add("permission",permission);
             variables.add("action", PermissionAction.NEUTRAL);

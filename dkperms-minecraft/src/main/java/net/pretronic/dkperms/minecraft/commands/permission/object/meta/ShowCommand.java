@@ -39,11 +39,11 @@ public class ShowCommand extends ObjectCommand<PermissionObject> {
             //@Todo Commands do currently only support one entry, multiple entries should be implemented in future
 
             VariableSet variables = VariableSet.create();
-            variables.add("type",object.getType().getName().toLowerCase());
             variables.addDescribed("object",object);
+            variables.addDescribed("scope",scope);
+            variables.add("type",object.getType().getDisplayName().toLowerCase());
             variables.add("key",key);
             variables.add("value",entry != null ? entry.getValue() : "Undefined");
-            variables.addDescribed("scope",scope);
             sender.sendMessage(Messages.OBJECT_META_SHOW,variables);
         }else{
             CommandUtil.sendInvalidSyntax(sender,"meta show","/perms <user/group> <name> meta show <key> [scope]");

@@ -41,6 +41,6 @@ public class PermissionCommand extends MainObjectCommand<PermissionObject> imple
     @Override
     public void commandNotFound(CommandSender sender, PermissionObject object, String command, String[] args) {
         sender.sendMessage(Messages.OBJECT_PERMISSION_HELP, VariableSet.create()
-                .add("type",object.getType().getName().toLowerCase()));
+                .add("type",object.getType().getDisplayName().toLowerCase()));
     }
 }

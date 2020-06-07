@@ -122,7 +122,7 @@ public class CommandUtil {
         object.removeParent(CommandUtil.getExecutor(sender),scope,group);
 
         VariableSet variables = VariableSet.create()
-                .add("type",object.getType().getName().toLowerCase())
+                .add("type",object.getType().getDisplayName().toLowerCase())
                 .addDescribed("object",object)
                 .addDescribed("group",group)
                 .add("action", PermissionAction.NEUTRAL)

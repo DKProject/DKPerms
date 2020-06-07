@@ -41,7 +41,7 @@ public class MetaCommand extends MainObjectCommand<PermissionObject> implements 
     @Override
     public void commandNotFound(CommandSender sender, PermissionObject object, String command, String[] args) {
         sender.sendMessage(Messages.OBJECT_META_HELP, VariableSet.create()
-                .add("type",object.getType().getName().toLowerCase()));
+                .add("type",object.getType().getDisplayName().toLowerCase()));
     }
 
 }

@@ -46,7 +46,7 @@ public class ListCommand extends ObjectCommand<PermissionObject> {
         List<PermissionObject> entries = object.newEffectedGroupGraph(range).traverseReversed();
 
         sender.sendMessage(Messages.RANK_LIST, VariableSet.create()
-                .add("type",object.getType().getName().toLowerCase())
+                .add("type",object.getType().getDisplayName().toLowerCase())
                 .addDescribed("object",object)
                 .addDescribed("scope",scope)
                 .add("groups",entries));

@@ -37,7 +37,7 @@ public class ListCommand extends ObjectCommand<PermissionObject> {
         Collection<ObjectMetaEntry> entries = object.getMeta().getEntries(scope);
 
         sender.sendMessage(Messages.OBJECT_META_LIST, VariableSet.create()
-                .add("type",object.getType().getName().toLowerCase())
+                .add("type",object.getType().getDisplayName().toLowerCase())
                 .addDescribed("object",object)
                 .addDescribed("scope",scope)
                 .add("entries",entries));

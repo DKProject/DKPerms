@@ -30,6 +30,7 @@ import net.pretronic.libraries.utility.SystemUtil;
 import net.pretronic.libraries.utility.Validate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
@@ -56,7 +57,7 @@ public class DefaultPermissionGraph extends AbstractObservable<PermissionObject,
     public List<PermissionEntity> traverse() {
         if(traversing) SystemUtil.sleepAsLong(sleeper);
         if(result.isEmpty()) traverseInternal();
-        return result;
+        return Collections.unmodifiableList(result);
     }
 
     private void traverseInternal(){

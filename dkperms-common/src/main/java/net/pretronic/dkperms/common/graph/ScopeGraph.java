@@ -19,6 +19,7 @@ import net.pretronic.libraries.utility.SystemUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
@@ -27,7 +28,7 @@ public class ScopeGraph extends UnusedObservable<PermissionObject,SyncAction> im
     private final PermissionScope start;
     private final PermissionScope end;
 
-    private List<PermissionScope> result;
+    private final List<PermissionScope> result;
 
     private boolean traversing;
     private final BooleanSupplier sleeper = () -> traversing;
@@ -35,14 +36,14 @@ public class ScopeGraph extends UnusedObservable<PermissionObject,SyncAction> im
     public ScopeGraph(PermissionScope start, PermissionScope end) {
         this.start = start;
         this.end = end;
-        result = new ArrayList<>();
+        this.result = new ArrayList<>();
     }
 
     @Override
     public List<PermissionScope> traverse() {
         if(traversing) SystemUtil.sleepAsLong(sleeper);
         if(result.isEmpty()) traverse0();
-        return result;
+        return Collections.unmodifiableList(result);
     }
 
     private void traverse0(){

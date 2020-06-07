@@ -42,7 +42,7 @@ public class ShowCommand extends ObjectCommand<PermissionObject> {
 
             if(entity == null){
                 sender.sendMessage(Messages.OBJECT_GROUP_NOT_SET,VariableSet.create()
-                        .add("type", object.getType().getName().toLowerCase())
+                        .add("type", object.getType().getDisplayName().toLowerCase())
                         .add("action", PermissionAction.NEUTRAL)
                         .add("timeout", DKPermsConfig.FORMAT_DATE_ENDLESSLY)
                         .add("remaining", DKPermsConfig.FORMAT_DATE_ENDLESSLY)
@@ -53,7 +53,7 @@ public class ShowCommand extends ObjectCommand<PermissionObject> {
             }
 
             VariableSet variables = VariableSet.create()
-                    .add("type", object.getType().getName().toLowerCase())
+                    .add("type", object.getType().getDisplayName().toLowerCase())
                     .addDescribed("object", object)
                     .addDescribed("scope", scope)
                     .addDescribed("entry", entity)

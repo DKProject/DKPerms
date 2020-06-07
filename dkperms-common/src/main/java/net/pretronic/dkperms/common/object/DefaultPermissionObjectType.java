@@ -84,6 +84,6 @@ public class DefaultPermissionObjectType implements PermissionObjectType, Variab
 
     @Override
     public String toStringVariable() {
-        return name;
+        return displayName;
     }
 }

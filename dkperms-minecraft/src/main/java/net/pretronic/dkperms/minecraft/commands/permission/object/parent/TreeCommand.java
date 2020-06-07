@@ -37,7 +37,7 @@ public class TreeCommand extends ObjectCommand<PermissionObject> {
         TreeListBuilder<ParentEntity> builder = new TreeListBuilder<>(root,object.getAllParents());
 
         sender.sendMessage(Messages.OBJECT_GROUP_TREE_HEADER, VariableSet.create()
-                .add("type",object.getType().getName().toLowerCase())
+                .add("type",object.getType().getDisplayName().toLowerCase())
                 .addDescribed("object",object));
 
         builder.setHeaderPrinter(scope1
