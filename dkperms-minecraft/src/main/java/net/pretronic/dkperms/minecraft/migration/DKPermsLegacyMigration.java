@@ -111,6 +111,7 @@ public class DKPermsLegacyMigration implements PermissionMigration {
     private void migrateGroups(){
         Collection<PermissionGroup> groups = groupStorage.loadGroups();
         for (PermissionGroup group : groups) {
+            DKPerms.getInstance().getLogger().info("(Migration) Migrating group "+group.getName());
             PermissionObject object = MigrationUtil.createOrGetGroup(group.getName());
             object.setPriority(admin,group.getPriority());
 
@@ -132,6 +133,7 @@ public class DKPermsLegacyMigration implements PermissionMigration {
                 object.getMeta().set(admin,"suffix",group.getPlayerDesign().getSuffix(),0,object.getScope(), Entity.PERMANENTLY);
             }
             this.migratedGroups.put(group.getUUID(),object);
+            DKPerms.getInstance().getLogger().info("(Migration) Migrated group "+group.getName()+" successfully");
         }
     }
 

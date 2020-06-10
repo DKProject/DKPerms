@@ -184,7 +184,6 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
         }else if(column.equals(SortColumn.PRIORITY)){
             query.orderBy("Priority",order);
         }else throw new IllegalArgumentException("Invalid order column");
-
         return this;
     }
 
