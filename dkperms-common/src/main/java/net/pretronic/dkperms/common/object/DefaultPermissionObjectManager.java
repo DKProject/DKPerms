@@ -25,6 +25,7 @@ import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.libraries.caching.ArrayCache;
 import net.pretronic.libraries.caching.Cache;
 import net.pretronic.libraries.caching.CacheQuery;
+import net.pretronic.libraries.caching.synchronisation.ArraySynchronizableCache;
 import net.pretronic.libraries.caching.synchronisation.ShadowArraySynchronizableCache;
 import net.pretronic.libraries.caching.synchronisation.SynchronizableCache;
 import net.pretronic.libraries.document.Document;
@@ -53,7 +54,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
     private Collection<PermissionObjectType> types;
 
     public DefaultPermissionObjectManager() {
-        this.objects = new ShadowArraySynchronizableCache<>(1000);
+        this.objects = new ArraySynchronizableCache<>(1000);
         this.objects.setClearOnDisconnect(true);
         this.objects.setExpireAfterAccess(30,TimeUnit.MINUTES);
 
