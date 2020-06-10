@@ -81,6 +81,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         return searchResults;
     }
 
+
     @Override
     public Collection<PermissionObjectType> getTypes() {
         return types;
