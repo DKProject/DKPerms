@@ -78,8 +78,9 @@ public class DKPermsLegacyMigration implements PermissionMigration {
         for (Map.Entry<UUID, PermissionObject> entry : this.migratedGroups.entrySet()) {
             migrateObject(PermissionType.GROUP,entry.getKey(),entry.getValue());
         }
-
+        DKPerms.getInstance().getLogger().info("(Migration) Migrated all groups");
         for (PermissionPlayer player : playerStorage.getPlayers()) {
+            DKPerms.getInstance().getLogger().info("(Migration) Migrating user "+player.getName());
             MinecraftPlayer minecraftPlayer = McNative.getInstance().getPlayerManager().getPlayer(player.getUUID());
             if(minecraftPlayer == null){
                 McNative.getInstance().getRegistry().getService(PlayerDataProvider.class)
