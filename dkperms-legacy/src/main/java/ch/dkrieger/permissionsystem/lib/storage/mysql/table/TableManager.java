@@ -23,7 +23,7 @@ public class TableManager {
 
     public TableManager(MySQL mysql){
         INSTANCE = this;
-        String systemname = "DKPerms";
+        String systemname = "dkperms";
 
         this.players = new Table(mysql,systemname+"_players");
 
