@@ -12,14 +12,19 @@ package net.pretronic.dkperms.minecraft.commands.permission;
 
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.migration.PermissionMigration;
+import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.BasicCommand;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.sender.CommandSender;
+import net.pretronic.libraries.synchronisation.SynchronisationCaller;
+import net.pretronic.libraries.synchronisation.UnconnectedSynchronisationCaller;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import org.mcnative.common.McNative;
 
 public class MigrationCommand extends BasicCommand {
+
+    private static SynchronisationCaller<Integer> currentCaller;
 
     public MigrationCommand(ObjectOwner owner) {
         super(owner, CommandConfiguration.name("migrate","migration","m"));
@@ -39,6 +44,7 @@ public class MigrationCommand extends BasicCommand {
                     }
                     sender.sendMessage("[DKPerms] Starting migration of "+migration.getName());
                     sender.sendMessage("[DKPerms] This may take a while...");
+                    disableSync();
                     try{
                         boolean result = migration.migrate();
                         if(result){
@@ -50,6 +56,7 @@ public class MigrationCommand extends BasicCommand {
                         exception.printStackTrace();
                         sender.sendMessage("[DKPerms] Migration failed ("+exception.getMessage()+")");
                     }
+                    enableSync();
                 }
             }else{
                 sender.sendMessage("[DKPerms] Available migrations:");
@@ -64,5 +71,14 @@ public class MigrationCommand extends BasicCommand {
         }else{
             sender.sendMessage(Messages.SENDER_ONLY_CONSOLE);
         }
+    }
+
+    private void disableSync(){
+        currentCaller = DefaultPermissionObject.SYNCHRONISATION_CALLER;
+        DefaultPermissionObject.SYNCHRONISATION_CALLER = new UnconnectedSynchronisationCaller<>(true);
+    }
+
+    private void enableSync(){
+        DefaultPermissionObject.SYNCHRONISATION_CALLER = currentCaller;
     }
 }
