@@ -72,6 +72,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         this.tracks = new ArrayList<>();
     }
 
+
     public SynchronizableCache<PermissionObject,Integer> getObjects() {
         return objects;
     }
