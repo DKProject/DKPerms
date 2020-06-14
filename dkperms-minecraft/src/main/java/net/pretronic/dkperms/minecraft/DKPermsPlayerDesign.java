@@ -53,11 +53,6 @@ public class DKPermsPlayerDesign implements PlayerDesign {
     }
 
     @Override
-    public String getDisplayName() {
-        return "{name}";//@Todo implements
-    }
-
-    @Override
     public int getPriority() {
         ObjectMetaEntry entry = object.getCurrentSnapshot().getMeta("priority");
         if(entry == null){

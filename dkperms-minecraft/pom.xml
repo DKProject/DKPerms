@@ -107,7 +107,7 @@
         </repository>
 
         <repository>
-            <id>pretronic</id>
+            <id>pretronic-thirdparty</id>
             <url>https://repository.pretronic.net/repository/thirdparty/</url>
         </repository>
     </repositories>
