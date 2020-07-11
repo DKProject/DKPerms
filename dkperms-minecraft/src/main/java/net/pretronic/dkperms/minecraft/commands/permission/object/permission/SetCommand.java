@@ -10,22 +10,22 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.object.permission;
 
-import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.entity.Entity;
 import net.pretronic.dkperms.api.entity.PermissionEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
+import net.pretronic.dkperms.minecraft.commands.UpdateModifier;
 import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
-import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
-import net.pretronic.libraries.utility.GeneralUtil;
+import net.pretronic.libraries.utility.duration.DurationProcessor;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 public class SetCommand extends ObjectCommand<PermissionObject> {
 
@@ -39,9 +39,9 @@ public class SetCommand extends ObjectCommand<PermissionObject> {
             String permission = arguments[0];
 
             PermissionAction action = PermissionAction.ALLOW;
-            long time = -1;
-            TimeUnit unit = TimeUnit.DAYS;
+            Duration duration = Entity.PERMANENTLY;
             PermissionScope scope = object.getScope();
+            UpdateModifier modifier = UpdateModifier.REPLACE;
 
             if (permission.startsWith("--")) {
                 permission = permission.substring(2);
@@ -59,50 +59,41 @@ public class SetCommand extends ObjectCommand<PermissionObject> {
 
             for (int i = 1; i < arguments.length; i++) {
                 String argument = arguments[i];
-                if (GeneralUtil.isNaturalNumber(argument)) {
-                    time = Long.parseLong(argument);
-                } else {
-                    PermissionAction action0 = PermissionAction.ofOrNull(argument);
-                    if (action0 == null) {
-                        TimeUnit unit0 = GeneralUtil.valueOfEnumOrNull(TimeUnit.class, argument.toUpperCase());//@Todo add alternative time unit options
-                        if (unit0 == null) {
-                            try{
-                                scope = DKPerms.getInstance().getScopeManager().get(argument);
-                                if(scope == null){
-                                    sender.sendMessage(Messages.SCOPE_NOTFOUND, VariableSet.create().add("scope",argument));
-                                    return;
-                                }
-                            } catch (IllegalArgumentException exception) {
-                                sender.sendMessage(Messages.SCOPE_INVALID, VariableSet.create().add("scope", argument));
-                                return;
-                            }
-                        } else unit = unit0;
-                    } else action = action0;
+                UpdateModifier modifier0 = UpdateModifier.parse(argument);
+                if(modifier0 == null){
+                    try{
+                        duration = DurationProcessor.getStandard().parse(argument);
+                    }catch (IllegalArgumentException ignored){
+                        scope = CommandUtil.readScope(sender, argument);
+                        if (scope == null) return;
+                    }
+                }else{
+                    modifier = modifier0;
                 }
             }
 
             PermissionEntity entity = object.getPermission(scope, permission);
 
             if (entity == null) {
-                entity = object.addPermission(null,scope, permission, action, time, unit);
+                entity = object.setPermission(CommandUtil.getExecutor(sender),scope, permission, action,duration);
             } else {
-                entity.update(null,action,scope,time,unit);
+                if(modifier == UpdateModifier.FAIL) return; //@Todo send message
+                else duration = modifier.take(entity.getRemainingDuration(),duration);
+                entity.update(null,action,scope,duration);
             }
 
-            sender.sendMessage(Messages.OBJECT_PERMISSION_SET, new DescribedHashVariableSet()
-                    .add("type", object.getType().getName().toLowerCase())
-                    .add("object", object)
-                    .add("scope", scope)
-                    .add("entry", entity)
-                    .add("entity", entity)
+            sender.sendMessage(Messages.OBJECT_PERMISSION_SET, VariableSet.create()
+                    .add("type", object.getType().getDisplayName().toLowerCase())
+                    .addDescribed("object", object)
+                    .addDescribed("scope", scope)
+                    .addDescribed("entry", entity)
+                    .addDescribed("entity", entity)
                     .add("permission", permission)
                     .add("action", action)
-                    .add("timeout", time)
-                    .add("unit", unit)
                     .add("timeout", entity.getTimeoutFormatted())
                     .add("remaining", entity.getRemainingDurationFormatted()));
         }else{
-            CommandUtil.sendInvalidSyntax(sender,"permission set","permission set <permission> [action] [time] [unit] [scope]");
+            CommandUtil.sendInvalidSyntax(sender,"permission set","/perms <user/group> <name> perm set <(action)perm> [duration] [modifier] [scope] ");
         }
     }
 }

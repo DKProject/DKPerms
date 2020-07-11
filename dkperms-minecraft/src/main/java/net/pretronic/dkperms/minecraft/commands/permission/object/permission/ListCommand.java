@@ -18,7 +18,7 @@ import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
-import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
+import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
 import java.util.Collection;
@@ -36,10 +36,10 @@ public class ListCommand extends ObjectCommand<PermissionObject> {
 
         Collection<PermissionEntity> entries = object.getPermissions(scope);
 
-        sender.sendMessage(Messages.OBJECT_PERMISSION_LIST,new DescribedHashVariableSet()
-                .add("type",object.getType().getName().toLowerCase())
-                .add("object",object)
-                .add("scope",scope)
+        sender.sendMessage(Messages.OBJECT_PERMISSION_LIST, VariableSet.create()
+                .add("type",object.getType().getDisplayName().toLowerCase())
+                .addDescribed("object",object)
+                .addDescribed("scope",scope)
                 .add("entities",entries)
                 .add("entries",entries));
     }

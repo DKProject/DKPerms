@@ -10,12 +10,12 @@
 
 package net.pretronic.dkperms.api.migration;
 
-public interface PermissionMigration {
+public interface PermissionMigration extends MigrationExecutor {
+
+    String getDisplayName();
 
     String getName();
 
     boolean isAvailable();
-
-    boolean migrate() throws Exception;
 
 }

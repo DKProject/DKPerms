@@ -10,7 +10,6 @@
 
 package net.pretronic.dkperms.minecraft.migration;
 
-import ch.dkrieger.permissionsystem.lib.PermissionAdapter;
 import ch.dkrieger.permissionsystem.lib.PermissionSystem;
 import ch.dkrieger.permissionsystem.lib.PermissionType;
 import ch.dkrieger.permissionsystem.lib.entity.PermissionEntityStorage;
@@ -24,8 +23,10 @@ import ch.dkrieger.permissionsystem.lib.permission.data.SimplePermissionData;
 import ch.dkrieger.permissionsystem.lib.player.PermissionPlayer;
 import ch.dkrieger.permissionsystem.lib.player.PermissionPlayerStorage;
 import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.entity.Entity;
 import net.pretronic.dkperms.api.migration.PermissionMigration;
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
@@ -33,6 +34,7 @@ import org.mcnative.common.McNative;
 import org.mcnative.common.player.MinecraftPlayer;
 import org.mcnative.common.player.data.PlayerDataProvider;
 
+import java.io.File;
 import java.util.*;
 
 public class DKPermsLegacyMigration implements PermissionMigration {
@@ -51,13 +53,18 @@ public class DKPermsLegacyMigration implements PermissionMigration {
     }
 
     @Override
+    public String getDisplayName() {
+        return "DKPermsLegacy (DKPerms V1)";
+    }
+
+    @Override
     public String getName() {
         return "DKPermsLegacy";
     }
 
     @Override
     public boolean isAvailable() {
-        return true;
+        return new File("plugins/DKPerms/legacy-config.yml").exists();
     }
 
     @Override
@@ -71,9 +78,10 @@ public class DKPermsLegacyMigration implements PermissionMigration {
         for (Map.Entry<UUID, PermissionObject> entry : this.migratedGroups.entrySet()) {
             migrateObject(PermissionType.GROUP,entry.getKey(),entry.getValue());
         }
-
+        DKPerms.getInstance().getLogger().info("(Migration) Migrated all groups");
         for (PermissionPlayer player : playerStorage.getPlayers()) {
-            MinecraftPlayer minecraftPlayer =  McNative.getInstance().getPlayerManager().getPlayer(player.getUUID());
+            DKPerms.getInstance().getLogger().info("(Migration) Migrating user "+player.getName());
+            MinecraftPlayer minecraftPlayer = McNative.getInstance().getPlayerManager().getPlayer(player.getUUID());
             if(minecraftPlayer == null){
                 McNative.getInstance().getRegistry().getService(PlayerDataProvider.class)
                         .createPlayerData(player.getName(),player.getUUID(),-1,-1,-1,null);
@@ -83,7 +91,7 @@ public class DKPermsLegacyMigration implements PermissionMigration {
             if(object == null){
                 object = DKPerms.getInstance().getObjectManager()
                         .createObject(DKPermsConfig.OBJECT_PLAYER_SCOPE
-                                ,DKPermsConfig.OBJECT_PLAYER_TYPE,player.getName(),player.getUUID());
+                                , PermissionObjectType.USER_ACCOUNT,player.getName(),player.getUUID());
             }
             migrateObject(PermissionType.PLAYER,player.getUUID(),object);
         }
@@ -104,35 +112,29 @@ public class DKPermsLegacyMigration implements PermissionMigration {
     private void migrateGroups(){
         Collection<PermissionGroup> groups = groupStorage.loadGroups();
         for (PermissionGroup group : groups) {
-            PermissionObject object = DKPerms.getInstance().getObjectManager()
-                    .getObject(group.getName()
-                    ,DKPermsConfig.OBJECT_GROUP_SCOPE
-                    ,DKPermsConfig.OBJECT_GROUP_TYPE);
-            if(object == null){
-                object = DKPerms.getInstance().getObjectManager()
-                        .createObject(DKPermsConfig.OBJECT_GROUP_SCOPE
-                                ,DKPermsConfig.OBJECT_GROUP_TYPE,group.getName());
-            }
+            DKPerms.getInstance().getLogger().info("(Migration) Migrating group "+group.getName());
+            PermissionObject object = MigrationUtil.createOrGetGroup(group.getName());
             object.setPriority(admin,group.getPriority());
 
             if(group.getDescription() != null && group.getDescription().isEmpty()){
-                object.getMeta().set(admin,"description",group.getDescription());
+                object.getMeta().set(admin,"description",group.getDescription(),0,object.getScope(), Entity.PERMANENTLY);
             }
 
             if(group.getJoinPower() > 0){
-                object.getMeta().set(admin,"joinPower",group.getJoinPower());
+                object.getMeta().set(admin,"joinPower",group.getJoinPower(),0,object.getScope(), Entity.PERMANENTLY);
             }
 
-            object.getMeta().set(admin,"team",group.isTeam());
-            object.getMeta().set(admin,"default",group.isDefault());
+            object.getMeta().set(admin,"team",group.isTeam(),0,object.getScope(), Entity.PERMANENTLY);
+            object.getMeta().set(admin,"default",group.isDefault(),0,object.getScope(), Entity.PERMANENTLY);
 
             if(group.getPlayerDesign() != null){
-                object.getMeta().set(admin,"color",group.getPlayerDesign().getColor());
-                object.getMeta().set(admin,"chat",group.getPlayerDesign().getDisplay());
-                object.getMeta().set(admin,"prefix",group.getPlayerDesign().getPrefix());
-                object.getMeta().set(admin,"suffix",group.getPlayerDesign().getSuffix());
+                object.getMeta().set(admin,"color",group.getPlayerDesign().getColor(),0,object.getScope(), Entity.PERMANENTLY);
+                object.getMeta().set(admin,"chat",group.getPlayerDesign().getDisplay(),0,object.getScope(), Entity.PERMANENTLY);
+                object.getMeta().set(admin,"prefix",group.getPlayerDesign().getPrefix(),0,object.getScope(), Entity.PERMANENTLY);
+                object.getMeta().set(admin,"suffix",group.getPlayerDesign().getSuffix(),0,object.getScope(), Entity.PERMANENTLY);
             }
             this.migratedGroups.put(group.getUUID(),object);
+            DKPerms.getInstance().getLogger().info("(Migration) Migrated group "+group.getName()+" successfully");
         }
     }
 
@@ -141,8 +143,8 @@ public class DKPermsLegacyMigration implements PermissionMigration {
         for (PermissionGroupEntity group : groups) {
             PermissionObject newGroup = this.migratedGroups.get(group.getGroupUUID());
             if(newGroup != null){
-                if(object.isInGroup(object.getScope(),newGroup) == PermissionAction.NEUTRAL){
-                    object.addGroup(admin,object.getScope(),newGroup, PermissionAction.ALLOW,-1);
+                if(object.hasParent(object.getScope(),newGroup) == PermissionAction.NEUTRAL){
+                    object.addParent(admin,object.getScope(),newGroup, PermissionAction.ALLOW,-1);
                 }
             }
         }
@@ -168,7 +170,7 @@ public class DKPermsLegacyMigration implements PermissionMigration {
             if(!permission.hasTimeOut()){
                 PermissionAction action = permission.isNegative() ? PermissionAction.REJECT : PermissionAction.ALLOW;
                 if(object.getPermission(scope,permission.getRawPermission()) == null){
-                    object.addPermission(admin,scope,permission.getRawPermission(),action,permission.getTimeOut());
+                    object.setPermission(admin,scope,permission.getRawPermission(),action,permission.getTimeOut());
                 }
             }
         }
@@ -179,12 +181,11 @@ public class DKPermsLegacyMigration implements PermissionMigration {
                     if(!permission.hasTimeOut()){
                         PermissionAction action = permission.isNegative() ? PermissionAction.REJECT : PermissionAction.ALLOW;
                         if(object.getPermission(worldScope,permission.getRawPermission()) == null){
-                            object.addPermission(admin,worldScope,permission.getRawPermission(),action,permission.getTimeOut());
+                            object.setPermission(admin,worldScope,permission.getRawPermission(),action,permission.getTimeOut());
                         }
                     }
                 }
             }
         }
     }
-
 }

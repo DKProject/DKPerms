@@ -11,7 +11,6 @@
 package net.pretronic.dkperms.common.storage;
 
 import net.pretronic.databasequery.api.collection.DatabaseCollection;
-import net.pretronic.databasequery.api.query.Query;
 import net.pretronic.databasequery.api.query.result.QueryResult;
 import net.pretronic.databasequery.api.query.result.QueryResultEntry;
 import net.pretronic.dkperms.api.DKPerms;

@@ -11,7 +11,6 @@
 package net.pretronic.dkperms.api.storage;
 
 import net.pretronic.dkperms.api.entity.PermissionEntity;
-import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
@@ -43,4 +42,6 @@ public interface PermissionStorage {
     void updatePermissionScope(int entityId, int scopeId);
 
     void updatePermissionTimeout(int entityId, long timeout);
+
+    void deleteTimedOutPermissions();
 }

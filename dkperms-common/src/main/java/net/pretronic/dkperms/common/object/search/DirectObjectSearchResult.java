@@ -11,7 +11,6 @@
 package net.pretronic.dkperms.common.object.search;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.api.object.holder.PermissionObjectHolder;
 import net.pretronic.dkperms.api.object.search.ObjectSearchQuery;
 import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
 import net.pretronic.libraries.utility.Iterators;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Function;
 
 public class DirectObjectSearchResult implements ObjectSearchResult {
 
@@ -70,8 +68,8 @@ public class DirectObjectSearchResult implements ObjectSearchResult {
     }
 
     @Override
-    public Collection<PermissionObject> get(int fromIndex, int toIndex) {
-        Collection<PermissionObject> result = new ArrayList<>();
+    public List<PermissionObject> get(int fromIndex, int toIndex) {
+        List<PermissionObject> result = new ArrayList<>();
         int index = fromIndex;
         for (PermissionObject object : objects) {
             if(index >= toIndex) break;
@@ -82,18 +80,18 @@ public class DirectObjectSearchResult implements ObjectSearchResult {
     }
 
     @Override
-    public Collection<PermissionObject> getAll() {
+    public List<PermissionObject> getAll() {
         return objects;
     }
 
     @Override
-    public Collection<PermissionObjectHolder> getAllHolders() {
+    public Collection<Object> getAllHolders() {
         return Iterators.map(this.objects, PermissionObject::getHolder);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends PermissionObjectHolder> Collection<T> getAllHolders(Class<T> holderClass) {
+    public <T> Collection<T> getAllHolders(Class<T> holderClass) {
         return (Collection<T>) getAllHolders();
     }
 

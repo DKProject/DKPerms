@@ -12,6 +12,7 @@ package net.pretronic.dkperms.minecraft;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
+import net.pretronic.libraries.message.bml.variable.VariableSet;
 import org.mcnative.common.player.PlayerDesign;
 
 public class DKPermsPlayerDesign implements PlayerDesign {
@@ -47,14 +48,18 @@ public class DKPermsPlayerDesign implements PlayerDesign {
     }
 
     @Override
-    public String getDisplayName() {
-        return "{name}";//@Todo implements
+    public void appendAdditionalVariables(VariableSet variables) {
+        variables.addDescribed("object",object);
     }
 
     @Override
     public int getPriority() {
         ObjectMetaEntry entry = object.getCurrentSnapshot().getMeta("priority");
-        return entry != null?entry.getIntValue():0;
+        if(entry == null){
+            PermissionObject group = object.getCurrentSnapshot().getHighestGroup();
+            return group != null ? group.getPriority() : 0;
+        }
+        return entry.getIntValue();
     }
 
 }

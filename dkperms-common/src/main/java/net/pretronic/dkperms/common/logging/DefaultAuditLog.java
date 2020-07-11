@@ -10,21 +10,53 @@
 
 package net.pretronic.dkperms.common.logging;
 
-import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.logging.AuditLog;
 import net.pretronic.dkperms.api.logging.LogAction;
 import net.pretronic.dkperms.api.logging.LogType;
+import net.pretronic.dkperms.api.logging.record.LogRecordResult;
 import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.api.scope.PermissionScope;
 
 public class DefaultAuditLog implements AuditLog {
 
-    @Override
-    public void createRecord(PermissionObject executor, long timeStamp, LogType type, LogAction action
-            ,PermissionObject owner, PermissionScope scope, String field, Object oldValue, Object newValue) {
 
-        DKPerms.getInstance().getStorage().getAuditLogStorage().createRecord(
-                executor.getId(),timeStamp,type,action,owner.getId()
-                ,scope.getId(),field,oldValue,newValue);
+    @Override
+    public LogRecordResult get() {
+        return null;
+    }
+
+    @Override
+    public LogRecordResult get(long from, long to) {
+        return null;
+    }
+
+    @Override
+    public LogRecordResult getRecent(int last) {
+        return null;
+    }
+
+    @Override
+    public LogRecordResult getRecent(long time) {
+        return null;
+    }
+
+    @Override
+    public void recover(LogType type, int key) {
+
+    }
+
+    @Override
+    public void rollback(long time) {
+
+    }
+
+    @Override
+    public void createRecord(PermissionObject executor, LogType type, LogAction action, int owner, int key, String field, Object oldValue, Object newValue, Object data) {
+
+    }
+
+    @Override
+    public void createRecordAsync(PermissionObject executor, LogType type, LogAction action, int owner, int key, String field, Object oldValue, Object newValue, Object data) {
+
     }
 }
+

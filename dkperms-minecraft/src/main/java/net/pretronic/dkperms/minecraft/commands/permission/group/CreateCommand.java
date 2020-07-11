@@ -12,6 +12,7 @@ package net.pretronic.dkperms.minecraft.commands.permission.group;
 
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
@@ -20,7 +21,6 @@ import net.pretronic.libraries.command.command.configuration.CommandConfiguratio
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
-import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
 public class CreateCommand extends ObjectCommand<String> {
@@ -33,17 +33,17 @@ public class CreateCommand extends ObjectCommand<String> {
     public void execute(CommandSender sender, String name, String[] arguments) {
         PermissionScope scope = CommandUtil.readScope(sender, DKPermsConfig.OBJECT_GROUP_SCOPE,arguments,0);
         if(scope == null) return;
-        PermissionObject object = DKPerms.getInstance().getObjectManager().getObject(name,scope, DKPermsConfig.OBJECT_GROUP_TYPE);
+        PermissionObject object = DKPerms.getInstance().getObjectManager().getObject(name,scope,  PermissionObjectType.GROUP);
         if(object != null){
             sender.sendMessage(Messages.GROUP_ALREADY_EXISTS, VariableSet.create()
                     .add("name",name));
             return;
         }
 
-        object = DKPerms.getInstance().getObjectManager().createObject(scope,DKPermsConfig.OBJECT_GROUP_TYPE,name);
+        object = DKPerms.getInstance().getObjectManager().createObject(scope, PermissionObjectType.GROUP,name);
 
-        sender.sendMessage(Messages.GROUP_CREATED, new DescribedHashVariableSet()
-                .add("group",object)
-                .add("object",object));
+        sender.sendMessage(Messages.GROUP_CREATED, VariableSet.create()
+                .addDescribed("group",object)
+                .addDescribed("object",object));
     }
 }

@@ -10,17 +10,16 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.object.meta;
 
-import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
-import net.pretronic.libraries.command.command.object.ObjectCommand;
-import net.pretronic.libraries.command.sender.CommandSender;
-import net.pretronic.libraries.message.bml.variable.VariableSet;
-import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
-import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
 import net.pretronic.dkperms.minecraft.config.Messages;
+import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
+import net.pretronic.libraries.command.command.object.ObjectCommand;
+import net.pretronic.libraries.command.sender.CommandSender;
+import net.pretronic.libraries.message.bml.variable.VariableSet;
+import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
 public class ShowCommand extends ObjectCommand<PermissionObject> {
 
@@ -36,17 +35,18 @@ public class ShowCommand extends ObjectCommand<PermissionObject> {
             PermissionScope scope = CommandUtil.readScope(sender,object,arguments,1);
             if(scope == null) return;
 
-            ObjectMetaEntry entry = object.getMeta().get(key,scope);
+            ObjectMetaEntry entry = object.getMeta().getHighest(key,scope);
+            //@Todo Commands do currently only support one entry, multiple entries should be implemented in future
 
-            VariableSet variables = new DescribedHashVariableSet();
-            variables.add("type",object.getType().getName().toLowerCase());
-            variables.add("object",object);
+            VariableSet variables = VariableSet.create();
+            variables.addDescribed("object",object);
+            variables.addDescribed("scope",scope);
+            variables.add("type",object.getType().getDisplayName().toLowerCase());
             variables.add("key",key);
             variables.add("value",entry != null ? entry.getValue() : "Undefined");
-            variables.add("scope",scope);
             sender.sendMessage(Messages.OBJECT_META_SHOW,variables);
         }else{
-            CommandUtil.sendInvalidSyntax(sender,"meta show","/perms <user/group> <object> meta show <key> [scope]");
+            CommandUtil.sendInvalidSyntax(sender,"meta show","/perms <user/group> <name> meta show <key> [scope]");
         }
     }
 }

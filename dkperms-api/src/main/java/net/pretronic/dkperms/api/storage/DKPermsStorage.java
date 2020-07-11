@@ -20,10 +20,18 @@ public interface DKPermsStorage{
 
     ObjectStorage getObjectStorage();
 
-    GroupStorage getGroupStorage();
+    ParentStorage getParentStorage();
 
     PermissionStorage getPermissionStorage();
 
+    TrackStorage getTrackStorage();
+
+
+    default void deleteTimedOutEntries(){
+        getParentStorage().deleteTimedOutParentReferences();
+        getObjectStorage().deleteTimedOutMetaEntries();
+        getPermissionStorage().deleteTimedOutPermissions();
+    }
 
 
 }

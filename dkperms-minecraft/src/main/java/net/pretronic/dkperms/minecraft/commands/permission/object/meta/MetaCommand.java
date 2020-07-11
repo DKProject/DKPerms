@@ -10,16 +10,14 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.object.meta;
 
+import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.minecraft.config.Messages;
-import net.pretronic.libraries.command.NotFindable;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.DefinedNotFindable;
 import net.pretronic.libraries.command.command.object.MainObjectCommand;
-import net.pretronic.libraries.command.command.object.ObjectNotFindable;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
-import net.pretronic.dkperms.api.object.PermissionObject;
 
 public class MetaCommand extends MainObjectCommand<PermissionObject> implements DefinedNotFindable<PermissionObject> {
 
@@ -32,6 +30,7 @@ public class MetaCommand extends MainObjectCommand<PermissionObject> implements 
         registerCommand(new ShowCommand(owner));
         registerCommand(new ListCommand(owner));
         registerCommand(new TreeCommand(owner));
+        registerCommand(new CheckCommand(owner));
     }
 
     @Override
@@ -42,7 +41,7 @@ public class MetaCommand extends MainObjectCommand<PermissionObject> implements 
     @Override
     public void commandNotFound(CommandSender sender, PermissionObject object, String command, String[] args) {
         sender.sendMessage(Messages.OBJECT_META_HELP, VariableSet.create()
-                .add("type",object.getType().getName().toLowerCase()));
+                .add("type",object.getType().getDisplayName().toLowerCase()));
     }
 
 }

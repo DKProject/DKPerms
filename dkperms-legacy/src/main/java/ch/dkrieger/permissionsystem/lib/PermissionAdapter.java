@@ -13,7 +13,9 @@ package ch.dkrieger.permissionsystem.lib;
 import ch.dkrieger.permissionsystem.lib.group.PermissionGroupEntity;
 import ch.dkrieger.permissionsystem.lib.permission.data.PermissionData;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class PermissionAdapter {
 

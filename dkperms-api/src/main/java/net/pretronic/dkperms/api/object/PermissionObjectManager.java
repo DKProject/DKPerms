@@ -11,8 +11,8 @@
 package net.pretronic.dkperms.api.object;
 
 import net.pretronic.dkperms.api.graph.Graph;
-import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
 import net.pretronic.dkperms.api.object.search.ObjectSearchQuery;
+import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 
 import java.util.Collection;
@@ -26,13 +26,13 @@ public interface PermissionObjectManager {
 
     PermissionObjectType getType(String name);
 
-    default PermissionObjectType getTypeOrCreate(String name, boolean group){
-        return getTypeOrCreate(getSuperAdministrator(),name,group);
+    default PermissionObjectType getTypeOrCreate(String name,String displayName, boolean parentAble){
+        return getTypeOrCreate(getSuperAdministrator(),name,displayName,parentAble);
     }
 
-    PermissionObjectType getTypeOrCreate(PermissionObject executor,String name, boolean group);
+    PermissionObjectType getTypeOrCreate(PermissionObject executor,String name,String displayName, boolean parentAble);
 
-    PermissionObjectType createType(PermissionObject executor,String name, boolean group);
+    PermissionObjectType createType(PermissionObject executor,String name,String displayName, boolean parentAble);
 
     void deleteType(PermissionObject executor, int id);
 
@@ -96,16 +96,23 @@ public interface PermissionObjectManager {
     void deleteObject(PermissionObject executor,PermissionObject object);
 
 
+    PermissionObjectTrack getPriorityTrack(PermissionObjectType type);
 
-   /*
-    Collection<PermissionGroupOrder> getOrders();
+    PermissionObjectTrack getPriorityTrack(PermissionObjectType type, PermissionScope scope);
 
-    PermissionGroupOrder getOrder(String name);
 
-    PermissionGroupOrder getOrder(int id);
+    Collection<PermissionObjectTrack> getTracks();
 
-    PermissionGroupOrder createOrder(int id);
+    Collection<PermissionObjectTrack> getTracks(PermissionScope scope);
 
-    PermissionGroupOrder createOrder(int id, PermissionScope scope);
-    */
+    PermissionObjectTrack getTrack(int id);
+
+    PermissionObjectTrack getTrack(String name, PermissionScope scope);
+
+    PermissionObjectTrack createTrack(String name, PermissionScope scope);
+
+    void deleteTrack(PermissionObjectTrack track);
+
+
+    void sync();
 }

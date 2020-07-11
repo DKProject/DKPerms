@@ -15,7 +15,7 @@
     <parent>
         <artifactId>DKPerms</artifactId>
         <groupId>net.pretronic.dkperms</groupId>
-        <version>1.0.3.13-BETA</version>
+        <version>1.1.63.82-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -71,7 +71,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>${plugin.maven.shade}</version>
+                <configuration>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -82,8 +85,32 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${plugin.maven.deploy}</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>cloudnet</id>
+            <url>https://cloudnetservice.eu/repositories/</url>
+        </repository>
+        <repository>
+            <id>releases</id>
+            <url>https://repo.cloudnetservice.eu/repository/releases/</url>
+        </repository>
+
+        <repository>
+            <id>pretronic-thirdparty</id>
+            <url>https://repository.pretronic.net/repository/thirdparty/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -113,11 +140,68 @@
         </dependency>
 
         <dependency>
+            <groupId>org.mcnative</groupId>
+            <artifactId>mcnative-service</artifactId>
+            <version>${dependency.mcnative.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>net.pretronic.dkperms</groupId>
             <artifactId>dkperms-legacy</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
+
+
+        <!-- Dependencies for migrations -->
+
+        <dependency>
+            <groupId>ru.tehkode</groupId>
+            <artifactId>PermissionsEx</artifactId>
+            <version>1.23.5-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.dytanic.cloudnet</groupId>
+            <artifactId>cloudnet-api-bridge</artifactId>
+            <version>2.1.17</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.dytanic.cloudnet</groupId>
+            <artifactId>cloudnet-bridge</artifactId>
+            <version>3.3.0-RELEASE</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.dytanic.cloudnet</groupId>
+            <artifactId>cloudnet-wrapper-jvm</artifactId>
+            <version>3.3.0-RELEASE</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.dytanic.cloudnet</groupId>
+            <artifactId>cloudnet-driver</artifactId>
+            <version>3.3.0-RELEASE</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.dytanic.cloudnet</groupId>
+            <artifactId>cloudnet-cloudperms</artifactId>
+            <version>3.3.0-RELEASE</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.luckperms</groupId>
+            <artifactId>api</artifactId>
+            <version>5.0</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

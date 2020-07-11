@@ -10,14 +10,14 @@
 
 package net.pretronic.dkperms.api;
 
+import net.pretronic.dkperms.api.logging.AuditLog;
 import net.pretronic.dkperms.api.migration.MigrationAssistant;
+import net.pretronic.dkperms.api.object.PermissionObjectManager;
+import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyser;
+import net.pretronic.dkperms.api.scope.PermissionScopeManager;
 import net.pretronic.dkperms.api.storage.DKPermsStorage;
 import net.pretronic.libraries.logging.PretronicLogger;
 import net.pretronic.libraries.utility.concurrent.AsyncExecutor;
-import net.pretronic.dkperms.api.logging.AuditLog;
-import net.pretronic.dkperms.api.object.PermissionObjectManager;
-import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyse;
-import net.pretronic.dkperms.api.scope.PermissionScopeManager;
 
 public abstract class DKPerms {
 
@@ -44,7 +44,7 @@ public abstract class DKPerms {
 
     public abstract DKPermsFormatter getFormatter();
 
-    public abstract PermissionAnalyse startAnalyse();
+    public abstract PermissionAnalyser getAnalyser();
 
     public static DKPerms getInstance(){
         return INSTANCE;

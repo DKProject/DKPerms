@@ -10,18 +10,14 @@
 
 package net.pretronic.dkperms.api.storage;
 
-import net.pretronic.dkperms.api.object.search.ObjectSearchQuery;
-import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
-import net.pretronic.libraries.utility.map.Pair;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
-import net.pretronic.dkperms.api.object.meta.ObjectMeta;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
+import net.pretronic.dkperms.api.object.search.ObjectSearchQuery;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.UUID;
 
 public interface ObjectStorage {
@@ -32,9 +28,9 @@ public interface ObjectStorage {
 
     PermissionObjectType getObjectType(String name);
 
-    int createObjectType(String name, boolean group);
+    int createObjectType(String name,String displayName, boolean group);
 
-    void updateObjectType(int typeId, String name);
+    void updateObjectType(int typeId, String name,String displayName);
 
     void deleteObjectType(int typeId);
 
@@ -77,15 +73,28 @@ public interface ObjectStorage {
     ScopeBasedDataList<ObjectMetaEntry> getAllMetaEntries(PermissionObject object, Collection<PermissionScope> skipped);
 
 
-    int insertMeta(int objectId,int scopeId, String key, String value);
+    int insertMeta(int objectId, int scopeId, String key, String value, int priority,long timeout);
 
-    void updateMeta(int metaId, String value);
+    void updateMeta(int metaId, int scopeId, String value, int priority,long timeout);
+
+    void updateMetaPriority(int metaId, int priority);
+
+    void updateMetaScope(int metaId, int scopeId);
+
+    void updateMetaValue(int metaId,String value);
+
+    void updateMetaTimeout(int objectId, long timeout);
+
 
     void deleteMetaEntry(int objectId, String key, int scopeId);
 
     void deleteMetaEntry(int entryId);
 
+    void deleteMetaEntries(int objectId, int scopeId, String key);
+
     void clearMeta(int objectId);
 
     void clearMeta(int objectId, int scopeId);
+
+    void deleteTimedOutMetaEntries();
 }

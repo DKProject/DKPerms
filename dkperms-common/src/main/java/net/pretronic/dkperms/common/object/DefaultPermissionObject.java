@@ -11,34 +11,35 @@
 package net.pretronic.dkperms.common.object;
 
 import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.entity.Entity;
+import net.pretronic.dkperms.api.entity.ParentEntity;
 import net.pretronic.dkperms.api.entity.PermissionEntity;
-import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
 import net.pretronic.dkperms.api.graph.Graph;
-import net.pretronic.dkperms.api.graph.GroupGraph;
 import net.pretronic.dkperms.api.graph.ObjectGraph;
+import net.pretronic.dkperms.api.graph.ParentGraph;
 import net.pretronic.dkperms.api.graph.PermissionGraph;
-import net.pretronic.dkperms.api.object.PermissionGroupOrder;
-import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.api.object.PermissionObjectType;
-import net.pretronic.dkperms.api.object.SyncAction;
-import net.pretronic.dkperms.api.object.holder.PermissionObjectHolder;
+import net.pretronic.dkperms.api.logging.LogAction;
+import net.pretronic.dkperms.api.logging.LogType;
+import net.pretronic.dkperms.api.object.*;
 import net.pretronic.dkperms.api.object.meta.ObjectMeta;
-import net.pretronic.dkperms.api.object.snapshot.PermissionObjectSnapshot;
+import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
+import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
 import net.pretronic.dkperms.api.permission.PermissionAction;
-import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyse;
-import net.pretronic.dkperms.api.permission.analyse.track.PermissionTrackResult;
+import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyser;
 import net.pretronic.dkperms.api.scope.PermissionScope;
+import net.pretronic.dkperms.api.scope.data.ScopeBasedData;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 import net.pretronic.dkperms.common.cache.GroupCache;
 import net.pretronic.dkperms.common.cache.PermissionCache;
+import net.pretronic.dkperms.common.calculator.ParentCalculator;
 import net.pretronic.dkperms.common.calculator.PermissionCalculator;
 import net.pretronic.dkperms.common.entity.DefaultPermissionEntity;
-import net.pretronic.dkperms.common.entity.DefaultPermissionGroupEntity;
-import net.pretronic.dkperms.common.graph.DefaultGroupGraph;
+import net.pretronic.dkperms.common.entity.DefaultPermissionParentEntity;
 import net.pretronic.dkperms.common.graph.DefaultObjectGraph;
+import net.pretronic.dkperms.common.graph.DefaultParentGraph;
 import net.pretronic.dkperms.common.graph.DefaultPermissionGraph;
+import net.pretronic.dkperms.common.graph.FilteredObjectGraph;
 import net.pretronic.dkperms.common.object.meta.DefaultObjectMeta;
-import net.pretronic.dkperms.common.scope.data.ArrayScopeBasedDataList;
 import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.message.bml.variable.describer.VariableObjectToString;
 import net.pretronic.libraries.synchronisation.SynchronisationCaller;
@@ -47,13 +48,10 @@ import net.pretronic.libraries.synchronisation.UnconnectedSynchronisationCaller;
 import net.pretronic.libraries.synchronisation.observer.AbstractObservable;
 import net.pretronic.libraries.utility.Validate;
 import net.pretronic.libraries.utility.annonations.Internal;
+import net.pretronic.libraries.utility.map.Pair;
 
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
 
-/*
-@Todo Cache reset objects
- */
 public class DefaultPermissionObject extends AbstractObservable<PermissionObject,SyncAction> implements PermissionObject, VariableObjectToString, Synchronizable {
 
     public static SynchronisationCaller<Integer> SYNCHRONISATION_CALLER = new UnconnectedSynchronisationCaller<>(true);
@@ -67,10 +65,10 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     private PermissionObjectType type;
     private PermissionScope scope;
 
-    private PermissionObjectHolder holder;
+    private Object holder;
     private PermissionObjectSnapshot currentSnapshot;
 
-    private final ObjectMeta meta;
+    private final DefaultObjectMeta meta;
     private final GroupCache groupCache;
     private final PermissionCache permissionCache;
 
@@ -108,9 +106,10 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
 
     @Override
     public void setName(PermissionObject executor,String name) {
-        Validate.notNull(name);
+        Validate.notNull(executor,name);
         DKPerms.getInstance().getStorage().getObjectStorage().updateObjectName(this.id,name);
         executeSynchronisationUpdate(SyncAction.OBJECT_NAME_UPDATE,Document.newDocument().set("name",name));
+        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.OBJECT, LogAction.UPDATE,id,id,"Name",this.name,name,this);
         this.name = name;
     }
 
@@ -126,9 +125,10 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
 
     @Override
     public void setType(PermissionObject executor,PermissionObjectType type) {
-        Validate.notNull(type);
+        Validate.notNull(executor,type);
         DKPerms.getInstance().getStorage().getObjectStorage().updateObjectType(this.id,type);
         executeSynchronisationUpdate(SyncAction.OBJECT_TYPE_UPDATE,Document.newDocument().set("type",type.getId()));
+        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.OBJECT, LogAction.UPDATE,id,id,"Type",this.type.getId(),type.getId(),this);
         this.type = type;
     }
 
@@ -137,10 +137,13 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         return priority;
     }
 
+
     @Override
     public void setPriority(PermissionObject executor, int priority) {
+        Validate.notNull(executor);
         DKPerms.getInstance().getStorage().getObjectStorage().updateObjectPriority(this.id,priority);
         executeSynchronisationUpdate(SyncAction.OBJECT_PRIORITY_UPDATE,Document.newDocument().set("priority",priority));
+        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.OBJECT, LogAction.UPDATE,id,id,"Priority",this.priority,priority,this);
         this.priority = priority;
     }
 
@@ -151,8 +154,10 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
 
     @Override
     public void setDisabled(PermissionObject executor,boolean disabled) {
+        Validate.notNull(executor);
         DKPerms.getInstance().getStorage().getObjectStorage().updateObjectDisabled(this.id,disabled);
         executeSynchronisationUpdate(SyncAction.OBJECT_DISABLED_UPDATE,Document.newDocument().set("disabled",disabled));
+        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.OBJECT, LogAction.UPDATE,id,id,"Disabled",this.disabled,disabled,this);
         this.disabled = disabled;
     }
 
@@ -163,16 +168,22 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
 
     @Override
     public void setScope(PermissionObject executor,PermissionScope scope) {
-        Validate.notNull(scope);
+        Validate.notNull(executor,scope);
         DKPerms.getInstance().getStorage().getObjectStorage().updateObjectScope(this.id,scope);
         executeSynchronisationUpdate(SyncAction.OBJECT_SCOPE_UPDATE,Document.newDocument().set("scope",scope.getId()));
         this.scope = scope;
     }
 
     @Override
-    public PermissionObjectHolder getHolder() {
-        if(holder == null) holder = type.getLocalHolderFactory().create(this);
+    public Object getHolder() {
+        if(holder == null && type.hasLocalHolderFactory()) holder = type.getLocalHolderFactory().create(this);
         return holder;
+    }
+
+    @Override
+    public void setHolder(Object holder) {
+        Validate.notNull(holder);
+        this.holder = holder;
     }
 
     @Override
@@ -183,7 +194,6 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     @Override
     public void setCurrentSnapshot(PermissionObjectSnapshot snapshot) {
         Validate.notNull(snapshot);
-        if(this.type.isGroup()) throw new IllegalArgumentException("It is not possible to define a current scope for a group object");
         this.currentSnapshot = snapshot;
     }
 
@@ -206,143 +216,215 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     // ----- Groups -----
 
     @Override
-    public ScopeBasedDataList<PermissionGroupEntity> getAllGroups() {
+    public ScopeBasedDataList<ParentEntity> getAllParents() {
         return groupCache.getAll();
     }
 
     @Override
-    public Collection<PermissionGroupEntity> getGroups(PermissionScope scope) {
+    public Collection<ParentEntity> getParents(PermissionScope scope) {
         Validate.notNull(scope);
         return groupCache.get(scope);
     }
 
     @Override
-    public ScopeBasedDataList<PermissionGroupEntity> getGroups(Graph<PermissionScope> range) {
-        return new ArrayScopeBasedDataList<>();
+    public ScopeBasedDataList<ParentEntity> getParents(Graph<PermissionScope> range) {
+        return groupCache.get(range);
     }
 
     @Override
-    public GroupGraph newGroupGraph(Graph<PermissionScope> range) {
-        return new DefaultGroupGraph(this,range,false);
+    public PermissionObject getHighestParent(PermissionScope scope) {
+        PermissionObject best = null;
+        for (ParentEntity entity : getParents(scope)) {
+            if(best == null || best.getPriority() < entity.getParent().getPriority()){
+                best = entity.getParent();
+            }
+        }
+        return best;
     }
 
     @Override
-    public GroupGraph newGroupInheritanceGraph(Graph<PermissionScope> range) {
-        return new DefaultGroupGraph(this,range,true);
+    public ParentGraph newParentGraph(Graph<PermissionScope> range) {
+        return new DefaultParentGraph(this,range,false);
+    }
+
+    @Override
+    public ParentGraph newParentInheritanceGraph(Graph<PermissionScope> range) {
+        return new DefaultParentGraph(this,range,true);
+    }
+
+    @Override
+    public ObjectGraph newEffectedParentGraph(Graph<PermissionScope> range) {
+        return new DefaultObjectGraph(newParentGraph(range));
+    }
+
+    @Override
+    public ObjectGraph newEffectedParentInheritanceGraph(Graph<PermissionScope> range) {
+        return new DefaultObjectGraph(newParentInheritanceGraph(range));
     }
 
     @Override
     public ObjectGraph newEffectedGroupGraph(Graph<PermissionScope> range) {
-        return new DefaultObjectGraph(newGroupGraph(range));
+        return new FilteredObjectGraph(newEffectedParentGraph(range),PermissionObjectType.GROUP);
     }
 
     @Override
     public ObjectGraph newEffectedGroupInheritanceGraph(Graph<PermissionScope> range) {
-        return new DefaultObjectGraph(newGroupInheritanceGraph(range));
+        return new FilteredObjectGraph(newEffectedParentInheritanceGraph(range),PermissionObjectType.GROUP);
     }
 
     @Override
-    public PermissionGroupEntity getGroup(PermissionScope scope, PermissionObject object) {
+    public ParentEntity getParent(PermissionScope scope, PermissionObject object) {
         Validate.notNull(scope,object);
-        for (PermissionGroupEntity entity : getGroups(scope)) if(entity.getGroup().equals(object)) return entity;
+        for (ParentEntity entity : getParents(scope)){
+            if(entity.getParent().equals(object)) return entity;
+        }
         return null;
     }
 
     @Override
-    public PermissionGroupEntity setGroup(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, long timeout) {
-        Validate.notNull(scope,group,action);
+    public ParentEntity setParent(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, long timeout) {
+        Validate.notNull(executor,scope,group,action);
         if(group == this) throw new IllegalArgumentException("You can not add a group to it self");
         if(!this.scope.contains(scope)) throw new IllegalArgumentException("Scope must be an inheritance scope of main object scope");
 
         if(!scope.isSaved()) scope.insert();
 
-        DKPerms.getInstance().getStorage().getGroupStorage().clearGroupReferences(id,scope.getId());
+        DKPerms.getInstance().getStorage().getParentStorage().clearParentReferences(id,scope.getId());
         this.groupCache.clear(scope);
-        return insertPermissionGroupEntity(scope, group, action, timeout);
+        return insertPermissionGroupEntity(executor,scope, group, action, timeout);
     }
 
     @Override
-    public PermissionGroupEntity addGroup(PermissionObject executor,PermissionScope scope, PermissionObject group, PermissionAction action, long timeout) {
-        Validate.notNull(scope,group,action);
-        if(isInGroup(scope, group) != PermissionAction.NEUTRAL) throw new IllegalArgumentException("This group is already added");
+    public ParentEntity addParent(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, long timeout) {
+        Validate.notNull(executor,scope,group,action);
+        if(hasParent(scope, group) != PermissionAction.NEUTRAL) throw new IllegalArgumentException("This group is already added");
         if(group == this) throw new IllegalArgumentException("You can not add a group to it self");
         if(!this.scope.contains(scope)) throw new IllegalArgumentException("Scope must be an inheritance scope of main object scope");
         if(!scope.isSaved()) scope.insert();
-        return insertPermissionGroupEntity(scope, group, action, timeout);
+        return insertPermissionGroupEntity(executor,scope, group, action, timeout);
     }
 
-    private PermissionGroupEntity insertPermissionGroupEntity(PermissionScope scope, PermissionObject group, PermissionAction action, long timeout) {
-        int entityId = DKPerms.getInstance().getStorage().getGroupStorage()
-                .createGroupReference(id,scope.getId(),group.getId(),action,timeout);
-        DefaultPermissionGroupEntity entity =  new DefaultPermissionGroupEntity(this,entityId,group,action,scope,timeout);
+    private ParentEntity insertPermissionGroupEntity(PermissionObject executor, PermissionScope scope, PermissionObject group, PermissionAction action, long timeout) {
+        int entityId = DKPerms.getInstance().getStorage().getParentStorage()
+                .createParentReference(id,scope.getId(),group.getId(),action,timeout);
+        DefaultPermissionParentEntity entity =  new DefaultPermissionParentEntity(this,entityId,group,action,scope,timeout);
         groupCache.insert(scope,entity);
         synchronizeGroups(scope);
+
+        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_PARENT, LogAction.CREATE,id,entityId,null,null,null,entity);
+
         return entity;
     }
 
     @Override
-    public void removeGroup(PermissionObject executor,PermissionScope scope, PermissionObject group) {
+    public void removeParent(PermissionObject executor,PermissionScope scope, PermissionObject group) {
         Validate.notNull(scope,group);
-        PermissionGroupEntity entity = getGroup(scope,group);
-        if(entity != null) removeGroup(executor,entity);
+        ParentEntity entity = getParent(scope,group);
+        if(entity != null) removeParent(executor,entity);
         synchronizeGroups(scope);
     }
 
     @Override
-    public void removeGroup(PermissionObject executor,PermissionGroupEntity entity) {
+    public void removeParent(PermissionObject executor, ParentEntity entity) {
         Validate.notNull(entity);
         this.groupCache.remove(entity.getScope(),entity);
-        DKPerms.getInstance().getStorage().getGroupStorage().removeGroupReference(entity.getId());
+        DKPerms.getInstance().getStorage().getParentStorage().removeParentReference(entity.getId());
         synchronizeGroups(entity.getScope());
+        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_PARENT, LogAction.DELETE,id,entity.getId(),null,null,null,entity);
     }
 
     @Override
-    public void clearGroups(PermissionObject executor,PermissionScope scope) {
+    public void clearParents(PermissionObject executor,PermissionScope scope) {
         Validate.notNull(scope);
+
+        for (ParentEntity parent : getParents(scope)) {
+            DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_PARENT
+                    , LogAction.DELETE,id,parent.getId(),null,null,null,parent);
+        }
+
+
         this.groupCache.clear(scope);
-        DKPerms.getInstance().getStorage().getGroupStorage().clearGroupReferences(id,scope.getId());
+        DKPerms.getInstance().getStorage().getParentStorage().clearParentReferences(id,scope.getId());
         synchronizeGroups(scope);
     }
 
     @Override
-    public void clearAllGroups(PermissionObject executor) {
+    public void clearAllParents(PermissionObject executor) {
         this.groupCache.clear();
-        DKPerms.getInstance().getStorage().getGroupStorage().clearGroupReferences(id);
+
+        for (ScopeBasedData<ParentEntity> allParent : getAllParents()) {
+            for (ParentEntity entity : allParent.getData()) {
+                DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_PARENT
+                        , LogAction.DELETE,id,entity.getId(),null,null,null,entity);
+            }
+        }
+
+        DKPerms.getInstance().getStorage().getParentStorage().clearParentReferences(id);
         synchronizeGroups(null);
     }
 
     @Override
-    public PermissionAction isInGroup(PermissionScope scope, PermissionObject group) {
+    public ObjectSearchResult getAllChildren() {
+        return DKPerms.getInstance().getObjectManager().search().hasParent(this).execute();
+    }
+
+    @Override
+    public ObjectSearchResult getChildren(Collection<PermissionScope> range) {
+        return DKPerms.getInstance().getObjectManager().search().hasParent(this).execute();
+    }
+
+    @Override
+    public PermissionAction hasParent(PermissionScope scope, PermissionObject group) {
         Validate.notNull(scope,"Scope is null");
         Validate.notNull(group,"Group is null");
-        return isInGroup(getGroups(scope),group);
+        return hasParent(getParents(scope),group);
     }
 
     @Internal
-    private PermissionAction isInGroup(Collection<PermissionGroupEntity> entities, PermissionObject group){
-        group.getType().checkIsGroup();
-        for (PermissionGroupEntity entity : entities) if(entity.getGroup() == group) return entity.getAction();
+    private PermissionAction hasParent(Collection<ParentEntity> entities, PermissionObject group){
+        group.getType().checkParentAble();
+        for (ParentEntity entity : entities) if(entity.getParent() == group) return entity.getAction();
         return PermissionAction.NEUTRAL;
     }
 
     @Override
-    public void promote(PermissionScope scope) {
-        throw new UnsupportedOperationException("Currently not implemented");
+    public Pair<PermissionObject,PermissionObject> promote(PermissionObject executor, PermissionScope scope, PermissionObjectTrack track) {
+        Validate.notNull(scope,track);
+        if(track.isEmpty()) throw new IllegalArgumentException("Track is empty");
+        List<ParentEntity> groups = new ArrayList<>(getParents(scope));
+        ParentCalculator.orderEntities(groups);
+        Collections.reverse(groups);
+        for (ParentEntity entity : groups) {
+            if(entity.getAction().has() && track.contains(entity.getParent())){
+                removeParent(executor,entity);
+                PermissionObject object = track.getNextGroup(entity.getParent());
+                if(object == null) return new Pair<>(entity.getParent(),null);
+                addParent(executor,entity.getScope(),object,entity.getAction(),entity.getTimeout());
+                return new Pair<>(entity.getParent(),object);
+            }
+        }
+        PermissionObject object = track.getFirstGroup();
+        addParent(executor,scope,object,PermissionAction.ALLOW, Entity.PERMANENTLY);
+        return new Pair<>(null,object);
     }
 
     @Override
-    public void promote(PermissionScope scope, PermissionGroupOrder order) {
-        throw new UnsupportedOperationException("Currently not implemented");
-    }
-
-    @Override
-    public void demote(PermissionScope scope) {
-        throw new UnsupportedOperationException("Currently not implemented");
-    }
-
-    @Override
-    public void demote(PermissionScope scope, PermissionGroupOrder order) {
-        throw new UnsupportedOperationException("Currently not implemented");
+    public Pair<PermissionObject,PermissionObject> demote(PermissionObject executor,PermissionScope scope, PermissionObjectTrack track) {
+        Validate.notNull(scope,track);
+        if(track.isEmpty()) throw new IllegalArgumentException("Track is empty");
+        List<ParentEntity> groups = new ArrayList<>(getParents(scope));
+        ParentCalculator.orderEntities(groups);
+        Collections.reverse(groups);
+        for (ParentEntity entity : groups) {
+            if(entity.getAction().has() && track.contains(entity.getParent())){
+                removeParent(executor,entity);
+                PermissionObject object = track.getPreviousGroup(entity.getParent());
+                if(object == null) return new Pair<>(entity.getParent(),null);
+                addParent(executor,entity.getScope(),object,entity.getAction(),entity.getTimeout());
+                return new Pair<>(entity.getParent(),object);
+            }
+        }
+        return new Pair<>(null,null);
     }
 
     // ----- Permissions -----
@@ -385,7 +467,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     }
 
     @Override
-    public PermissionEntity addPermission(PermissionObject permissionObject, PermissionScope scope, String permission,PermissionAction action, long timeout) {
+    public PermissionEntity setPermission(PermissionObject executor, PermissionScope scope, String permission,PermissionAction action, long timeout) {
         Validate.notNull(scope,permission,action);
         if(getPermission(scope,permission) != null) throw new IllegalArgumentException("This permission is already set.");
         if(!scope.isSaved()) scope.insert();
@@ -393,21 +475,29 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         PermissionEntity entity = new DefaultPermissionEntity(this,id,permission,action,scope,timeout);
         this.permissionCache.insert(scope,entity);
         synchronizePermissions(scope);
+        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_PERMISSION
+                , LogAction.CREATE,id,entity.getId(),null,null,null,entity);
         return entity;
     }
 
     @Override
-    public void removePermission(PermissionObject executor,PermissionScope scope, String permission) {
+    public void unsetPermission(PermissionObject executor,PermissionScope scope, String permission) {
         PermissionEntity entity = getPermission(scope, permission);
         if(entity != null){
             DKPerms.getInstance().getStorage().getPermissionStorage().deletePermissions(entity.getId());
             this.permissionCache.remove(scope,entity);
             synchronizePermissions(scope);
+            DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_PERMISSION
+                    , LogAction.DELETE,id,entity.getId(),null,null,null,entity);
         }
     }
 
     @Override
     public void clearPermission(PermissionObject executor,PermissionScope scope) {
+        for (PermissionEntity entity : getPermissions(scope)) {
+            DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_PERMISSION
+                    , LogAction.DELETE,id,entity.getId(),null,null,null,entity);
+        }
         DKPerms.getInstance().getStorage().getPermissionStorage().clearPermissions(id,scope.getId());
         this.permissionCache.clear(scope);
         synchronizePermissions(scope);
@@ -415,32 +505,51 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
 
     @Override
     public void clearAllPermission(PermissionObject executor) {
+        for (ScopeBasedData<PermissionEntity> allPermission : getAllPermissions()) {
+            for (PermissionEntity entity : allPermission.getData()) {
+                DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_PERMISSION
+                        , LogAction.DELETE,id,entity.getId(),null,null,null,entity);
+            }
+        }
         DKPerms.getInstance().getStorage().getPermissionStorage().clearPermissions(id);
         this.permissionCache.clear();
         synchronizePermissions(null);
     }
 
-
-    //----- Track -----
-
     @Override
-    public PermissionTrackResult trackPermission(String permission) {
+    public PermissionAnalyser startAnalyse() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public PermissionTrackResult trackGroup(PermissionObject group) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public PermissionObject clone(PermissionObject executor, String newName, PermissionScope newScope) {
+        Validate.notNull(executor,newName,newScope);
+        PermissionObject newObject = DKPerms.getInstance().getObjectManager().createObject(newScope,type,newName,getAssignmentId());
+        newObject.setPriority(executor,priority);
+        newObject.setDisabled(executor,disabled);
+        cloneAssignments(executor,newObject);
+        return newObject;
     }
 
     @Override
-    public PermissionAnalyse startAnalyse() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+    public void cloneAssignments(PermissionObject executor, PermissionObject assigner) {
+        for (ScopeBasedData<ParentEntity> data : groupCache.getAll()) {
+            for (ParentEntity entity : data.getData()) {
+                assigner.addParent(executor,entity.getScope(),entity.getParent(),entity.getAction(),entity.getTimeout());
+            }
+        }
 
-    @Override
-    public PermissionObject clone(PermissionObject executor,String newName) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        for (ScopeBasedData<PermissionEntity> data : permissionCache.getAll()) {
+            for (PermissionEntity entity : data.getData()) {
+                assigner.setPermission(executor,entity.getScope(),entity.getPermission(),entity.getAction(),entity.getTimeout());
+            }
+        }
+
+        for (ScopeBasedData<ObjectMetaEntry> data : meta.getEntries()) {
+            for (ObjectMetaEntry entity : data.getData()) {
+                assigner.getMeta().add(executor,entity.getKey(),entity.getValue(),entity.getPriority(),entity.getScope(),entity.getTimeout());
+            }
+        }
     }
 
     @Override
@@ -473,6 +582,10 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
                int scopeId = data.getInt("scope");
                if(scopeId != 0) this.groupCache.reset(data.getInt("scope"));
                else this.groupCache.reset();
+           }else if(action == SyncAction.OBJECT_META_UPDATE){
+               int scopeId = data.getInt("scope");
+               if(scopeId != 0) this.meta.getCache().reset(data.getInt("scope"));
+               else this.meta.getCache().reset();
            }
            callObservers(action);
         }
@@ -492,12 +605,34 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         executeSynchronisationUpdate(SyncAction.OBJECT_PERMISSION_UPDATE,data);
     }
 
-    //@Todo maybe optimize
     @Internal
     public void executeSynchronisationUpdate(SyncAction action,Document data){
-        data.set("action", SyncAction.OBJECT_GROUP_UPDATE);
-        SYNCHRONISATION_CALLER.update(getId(),data);
-
+        data.set("action", action.ordinal());
+        SYNCHRONISATION_CALLER.updateAndIgnore(getId(),data);
         callObservers(action);
+    }
+
+    @Internal
+    public void clearCache(){
+        this.groupCache.clearCache();
+        this.permissionCache.clearCache();
+        this.meta.getCache().clearCache();
+    }
+
+    @Override
+    public void checkDefaultGroupAssignment(Collection<PermissionObject> groups,Graph<PermissionScope> range){
+        for (PermissionObject group : groups) {
+            ScopeBasedDataList<ObjectMetaEntry> entries = group.getMeta().getEntries(range);
+            for (ScopeBasedData<ObjectMetaEntry> entry : entries) {
+                for (ObjectMetaEntry meta : entry.getData()) {
+                    if(meta.getKey().equalsIgnoreCase("defaultAssign")){
+                        if(getParent(entry.getScope(),group) == null){
+                            addParent(DKPerms.getInstance().getObjectManager().getSuperAdministrator()
+                            ,entry.getScope(),group,PermissionAction.ALLOW_ALWAYS,Entity.PERMANENTLY);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

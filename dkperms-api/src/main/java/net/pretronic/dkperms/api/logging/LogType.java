@@ -14,7 +14,8 @@ public enum LogType {
 
     OBJECT(),
     OBJECT_TYPE(),
-    ENTITY(),
-    META(),
-
+    ENTITY_PERMISSION(),
+    ENTITY_PARENT(),
+    ENTITY_META(),
+    TRACK(),
 }

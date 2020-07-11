@@ -10,16 +10,16 @@
 
 package net.pretronic.dkperms.common.scope;
 
-import net.pretronic.libraries.document.Document;
-import net.pretronic.libraries.synchronisation.SynchronisationCaller;
-import net.pretronic.libraries.synchronisation.SynchronisationHandler;
-import net.pretronic.libraries.utility.interfaces.Initializable;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.PermissionScopeBuilder;
 import net.pretronic.dkperms.api.scope.PermissionScopeManager;
 import net.pretronic.dkperms.common.graph.ScopeGraph;
+import net.pretronic.libraries.document.Document;
+import net.pretronic.libraries.synchronisation.SynchronisationCaller;
+import net.pretronic.libraries.synchronisation.SynchronisationHandler;
+import net.pretronic.libraries.utility.interfaces.Initializable;
 
 import java.util.List;
 import java.util.Objects;
@@ -62,7 +62,7 @@ public class DefaultPermissionScopeManager implements PermissionScopeManager, In
     }
 
     @Override
-    public PermissionScope get(String scopeOrder) {
+    public PermissionScope get(PermissionScope root, String scopeOrder) {
         Objects.requireNonNull(scopeOrder,"Scope order can't be null");
         if(scopeOrder.startsWith("\\\\")) scopeOrder = scopeOrder.substring(2);
         String[] scopes = scopeOrder.split("[\\\\;=/]");
@@ -70,6 +70,11 @@ public class DefaultPermissionScopeManager implements PermissionScopeManager, In
         if(scopes.length %2 != 0) throw new IllegalArgumentException("Invalid length of conditions");
         for (int i = 0; i < scopes.length; i+=2) last = last.getChild(scopes[i],scopes[i+1]);
         return last;
+    }
+
+    @Override
+    public PermissionScope get(String scopeOrder) {
+        return get(root,scopeOrder);
     }
 
     @Override

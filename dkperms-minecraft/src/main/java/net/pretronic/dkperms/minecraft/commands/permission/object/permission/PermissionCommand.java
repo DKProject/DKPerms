@@ -10,6 +10,7 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.object.permission;
 
+import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.DefinedNotFindable;
@@ -17,7 +18,6 @@ import net.pretronic.libraries.command.command.object.MainObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
-import net.pretronic.dkperms.api.object.PermissionObject;
 
 public class PermissionCommand extends MainObjectCommand<PermissionObject> implements DefinedNotFindable<PermissionObject> {
 
@@ -30,6 +30,7 @@ public class PermissionCommand extends MainObjectCommand<PermissionObject> imple
         registerCommand(new ShowCommand(owner));
         registerCommand(new ListCommand(owner));
         registerCommand(new TreeCommand(owner));
+        registerCommand(new CheckCommand(owner));
     }
 
     @Override
@@ -40,6 +41,6 @@ public class PermissionCommand extends MainObjectCommand<PermissionObject> imple
     @Override
     public void commandNotFound(CommandSender sender, PermissionObject object, String command, String[] args) {
         sender.sendMessage(Messages.OBJECT_PERMISSION_HELP, VariableSet.create()
-                .add("type",object.getType().getName().toLowerCase()));
+                .add("type",object.getType().getDisplayName().toLowerCase()));
     }
 }

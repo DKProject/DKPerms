@@ -10,7 +10,7 @@
 
 package net.pretronic.dkperms.common.graph;
 
-import net.pretronic.dkperms.api.entity.PermissionGroupEntity;
+import net.pretronic.dkperms.api.entity.ParentEntity;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.graph.ObjectGraph;
 import net.pretronic.dkperms.api.object.PermissionObject;
@@ -18,18 +18,24 @@ import net.pretronic.dkperms.api.object.SyncAction;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.libraries.synchronisation.observer.AbstractObservable;
 import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
+import net.pretronic.libraries.utility.SystemUtil;
 import net.pretronic.libraries.utility.Validate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 public class DefaultObjectGraph extends AbstractObservable<PermissionObject, SyncAction> implements ObjectGraph, ObserveCallback<PermissionObject, SyncAction> {
 
-    private final Graph<PermissionGroupEntity> inheritanceGraph;
+    private final Graph<ParentEntity> inheritanceGraph;
 
     private List<PermissionObject> result;
 
-    public DefaultObjectGraph(Graph<PermissionGroupEntity> inheritanceGraph) {
+    private boolean traversing;
+    private final BooleanSupplier sleeper = () -> traversing;
+
+    public DefaultObjectGraph(Graph<ParentEntity> inheritanceGraph) {
         Validate.notNull(inheritanceGraph);
         this.inheritanceGraph = inheritanceGraph;
         this.result = new ArrayList<>();
@@ -37,28 +43,37 @@ public class DefaultObjectGraph extends AbstractObservable<PermissionObject, Syn
 
     @Override
     public List<PermissionObject> traverse() {
+        if(traversing) SystemUtil.sleepAsLong(sleeper);
         if(result.isEmpty()) traverse0();
-        return result;
+        return Collections.unmodifiableList(result);
     }
 
     private void traverse0() {
-        List<PermissionObject> blocked = new ArrayList<>();
-        List<PermissionGroupEntity> inheritance = inheritanceGraph.traverse();
+        try{
+            traversing = true;
+            List<PermissionObject> blocked = new ArrayList<>();
+            List<ParentEntity> inheritance = inheritanceGraph.traverse();
 
-        for (PermissionGroupEntity entity : inheritance) {
-            if(!blocked.contains(entity.getGroup())){
-                if(entity.getAction() == PermissionAction.ALLOW){
-                    if(!result.contains(entity.getGroup())) result.add(entity.getGroup());
-                }else if(entity.getAction() == PermissionAction.REJECT){
-                    result.remove(entity.getGroup());
-                }else if(entity.getAction() == PermissionAction.ALLOW_ALWAYS){
-                    if(!result.contains(entity.getGroup())) result.add(entity.getGroup());
-                    blocked.add(entity.getGroup());
-                }else if(entity.getAction() == PermissionAction.REJECT_ALWAYS){
-                    result.remove(entity.getGroup());
-                    blocked.add(entity.getGroup());
+            for (ParentEntity entity : inheritance) {
+                if(!blocked.contains(entity.getParent())){
+                    if(entity.getAction() == PermissionAction.ALLOW){
+                        result.remove(entity.getParent());
+                        result.add(entity.getParent());
+                    }else if(entity.getAction() == PermissionAction.REJECT){
+                        result.remove(entity.getParent());
+                    }else if(entity.getAction() == PermissionAction.ALLOW_ALWAYS){
+                        if(!result.contains(entity.getParent())) result.add(entity.getParent());
+                        blocked.add(entity.getParent());
+                    }else if(entity.getAction() == PermissionAction.REJECT_ALWAYS){
+                        result.remove(entity.getParent());
+                        blocked.add(entity.getParent());
+                    }
                 }
             }
+            traversing = false;
+        }catch (Exception e){
+            traversing = false;
+            throw e;
         }
     }
 
@@ -68,12 +83,11 @@ public class DefaultObjectGraph extends AbstractObservable<PermissionObject, Syn
     }
 
     @Override
-    public PermissionAction calculate(PermissionObject group) {
-        return null;
-    }
-
-    @Override
     public PermissionObject getHighest() {
+        List<PermissionObject> result = traverse();
+        if(!result.isEmpty()){
+            return result.get(result.size()-1);
+        }
         return null;
     }
 

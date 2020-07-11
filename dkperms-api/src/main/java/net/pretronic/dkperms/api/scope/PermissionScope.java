@@ -10,7 +10,6 @@
 
 package net.pretronic.dkperms.api.scope;
 
-import net.pretronic.libraries.utility.annonations.Internal;
 import net.pretronic.libraries.utility.annonations.Nullable;
 
 import java.util.List;

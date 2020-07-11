@@ -10,21 +10,17 @@
 
 package net.pretronic.dkperms.api.entity;
 
-import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.TimeoutAble;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-public interface Entity {
+public interface Entity extends TimeoutAble {
 
-    int PERMANENTLY = -1;
-
-    int SESSION = -2;
-
-    int ONCE = -3;
-
+    Duration PERMANENTLY = TimeoutAble.PERMANENTLY;
 
     int getId();
 
@@ -41,35 +37,13 @@ public interface Entity {
     void setScope(PermissionObject executor,PermissionScope scope);
 
 
-    long getTimeout();
-
-    void setTimeout(PermissionObject executor,long timeout);
-
-
-    default void setDuration(PermissionObject executor,long duration, TimeUnit unit){
-        setTimeout(executor,System.currentTimeMillis()+unit.toMillis(duration));
-    }
-
-    default long getRemainingDuration(){
-        if(getTimeout() > 0) return System.currentTimeMillis()-getTimeout();
-        return getTimeout();
-    }
-
-    default boolean hasTimeout(){
-        return getTimeout() > 0 && getTimeout() < System.currentTimeMillis();
-    }
-
-    default String getTimeoutFormatted(){
-        return DKPerms.getInstance().getFormatter().formatDateTime(getTimeout());
-    }
-
-    default String getRemainingDurationFormatted(){
-        return DKPerms.getInstance().getFormatter().formatRemainingDuration(getTimeout());
-    }
-
     void update(PermissionObject executor,PermissionAction action,PermissionScope scope,long timeout);
 
+    default void update(PermissionObject executor, PermissionAction action, PermissionScope scope, Duration duration){
+        update(executor, action, scope, duration.getSeconds(),TimeUnit.SECONDS);
+    }
+
     default void update(PermissionObject executor,PermissionAction action,PermissionScope scope,long duration,TimeUnit unit){
-        update(executor, action, scope, duration>0?unit.toMillis(duration):duration);
+        update(executor, action, scope, duration>0?unit.toMillis(duration)+System.currentTimeMillis():duration);
     }
 }

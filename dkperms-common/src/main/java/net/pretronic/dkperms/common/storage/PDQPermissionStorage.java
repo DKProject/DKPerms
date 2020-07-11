@@ -151,6 +151,13 @@ public class PDQPermissionStorage implements PermissionStorage {
                 .execute();
     }
 
+    @Override
+    public void deleteTimedOutPermissions() {
+        this.object_permissions.delete()
+                .whereHigher("Timeout",0)
+                .whereLower("Timeout",System.currentTimeMillis()).execute();
+    }
+
     public void setCollections(DatabaseCollection object_permissions){
         this.object_permissions = object_permissions;
     }

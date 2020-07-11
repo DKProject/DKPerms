@@ -11,13 +11,10 @@
 package net.pretronic.dkperms.api.graph;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.api.permission.PermissionAction;
 
 public interface ObjectGraph extends Graph<PermissionObject> {
 
     boolean contains(PermissionObject group);
-
-    PermissionAction calculate(PermissionObject group);
 
     PermissionObject getHighest();
 

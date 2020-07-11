@@ -10,17 +10,22 @@
 
 package net.pretronic.dkperms.common.cache;
 
-import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedData;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 import net.pretronic.dkperms.common.scope.data.ArrayScopeBasedDataList;
+import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.Validate;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.function.Predicate;
 
 public abstract class ScopeBasedCache<T> {
+
+    private final static Predicate<PermissionScope> FILTER_SCOPE_SAVED = PermissionScope::isSaved;
 
     private final ScopeBasedDataList<T> entries;
     private boolean loadedAll;
@@ -54,9 +59,9 @@ public abstract class ScopeBasedCache<T> {
         return get(scopes.traverse());
     }
 
-    public ScopeBasedDataList<T> get(Collection<PermissionScope> scopes){
+    public ScopeBasedDataList<T> get(Collection<PermissionScope> scopes0){
+        Collection<PermissionScope> scopes = Iterators.filter(scopes0,FILTER_SCOPE_SAVED);
         ScopeBasedDataList<T> result = new ArrayScopeBasedDataList<>();
-        scopes.removeIf(scope -> !scope.isSaved());
 
         for (ScopeBasedData<T> entry : entries) {
             PermissionScope scope = findScope(scopes,entry.getScope());

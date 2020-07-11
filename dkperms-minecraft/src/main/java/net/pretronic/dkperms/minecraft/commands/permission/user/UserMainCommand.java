@@ -10,10 +10,9 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.user;
 
-import net.pretronic.dkperms.api.minecraft.player.PermissionPlayer;
 import net.pretronic.dkperms.api.object.PermissionObject;
-import net.pretronic.dkperms.minecraft.commands.permission.object.group.GroupCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.object.meta.MetaCommand;
+import net.pretronic.dkperms.minecraft.commands.permission.object.parent.ParentCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.object.permission.PermissionCommand;
 import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
@@ -22,25 +21,29 @@ import net.pretronic.libraries.command.command.object.MainObjectCommand;
 import net.pretronic.libraries.command.command.object.ObjectNotFindable;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
-import net.pretronic.libraries.message.bml.variable.describer.DescribedHashVariableSet;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import org.mcnative.common.McNative;
 import org.mcnative.common.player.MinecraftPlayer;
 
 public class UserMainCommand extends MainObjectCommand<PermissionObject> implements ObjectNotFindable, DefinedNotFindable<PermissionObject> {
 
+    private final InfoCommand infoCommand;
+
     public UserMainCommand(ObjectOwner owner) {
         super(owner, CommandConfiguration.name("user","u","player","p"));
 
-        registerCommand(new GroupCommand(owner));
+        infoCommand = new InfoCommand(owner);
+
+        registerCommand(new ParentCommand(owner));
         registerCommand(new MetaCommand(owner));
         registerCommand(new PermissionCommand(owner));
+        registerCommand(infoCommand);
     }
 
     @Override
     public PermissionObject getObject(CommandSender sender,String name) {
         MinecraftPlayer player =  McNative.getInstance().getPlayerManager().getPlayer(name);
-        if(player != null) return player.getAs(PermissionPlayer.class).getObject();
+        if(player != null) return player.getAs(PermissionObject.class);
         return null;
     }
 
@@ -50,14 +53,15 @@ public class UserMainCommand extends MainObjectCommand<PermissionObject> impleme
             sender.sendMessage(Messages.COMMAND_PERMS_HELP);
         }else{
             sender.sendMessage(Messages.USER_NOTFOUND,VariableSet.create()
-                    .add("user",value).add("player",value));
+                    .add("user",value)
+                    .add("player",value));
         }
     }
 
     @Override
     public void commandNotFound(CommandSender sender, PermissionObject object, String command, String[] arguments) {
         if(command == null && object != null) {
-            sender.sendMessage(Messages.USER_INFO, new DescribedHashVariableSet().add("user", object));
+            infoCommand.execute(sender,object,arguments);
         }else{
             sender.sendMessage(Messages.USER_HELP);
         }
