@@ -44,6 +44,7 @@ public class PermissionCommand extends MainCommand implements NotFindable, NoPer
         registerCommand(infoCommand);
     }
 
+
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(DKPermsConfig.SECURITY_RESTRICTED_ENABLED && !sender.equals(McNative.getInstance().getConsoleSender())){
