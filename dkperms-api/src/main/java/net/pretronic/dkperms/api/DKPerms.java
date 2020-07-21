@@ -16,6 +16,7 @@ import net.pretronic.dkperms.api.object.PermissionObjectManager;
 import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyser;
 import net.pretronic.dkperms.api.scope.PermissionScopeManager;
 import net.pretronic.dkperms.api.storage.DKPermsStorage;
+import net.pretronic.libraries.event.EventBus;
 import net.pretronic.libraries.logging.PretronicLogger;
 import net.pretronic.libraries.utility.concurrent.AsyncExecutor;
 
@@ -40,11 +41,14 @@ public abstract class DKPerms {
 
     public abstract PermissionObjectManager getObjectManager();
 
-    public abstract AsyncExecutor getExecutor();
-
     public abstract DKPermsFormatter getFormatter();
 
     public abstract PermissionAnalyser getAnalyser();
+
+
+    public abstract EventBus getEventBus();
+
+    public abstract AsyncExecutor getExecutor();
 
     public static DKPerms getInstance(){
         return INSTANCE;

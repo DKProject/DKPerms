@@ -88,6 +88,13 @@
         </dependency>
 
         <dependency>
+            <groupId>net.pretronic.libraries</groupId>
+            <artifactId>pretroniclibraries-event</artifactId>
+            <version>${dependency.pretronic.libraries}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${test.junit.jupiter}</version>

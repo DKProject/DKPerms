@@ -8,7 +8,7 @@
  * %license%
  */
 
-package net.pretronic.dkperms.api.minecraft.event;
+package net.pretronic.dkperms.api.event;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
 

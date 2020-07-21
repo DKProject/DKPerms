@@ -11,6 +11,8 @@
 package net.pretronic.dkperms.common.object;
 
 import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.event.object.DKPermsPermissionObjectCreateEvent;
+import net.pretronic.dkperms.api.event.object.DKPermsPermissionObjectDeleteEvent;
 import net.pretronic.dkperms.api.logging.LogAction;
 import net.pretronic.dkperms.api.logging.LogType;
 import net.pretronic.dkperms.api.object.PermissionObject;
@@ -210,16 +212,16 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         PermissionObject object = DKPerms.getInstance().getStorage().getObjectStorage().createObject(scope,type,name,assignmentId);
         this.objects.insert(object);
         dkperms.getAuditLog().createRecordAsync(executor,LogType.OBJECT,LogAction.CREATE,object.getId(),object.getId(),null,null,null,this);
+        dkperms.getEventBus().callEvent(new DKPermsPermissionObjectCreateEvent(executor,object));
         return object;
     }
 
     @Override
     public void deleteObject(PermissionObject executor,int id) {
         Validate.notNull(executor);
-        this.objects.remove("ById",id);
-        dkperms.getStorage().getObjectStorage().deleteObject(id);
-        this.objects.getCaller().createAndIgnore(id, Document.newDocument());
-        dkperms.getAuditLog().createRecordAsync(executor,LogType.OBJECT,LogAction.DELETE,id,id,null,null,null,this);
+        PermissionObject object = getObject(id);
+        if(object == null) return;
+        deleteObject(executor,object);
     }
 
     @Override
@@ -228,6 +230,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         this.dkperms.getStorage().getObjectStorage().deleteObject(object.getId());
         this.objects.getCaller().createAndIgnore(object.getId(), Document.newDocument());
         this.dkperms.getAuditLog().createRecordAsync(executor,LogType.OBJECT,LogAction.DELETE,object.getId(),object.getId(),null,null,null,this);
+        this.dkperms.getEventBus().callEvent(new DKPermsPermissionObjectDeleteEvent(executor,object));
     }
 
     @Override

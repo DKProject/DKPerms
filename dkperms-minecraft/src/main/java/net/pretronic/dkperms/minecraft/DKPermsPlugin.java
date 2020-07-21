@@ -85,9 +85,10 @@ public class DKPermsPlugin extends MinecraftPlugin {
                 ,new DefaultAuditLog()
                 ,scopeManager
                 ,objectManager
-                ,new AsyncExecutor(GeneralUtil.getDefaultExecutorService())
                 ,new MinecraftFormatter()
-                ,new DefaultPermissionAnalyser());
+                ,new DefaultPermissionAnalyser()
+                ,McNative.getInstance().getLocal().getEventBus()
+                ,new AsyncExecutor(GeneralUtil.getDefaultExecutorService()));
         dkPerms.getAnalyser().addListener(request -> getLogger().info("[Analyser] "+request.getTarget().getName()+" | "+request.getPermission()+" -> "+request.getResult()));
 
         DKPerms.setInstance(dkPerms);
