@@ -40,12 +40,7 @@ public class DefaultAuditLog implements AuditLog {
     }
 
     @Override
-    public void recover(LogType type, int key) {
-
-    }
-
-    @Override
-    public void rollback(long time) {
+    public void clean(long beforeTimestamp) {
 
     }
 

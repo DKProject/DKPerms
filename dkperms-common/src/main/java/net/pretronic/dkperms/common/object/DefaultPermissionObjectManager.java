@@ -41,6 +41,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 public class DefaultPermissionObjectManager implements PermissionObjectManager, Initializable<DKPerms> {
 
@@ -55,25 +56,24 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
     private PermissionObject superAdministrator;
     private Collection<PermissionObjectType> types;
 
-    public DefaultPermissionObjectManager() {
-        this.objects = new ArraySynchronizableCache<>(1000);
+    public DefaultPermissionObjectManager(Predicate<PermissionObject> removeListener) {
+        this.objects = new ShadowArraySynchronizableCache<>(1000);
         this.objects.setClearOnDisconnect(true);
-        this.objects.setExpireAfterAccess(30,TimeUnit.MINUTES);
+        this.objects.setExpireAfterAccess(10,TimeUnit.MINUTES);
 
         this.objects.registerQuery("ByName",new ObjectNameLoader());
         this.objects.registerQuery("ById",new ObjectIdLoader(false));
         this.objects.registerQuery("ByIdOnlyCached",new ObjectIdLoader(true));
         this.objects.registerQuery("ByAssignment",new ObjectAssignmentLoader());
         this.objects.setIdentifierQuery((o, objects) -> o.getId() == (int)objects[0]);
-        //@Todo remove listener
+        this.objects.setRemoveListener(removeListener);
 
         this.searchResults = new ArrayCache<>(100);
-        this.searchResults.setExpireAfterAccess(15, TimeUnit.MINUTES);
+        this.searchResults.setExpireAfterAccess(10, TimeUnit.MINUTES);
         this.searchResults.registerQuery("ByQuery",new ObjectQueryLoader());
 
         this.tracks = new ArrayList<>();
     }
-
 
     public SynchronizableCache<PermissionObject,Integer> getObjects() {
         return objects;
@@ -82,7 +82,6 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
     public Cache<ObjectSearchResult> getSearchResults() {
         return searchResults;
     }
-
 
     @Override
     public Collection<PermissionObjectType> getTypes() {

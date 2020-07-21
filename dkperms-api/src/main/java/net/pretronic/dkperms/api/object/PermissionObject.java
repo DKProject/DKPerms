@@ -73,6 +73,8 @@ public interface PermissionObject extends Observable<PermissionObject,SyncAction
 
     Object getHolder();
 
+    boolean isHolderAssigned();
+
     void setHolder(Object holder);
 
 

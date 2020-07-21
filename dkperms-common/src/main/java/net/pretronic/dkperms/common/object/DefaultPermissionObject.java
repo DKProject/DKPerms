@@ -181,6 +181,11 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     }
 
     @Override
+    public boolean isHolderAssigned() {
+        return holder != null;
+    }
+
+    @Override
     public void setHolder(Object holder) {
         Validate.notNull(holder);
         this.holder = holder;
