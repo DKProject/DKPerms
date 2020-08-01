@@ -84,7 +84,7 @@ public class DKPermsPlugin extends MinecraftPlugin {
                 ,version.getBuild(),getLogger()
                 ,new DefaultMigrationAssistant()
                 ,new PDQStorage(getDatabaseOrCreate())
-                ,new DefaultAuditLog()
+                ,new DefaultAuditLog(false)
                 ,scopeManager
                 ,objectManager
                 ,new MinecraftFormatter()
@@ -148,6 +148,7 @@ public class DKPermsPlugin extends MinecraftPlugin {
         }
 
 
+        /*
         McNative.getInstance().getScheduler().createTask(this)
                 .interval(5,TimeUnit.SECONDS)
                 .delay(10,TimeUnit.SECONDS).execute(() -> {
@@ -170,6 +171,7 @@ public class DKPermsPlugin extends MinecraftPlugin {
                         e.printStackTrace();
                     }
                 });
+         */
     }
 
     private void copyLegacyConfig(){

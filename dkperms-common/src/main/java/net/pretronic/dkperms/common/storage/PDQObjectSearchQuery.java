@@ -148,15 +148,15 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
 
     @Override
     public boolean equals(Object obj) {
-        System.out.println(" ----> compare");
+       // System.out.println(" ----> compare");
         if(obj == this) return true;
         if(obj instanceof PDQObjectSearchQuery){
             PDQObjectSearchQuery query = (PDQObjectSearchQuery) obj;
 
 
-            System.out.println(" ----> "+(this.query.equals(query.getQuery())));
+            //System.out.println(" ----> "+(this.query.equals(query.getQuery())));
 
-            System.out.println(" ----> "+(inheritance == query.inheritance));
+           // System.out.println(" ----> "+(inheritance == query.inheritance));
 
             return this.query.equals(query.getQuery()) && inheritance == query.inheritance;
         }
@@ -218,9 +218,9 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
     public ObjectSearchResult execute() {
         directLoading();//Auto enable, passive loading not integrated yet
 
-        System.out.println("Cache Size: "+getObjectManager().getSearchResults().size());
+        //System.out.println("Cache Size: "+getObjectManager().getSearchResults().size());
         ObjectSearchResult cached = getObjectManager().getSearchResults().get("ByQuery",this);
-        System.out.println("Search cached: "+(cached != null));
+        //System.out.println("Search cached: "+(cached != null));
         if(cached != null) return cached;
         if(directLoading){
             query.get(objectCollection.getName()+".Id");

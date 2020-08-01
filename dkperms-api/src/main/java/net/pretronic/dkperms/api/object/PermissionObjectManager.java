@@ -38,6 +38,8 @@ public interface PermissionObjectManager {
 
     void deleteType(PermissionObject executor,String name);
 
+    void deleteType(PermissionObject executor,PermissionObjectType type);
+
 
     PermissionObject getSuperAdministrator();
 

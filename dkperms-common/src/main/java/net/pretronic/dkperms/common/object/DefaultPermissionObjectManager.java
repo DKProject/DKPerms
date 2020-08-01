@@ -114,7 +114,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         PermissionObjectType type = new DefaultPermissionObjectType(id,name,displayName,group);
         this.types.add(type);
 
-        dkperms.getAuditLog().createRecordAsync(executor,LogType.OBJECT_TYPE,LogAction.CREATE,-1,id,null,null,null,this);
+        dkperms.getAuditLog().createCreateRecordAsync(executor,LogType.OBJECT_TYPE,0,type.getId(),type);
 
         return type;
     }
@@ -122,16 +122,26 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
     @Override
     public void deleteType(PermissionObject executor,int id) {//@Todo check to previous delete objects and log into autdit log
         Validate.notNull(executor);
-        dkperms.getStorage().getObjectStorage().deleteObjectType(id);
-        Iterators.removeOne(this.types, type -> type.getId() == id);
-        dkperms.getAuditLog().createRecordAsync(executor,LogType.OBJECT_TYPE,LogAction.DELETE,-1,id,null,null,null,this);
+        PermissionObjectType type = getType(id);
+        if(type != null) deleteType(executor,type);
     }
 
     @Override
     public void deleteType(PermissionObject executor,String name) {
         Validate.notNull(executor);
         PermissionObjectType type = getType(name);
-        if(type != null) deleteType(executor,type.getId());
+        if(type != null) deleteType(executor,type);
+    }
+
+    @Override
+    public void deleteType(PermissionObject executor, PermissionObjectType type) {
+        Validate.notNull(executor);
+        if(type != null){
+            dkperms.getStorage().getObjectStorage().deleteObjectType(type.getId());
+            Iterators.removeOne(this.types, type0 -> type0.getId() == type.getId());
+
+            dkperms.getAuditLog().createDeleteRecordAsync(executor,LogType.OBJECT_TYPE,0,type.getId(),type);
+        }
     }
 
     @Override
@@ -210,8 +220,8 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         if(getObject(name,scope,type) != null) throw new IllegalArgumentException("There is already an object with the same name in the same scope");
         PermissionObject object = DKPerms.getInstance().getStorage().getObjectStorage().createObject(scope,type,name,assignmentId);
         this.objects.insert(object);
-        dkperms.getAuditLog().createRecordAsync(executor,LogType.OBJECT,LogAction.CREATE,object.getId(),object.getId(),null,null,null,this);
-        dkperms.getEventBus().callEvent(new DKPermsPermissionObjectCreateEvent(executor,object));
+        this.dkperms.getAuditLog().createCreateRecordAsync(executor,LogType.OBJECT,object.getId(),object.getId(),object);
+        this.dkperms.getEventBus().callEvent(new DKPermsPermissionObjectCreateEvent(executor,object));
         return object;
     }
 
@@ -228,7 +238,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         this.objects.remove(object);
         this.dkperms.getStorage().getObjectStorage().deleteObject(object.getId());
         this.objects.getCaller().createAndIgnore(object.getId(), Document.newDocument());
-        this.dkperms.getAuditLog().createRecordAsync(executor,LogType.OBJECT,LogAction.DELETE,object.getId(),object.getId(),null,null,null,this);
+        this.dkperms.getAuditLog().createDeleteRecordAsync(executor,LogType.OBJECT,object.getId(),object.getId(),object);
         this.dkperms.getEventBus().callEvent(new DKPermsPermissionObjectDeleteEvent(executor,object));
     }
 

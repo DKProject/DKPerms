@@ -20,17 +20,18 @@ public class PDQAuditLogStorage implements AuditLogStorage {
     private DatabaseCollection auditCollection;
 
     @Override
-    public void createRecord(int executorId, long timeStamp, LogType type, LogAction action, int ownerId, int scopeId, String field, Object oldValue, Object newValue) {
+    public void createRecord(long timeStamp, int executorId, LogType type, LogAction action, int ownerId, int keyId, String field, String oldValue, String newValue, String data) {
         auditCollection.insert()
-                .set("ExecutorId",executorId)
                 .set("Time",timeStamp)
+                .set("ExecutorId",executorId)
                 .set("Type",type)
                 .set("Action",action)
                 .set("OwnerId",ownerId)
-                .set("ScopeId",scopeId)
+                .set("ObjectId",keyId)
                 .set("Field",field)
                 .set("OldValue",oldValue)
                 .set("NewValue",newValue)
+                .set("Data",data)
                 .execute();
     }
 
