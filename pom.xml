@@ -53,8 +53,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependency version -->
-        <dependency.pretronic.libraries>1.2.6.142-SNAPSHOT</dependency.pretronic.libraries>
-        <dependency.mcnative.version>1.5.22.324-SNAPSHOT</dependency.mcnative.version>
+        <dependency.pretronic.libraries>1.2.16.154-SNAPSHOT</dependency.pretronic.libraries>
+        <dependency.mcnative.version>1.5.24.326-SNAPSHOT</dependency.mcnative.version>
         <dependency.pretronic.databasequery>1.2.33.60-SNAPSHOT</dependency.pretronic.databasequery>
 
         <dependency.hikaricp>3.4.1</dependency.hikaricp>
