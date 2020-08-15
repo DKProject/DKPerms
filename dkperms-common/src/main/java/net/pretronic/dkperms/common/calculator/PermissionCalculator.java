@@ -11,8 +11,6 @@
 package net.pretronic.dkperms.common.calculator;
 
 import net.pretronic.dkperms.api.entity.PermissionEntity;
-import net.pretronic.dkperms.api.event.object.DKPermsPermissionObjectDeleteEvent;
-import net.pretronic.dkperms.api.event.permission.DKPermsPermissionCalculationEvent;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.libraries.utility.Iterators;
