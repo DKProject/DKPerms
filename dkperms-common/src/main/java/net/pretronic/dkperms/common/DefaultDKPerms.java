@@ -18,6 +18,7 @@ import net.pretronic.dkperms.api.object.PermissionObjectManager;
 import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyser;
 import net.pretronic.dkperms.api.scope.PermissionScopeManager;
 import net.pretronic.dkperms.api.storage.DKPermsStorage;
+import net.pretronic.libraries.event.EventBus;
 import net.pretronic.libraries.logging.PretronicLogger;
 import net.pretronic.libraries.utility.concurrent.AsyncExecutor;
 
@@ -31,12 +32,15 @@ public class DefaultDKPerms extends DKPerms {
     private final AuditLog auditLog;
     private final PermissionScopeManager scopeManager;
     private final PermissionObjectManager objectManager;
-    private final AsyncExecutor executor;
     private final DKPermsFormatter formatter;
     private final PermissionAnalyser analyser;
 
+    private final EventBus eventBus;
+    private final AsyncExecutor executor;
+
     public DefaultDKPerms(String version, int build, PretronicLogger logger,MigrationAssistant migrationAssistant,DKPermsStorage storage,AuditLog auditLog
-            , PermissionScopeManager scopeManager,PermissionObjectManager objectManager, AsyncExecutor executor,DKPermsFormatter formatter,PermissionAnalyser analyser) {
+            , PermissionScopeManager scopeManager,PermissionObjectManager objectManager,DKPermsFormatter formatter,PermissionAnalyser analyser
+            ,EventBus eventBus, AsyncExecutor executor) {
         this.version = version;
         this.build = build;
         this.logger = logger;
@@ -45,9 +49,11 @@ public class DefaultDKPerms extends DKPerms {
         this.migrationAssistant = migrationAssistant;
         this.scopeManager = scopeManager;
         this.objectManager = objectManager;
-        this.executor = executor;
         this.formatter = formatter;
         this.analyser = analyser;
+
+        this.eventBus = eventBus;
+        this.executor = executor;
     }
 
     @Override
@@ -103,5 +109,10 @@ public class DefaultDKPerms extends DKPerms {
     @Override
     public PermissionAnalyser getAnalyser() {
         return analyser;
+    }
+
+    @Override
+    public EventBus getEventBus() {
+        return eventBus;
     }
 }

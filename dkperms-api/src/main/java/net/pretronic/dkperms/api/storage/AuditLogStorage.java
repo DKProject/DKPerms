@@ -15,7 +15,7 @@ import net.pretronic.dkperms.api.logging.LogType;
 
 public interface AuditLogStorage {
 
-    void createRecord(int executorId, long timeStamp, LogType type, LogAction action, int ownerId
-            , int scopeId , String field, Object oldValue, Object newValue);
+    void createRecord(long timeStamp,int executorId, LogType type, LogAction action, int ownerId, int keyId
+                        ,String field, String oldValue, String newValue,String data);
 
 }

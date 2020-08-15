@@ -11,6 +11,7 @@
 package net.pretronic.dkperms.common.object;
 
 import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.event.DKPermsScopeChangeEvent;
 import net.pretronic.dkperms.api.graph.*;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectSnapshot;
@@ -65,9 +66,13 @@ public class DefaultPermissionObjectSnapshot extends AbstractObservable<Permissi
     }
 
     @Override
-    public void setScope(PermissionScope scope) {
+    public void setScope(PermissionScope scope0) {
         Validate.notNull(scope);
+        PermissionScope scope = scope0;
         PermissionScope oldScope = this.scope;
+
+        DKPermsScopeChangeEvent event = DKPerms.getInstance().getEventBus().callEvent(new DKPermsScopeChangeEvent(object,this,scope));
+        scope = event.getNewScope();
 
         if(groupGraph != null) unsubscribe();
 

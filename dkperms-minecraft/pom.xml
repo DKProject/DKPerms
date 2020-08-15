@@ -15,7 +15,7 @@
     <parent>
         <artifactId>DKPerms</artifactId>
         <groupId>net.pretronic.dkperms</groupId>
-        <version>1.1.63.87-BETA</version>
+        <version>1.1.77.101-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -62,8 +62,6 @@
 
                     <loader>
                         <version>${project.version}</version>
-                        <versionUrl>https://mirror.pretronic.net/v1/{plugin.id}/versions/latest?plain=true&amp;qualifier={qualifier}</versionUrl>
-                        <downloadUrl>https://mirror.pretronic.net/v1/{plugin.id}/versions/{version.build}/download</downloadUrl>
                     </loader>
                 </configuration>
             </plugin>

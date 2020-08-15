@@ -56,6 +56,10 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
         this.directLoading = false;
     }
 
+    public FindQuery getQuery() {
+        return query;
+    }
+
     @Override
     public ObjectSearchQuery withName(String name) {
         query.where("Name",name);
@@ -143,6 +147,23 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
     }
 
     @Override
+    public boolean equals(Object obj) {
+       // System.out.println(" ----> compare");
+        if(obj == this) return true;
+        if(obj instanceof PDQObjectSearchQuery){
+            PDQObjectSearchQuery query = (PDQObjectSearchQuery) obj;
+
+
+            //System.out.println(" ----> "+(this.query.equals(query.getQuery())));
+
+           // System.out.println(" ----> "+(inheritance == query.inheritance));
+
+            return this.query.equals(query.getQuery()) && inheritance == query.inheritance;
+        }
+        return false;
+    }
+
+    @Override
     public ObjectSearchQuery hasMeta(String key, Object value) {
         query.join(metaCollection).on(objectCollection,"Id",metaCollection,"ObjectId")
                 .where("Key",key)
@@ -196,7 +217,10 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
     @Override
     public ObjectSearchResult execute() {
         directLoading();//Auto enable, passive loading not integrated yet
+
+        //System.out.println("Cache Size: "+getObjectManager().getSearchResults().size());
         ObjectSearchResult cached = getObjectManager().getSearchResults().get("ByQuery",this);
+        //System.out.println("Search cached: "+(cached != null));
         if(cached != null) return cached;
         if(directLoading){
             query.get(objectCollection.getName()+".Id");
@@ -227,7 +251,10 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
                 }
                 data.add(object);
             }
-            return new DirectObjectSearchResult(this, data);
+
+            ObjectSearchResult searchResult = new DirectObjectSearchResult(this, data);
+            getObjectManager().getSearchResults().insert(searchResult);
+            return searchResult;
         }
         throw new UnsupportedOperationException("Currently is only direct loading supported");
     }

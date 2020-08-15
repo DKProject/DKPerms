@@ -12,6 +12,7 @@ package net.pretronic.dkperms.common.graph;
 
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.entity.PermissionEntity;
+import net.pretronic.dkperms.api.event.permission.DKPermsPermissionCalculationEvent;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.graph.PermissionGraph;
 import net.pretronic.dkperms.api.object.PermissionObject;
@@ -118,7 +119,10 @@ public class DefaultPermissionGraph extends AbstractObservable<PermissionObject,
                 DKPerms.getInstance().getAnalyser().offerRequest(request);
             }
         }
-        return result;
+
+        DKPermsPermissionCalculationEvent event = new DKPermsPermissionCalculationEvent(owner,permission,scopes,this,result);
+        DKPerms.getInstance().getEventBus().callEvent(event);
+        return event.getAction();
     }
 
     @Override

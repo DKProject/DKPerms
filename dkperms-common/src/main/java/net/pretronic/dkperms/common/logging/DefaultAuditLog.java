@@ -10,6 +10,7 @@
 
 package net.pretronic.dkperms.common.logging;
 
+import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.logging.AuditLog;
 import net.pretronic.dkperms.api.logging.LogAction;
 import net.pretronic.dkperms.api.logging.LogType;
@@ -18,6 +19,11 @@ import net.pretronic.dkperms.api.object.PermissionObject;
 
 public class DefaultAuditLog implements AuditLog {
 
+    private final boolean enabled;
+
+    public DefaultAuditLog(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     @Override
     public LogRecordResult get() {
@@ -40,23 +46,27 @@ public class DefaultAuditLog implements AuditLog {
     }
 
     @Override
-    public void recover(LogType type, int key) {
-
-    }
-
-    @Override
-    public void rollback(long time) {
+    public void clean(long beforeTimestamp) {
 
     }
 
     @Override
     public void createRecord(PermissionObject executor, LogType type, LogAction action, int owner, int key, String field, Object oldValue, Object newValue, Object data) {
-
+        if(enabled){
+            DKPerms.getInstance().getStorage().getAuditLogStorage()
+                    .createRecord(System.currentTimeMillis()
+                            ,executor.getId(),type,action,owner,key,field
+                            ,oldValue != null ? oldValue.toString() : null
+                            ,newValue != null ? newValue.toString() : null
+                            ,data != null ? data.toString() : null);
+        }
     }
 
     @Override
     public void createRecordAsync(PermissionObject executor, LogType type, LogAction action, int owner, int key, String field, Object oldValue, Object newValue, Object data) {
-
+        if(enabled){
+            DKPerms.getInstance().getExecutor().executeVoid(() -> createRecord(executor, type, action, owner, key, field, oldValue, newValue, data));
+        }
     }
 }
 

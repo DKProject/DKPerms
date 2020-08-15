@@ -14,6 +14,7 @@ import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.object.PermissionHolderFactory;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
+import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.PermissionScopeManager;
 import net.pretronic.dkperms.common.DefaultDKPerms;
@@ -57,6 +58,7 @@ import java.io.File;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class DKPermsPlugin extends MinecraftPlugin {
 
@@ -70,18 +72,19 @@ public class DKPermsPlugin extends MinecraftPlugin {
         PluginVersion version = getDescription().getVersion();
 
         DefaultPermissionScopeManager scopeManager = new DefaultPermissionScopeManager();
-        DefaultPermissionObjectManager objectManager = new DefaultPermissionObjectManager();
+        DefaultPermissionObjectManager objectManager = new DefaultPermissionObjectManager(new RemoveListener());
 
         DKPerms dkPerms = new DefaultDKPerms(version.getName()
                 ,version.getBuild(),getLogger()
                 ,new DefaultMigrationAssistant()
                 ,new PDQStorage(getDatabaseOrCreate())
-                ,new DefaultAuditLog()
+                ,new DefaultAuditLog(false)
                 ,scopeManager
                 ,objectManager
-                ,new AsyncExecutor(GeneralUtil.getDefaultExecutorService())
                 ,new MinecraftFormatter()
-                ,new DefaultPermissionAnalyser());
+                ,new DefaultPermissionAnalyser()
+                ,McNative.getInstance().getLocal().getEventBus()
+                ,new AsyncExecutor(GeneralUtil.getDefaultExecutorService()));
         dkPerms.getAnalyser().addListener(request -> getLogger().info("[Analyser] "+request.getTarget().getName()+" | "+request.getPermission()+" -> "+request.getResult()));
 
         DKPerms.setInstance(dkPerms);
@@ -137,6 +140,32 @@ public class DKPermsPlugin extends MinecraftPlugin {
                         }
                     });
         }
+
+
+        /*
+        McNative.getInstance().getScheduler().createTask(this)
+                .interval(5,TimeUnit.SECONDS)
+                .delay(10,TimeUnit.SECONDS).execute(() -> {
+                    try {
+                        System.out.println("-----------------");
+
+                        long start = System.currentTimeMillis();
+                        ObjectSearchResult result = objectManager.search().withName("Dkrieger").execute();
+                        long end = System.currentTimeMillis()-start;
+
+                        System.out.println(end+"ms");
+
+                        System.out.println(" -> Result: ");
+                        for (PermissionObject object : result) {
+                            System.out.println(object.getName());
+                        }
+
+                        System.out.println("-----------------");
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                });
+         */
     }
 
     @Lifecycle(state = LifecycleState.SHUTDOWN)
@@ -219,6 +248,20 @@ public class DKPermsPlugin extends MinecraftPlugin {
         dkPerms.getMigrationAssistant().registerMigration(new CloudNetV3CPermsMigration());
         dkPerms.getMigrationAssistant().registerMigration(new PermissionsExMigration());
         dkPerms.getMigrationAssistant().registerMigration(new LuckPermsMigration());
+    }
+
+    private static class RemoveListener implements Predicate<PermissionObject> {
+
+        @Override
+        public boolean test(PermissionObject object) {
+            if(object.getType() == PermissionObjectType.USER_ACCOUNT && object.isHolderAssigned()){
+                Object player = object.getHolder();
+                if(player instanceof MinecraftPlayer){
+                    return ((MinecraftPlayer) player).isConnected();
+                }
+            }
+            return true;
+        }
     }
 
     private static class PlayerAdapter implements Function<MinecraftPlayer, PermissionObject> {
