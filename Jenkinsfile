@@ -1,3 +1,5 @@
+#!groovy
+
 final String CI_NAME = "PretronicCI"
 final String CI_EMAIL = "ci@pretronic.net"
 final String COMMIT_MESSAGE = "Version change %version%"
@@ -117,7 +119,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: '120a9a64-81a7-4557-80bf-161e3ab8b976', variable: 'SECRET')]) {
-
+                        String qualifier = QUALIFIER;
 
 
                         httpRequest(acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON',
