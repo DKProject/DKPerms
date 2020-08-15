@@ -18,6 +18,7 @@ boolean SKIP = false
 String QUALIFIER = "UNDEFINDED"
 int BUILD_NUMBER = -1;
 
+
 pipeline {
     agent any
     tools {
