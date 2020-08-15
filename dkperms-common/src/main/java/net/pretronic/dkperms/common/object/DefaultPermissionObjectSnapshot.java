@@ -67,7 +67,7 @@ public class DefaultPermissionObjectSnapshot extends AbstractObservable<Permissi
 
     @Override
     public void setScope(PermissionScope scope0) {
-        Validate.notNull(scope);
+        Validate.notNull(scope0);
         PermissionScope scope = scope0;
         PermissionScope oldScope = this.scope;
 
