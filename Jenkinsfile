@@ -84,6 +84,7 @@ pipeline {
                 }
             }
         }
+
         stage('Publish javadoc') {
             when { equals expected: false, actual: SKIP }
             steps {
