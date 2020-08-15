@@ -53,9 +53,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependency version -->
-        <dependency.pretronic.libraries>1.2.16.154-SNAPSHOT</dependency.pretronic.libraries>
-        <dependency.mcnative.version>1.5.24.326-SNAPSHOT</dependency.mcnative.version>
-        <dependency.pretronic.databasequery>1.2.33.60-SNAPSHOT</dependency.pretronic.databasequery>
+        <dependency.pretronic.libraries>1.2.19.157-SNAPSHOT</dependency.pretronic.libraries>
+        <dependency.mcnative.version>1.5.29.331-SNAPSHOT</dependency.mcnative.version>
+        <dependency.pretronic.databasequery>1.2.41.68-SNAPSHOT</dependency.pretronic.databasequery>
 
         <dependency.hikaricp>3.4.1</dependency.hikaricp>
         <dependency.mariadb.driver>2.4.1</dependency.mariadb.driver>
