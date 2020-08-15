@@ -6,7 +6,7 @@ final String RESOURCE_ID = "edda82b3-344b-418a-a935-e507a1f9a9fc"
 final String BRANCH_DEVELOPMENT = "origin/development"
 final String BRANCH_BETA = "origin/beta"
 final String BRANCH_MASTER = "origin/master"
-final String PROJECT_SSH = "https://github.com/DevKrieger/DKPermsV2.git"
+final String PROJECT_SSH = "https://github.com/Pretronic/DKPerms.git"
 
 String PROJECT_NAME = "DKPerms"
 String VERSION = "UNDEFINED"
@@ -219,7 +219,6 @@ pipeline {
                             """
                         }
                     } else if (BRANCH == BRANCH_MASTER) {
-
                         String version = major + "." + minorVersion + "." + patchVersion + "." + BUILD_NUMBER
 
                         String commitMessage = COMMIT_MESSAGE.replace("%version%", version)
