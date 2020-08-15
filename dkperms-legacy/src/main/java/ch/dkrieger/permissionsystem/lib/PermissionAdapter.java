@@ -37,6 +37,7 @@ public class PermissionAdapter {
         this.groups = groups;
     }
 
+
     public String getName() {
         return name;
     }
