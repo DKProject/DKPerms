@@ -48,4 +48,5 @@ public class PermissionAdapter {
     public PermissionType getType() {
         return type;
     }
+
 }
