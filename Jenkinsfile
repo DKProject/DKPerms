@@ -6,7 +6,7 @@ final String RESOURCE_ID = "edda82b3-344b-418a-a935-e507a1f9a9fc"
 final String BRANCH_DEVELOPMENT = "origin/development"
 final String BRANCH_BETA = "origin/beta"
 final String BRANCH_MASTER = "origin/master"
-final String PROJECT_SSH = "https://github.com/Pretronic/DKPerms.git"
+final String PROJECT_SSH = "git@github.com:Pretronic/DKPerms.git"
 
 String PROJECT_NAME = "DKPerms"
 String VERSION = "UNDEFINED"
@@ -89,7 +89,7 @@ pipeline {
             steps {
                 script {
                     if(BRANCH == BRANCH_MASTER || BRANCH == BRANCH_BETA) {
-                        sh 'mvn javadoc:aggregate-jar -pl :DKPerms,:dkperms-api,:dkperms-api-minecraft'
+                        sh 'mvn javadoc:aggregate-jar -Dadditionalparam=-Xdoclint:none -DadditionalJOption=-Xdoclint:none -pl :DKPerms,:dkperms-api,:dkperms-api-minecraft'
                         withCredentials([string(credentialsId: '120a9a64-81a7-4557-80bf-161e3ab8b976', variable: 'SECRET')]) {
                             String name = env.JOB_NAME
 
@@ -117,10 +117,7 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId: '120a9a64-81a7-4557-80bf-161e3ab8b976', variable: 'SECRET')]) {
 
-                        //Temporary because project is in beta state
 
-                        String qualifier = QUALIFIER;
-                        if(qualifier == "BETA") qualifier = "RELEASE"
 
                         httpRequest(acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON',
                                 httpMode: 'POST', ignoreSslErrors: true,timeout: 3000,
