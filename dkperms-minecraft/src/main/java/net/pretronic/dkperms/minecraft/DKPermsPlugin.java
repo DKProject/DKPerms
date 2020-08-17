@@ -14,6 +14,7 @@ import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.object.PermissionHolderFactory;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
+import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.PermissionScopeManager;
 import net.pretronic.dkperms.common.DefaultDKPerms;
@@ -145,32 +146,6 @@ public class DKPermsPlugin extends MinecraftPlugin {
                         }
                     });
         }
-
-
-        /*
-        McNative.getInstance().getScheduler().createTask(this)
-                .interval(5,TimeUnit.SECONDS)
-                .delay(10,TimeUnit.SECONDS).execute(() -> {
-                    try {
-                        System.out.println("-----------------");
-
-                        long start = System.currentTimeMillis();
-                        ObjectSearchResult result = objectManager.search().withName("Dkrieger").execute();
-                        long end = System.currentTimeMillis()-start;
-
-                        System.out.println(end+"ms");
-
-                        System.out.println(" -> Result: ");
-                        for (PermissionObject object : result) {
-                            System.out.println(object.getName());
-                        }
-
-                        System.out.println("-----------------");
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                });
-         */
     }
 
     private void copyLegacyConfig(){
