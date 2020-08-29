@@ -47,6 +47,11 @@ public class ScopeGraph extends UnusedObservable<PermissionObject,SyncAction> im
     }
 
     private void traverse0(){
+        if(traversing){//Additional check
+            SystemUtil.sleepAsLong(sleeper);
+            return;
+        }
+
         try{
             traversing = true;
             result.add(start);
