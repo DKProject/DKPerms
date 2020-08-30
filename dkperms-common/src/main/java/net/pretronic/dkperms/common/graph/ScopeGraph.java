@@ -51,6 +51,7 @@ public class ScopeGraph extends UnusedObservable<PermissionObject,SyncAction> im
             SystemUtil.sleepAsLong(sleeper);
             return;
         }
+        System.out.println("Starting Traverse "+hashCode()+" | "+Thread.currentThread().getName());
 
         try{
             traversing = true;
@@ -73,6 +74,7 @@ public class ScopeGraph extends UnusedObservable<PermissionObject,SyncAction> im
                 }
             });
             traversing = false;
+            System.out.println("Finished Traverse "+hashCode()+" | "+Thread.currentThread().getName());
         }catch (Exception e){
             traversing = false;
             throw  e;
