@@ -49,6 +49,10 @@ public class DefaultObjectGraph extends AbstractObservable<PermissionObject, Syn
     }
 
     private void traverse0() {
+        if(traversing){//Additional check
+            SystemUtil.sleepAsLong(sleeper);
+            return;
+        }
         try{
             traversing = true;
             List<PermissionObject> blocked = new ArrayList<>();

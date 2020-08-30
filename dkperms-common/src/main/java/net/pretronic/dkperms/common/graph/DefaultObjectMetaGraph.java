@@ -58,6 +58,10 @@ public class DefaultObjectMetaGraph extends AbstractObservable<PermissionObject,
     }
 
     private void traverseInternal(){
+        if(traversing){//Additional check
+            SystemUtil.sleepAsLong(sleeper);
+            return;
+        }
         traversing = true;
         try{
             if(groups == null) traverseOne();
