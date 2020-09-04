@@ -49,6 +49,11 @@ public class DKPermsPermissionHandler implements PermissionHandler, ObserveCallb
     }
 
     @Override
+    public String getPrimaryGroup() {
+        return object.getCurrentSnapshot().getHighestGroup().getName();
+    }
+
+    @Override
     public Collection<String> getGroups() {
         return Iterators.map(object.getCurrentSnapshot().getEffectedGroupGraph(), PermissionObject::getName);
     }
