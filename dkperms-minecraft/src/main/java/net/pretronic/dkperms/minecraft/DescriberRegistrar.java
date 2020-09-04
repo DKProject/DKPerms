@@ -25,6 +25,9 @@ import net.pretronic.dkperms.minecraft.commands.TeamCommand;
 import net.pretronic.libraries.message.bml.variable.describer.VariableDescriber;
 import net.pretronic.libraries.message.bml.variable.describer.VariableDescriberRegistry;
 import org.mcnative.common.player.MinecraftPlayer;
+import org.mcnative.common.serviceprovider.message.ColoredString;
+
+import java.util.function.Function;
 
 public class DescriberRegistrar {
 
@@ -40,9 +43,11 @@ public class DescriberRegistrar {
         VariableDescriberRegistry.registerDescriber(DefaultObjectMetaEntry.class);
         VariableDescriberRegistry.registerDescriber(DefaultPermissionEntity.class);
         VariableDescriberRegistry.registerDescriber(DefaultPermissionObjectType.class);
-        VariableDescriberRegistry.registerDescriber(DKPermsPlayerDesign.class);
         VariableDescriberRegistry.registerDescriber(TeamCommand.TeamTree.class);
         VariableDescriberRegistry.registerDescriber(PermissionAnalyseResult.class);
+
+        VariableDescriber<DKPermsPlayerDesign> designDescriber = VariableDescriberRegistry.registerDescriber(DKPermsPlayerDesign.class);
+        ColoredString.makeDescriberColored(designDescriber);
     }
 
     private static void registerObject(){
@@ -50,7 +55,7 @@ public class DescriberRegistrar {
         objectDescriber.registerFunction("uniqueId", DefaultPermissionObject::getAssignmentId);
         objectDescriber.registerParameterFunction("property", (object, key) ->{
             ObjectMetaEntry entry =  object.getMeta().getHighest(key);
-            return entry != null ?entry.getValue() : "";
+            return entry != null ? new ColoredString(entry.getValue()) : "";
         });
 
         objectDescriber.registerParameterFunction("boolProperty", (object, key) ->{
@@ -72,7 +77,7 @@ public class DescriberRegistrar {
                 return object.getName();
             }else {
                 ObjectMetaEntry color = object.getMeta().getHighest("color");
-                return (color != null ? color.getValue() : "")+object.getName();
+                return new ColoredString((color != null ? color.getValue() : "")+object.getName());
             }
         });
     }
@@ -81,7 +86,7 @@ public class DescriberRegistrar {
         VariableDescriber<DefaultPermissionObjectSnapshot> snapshotDescriber = VariableDescriberRegistry.registerDescriber(DefaultPermissionObjectSnapshot.class);
         snapshotDescriber.registerParameterFunction("property", (snapshot, key) ->{
             ObjectMetaEntry entry = snapshot.getMeta(key);
-            return entry != null ?entry.getValue() : "";
+            return entry != null ? new ColoredString(entry.getValue()) : "";
         });
 
         snapshotDescriber.registerParameterFunction("boolProperty", (snapshot, key) ->{

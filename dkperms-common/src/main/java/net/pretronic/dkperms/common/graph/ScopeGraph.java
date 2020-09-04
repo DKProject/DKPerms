@@ -52,7 +52,6 @@ public class ScopeGraph extends UnusedObservable<PermissionObject,SyncAction> im
             return;
         }
         System.out.println("Starting Traverse "+hashCode()+" | "+Thread.currentThread().getName());
-
         try{
             traversing = true;
             result.add(start);
