@@ -10,6 +10,7 @@
 
 package net.pretronic.dkperms.minecraft;
 
+import net.pretronic.dkperms.api.object.BuiltInPermissionObjectType;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
@@ -45,6 +46,7 @@ public class DescriberRegistrar {
         VariableDescriberRegistry.registerDescriber(DefaultPermissionObjectType.class);
         VariableDescriberRegistry.registerDescriber(TeamCommand.TeamTree.class);
         VariableDescriberRegistry.registerDescriber(PermissionAnalyseResult.class);
+        VariableDescriberRegistry.registerDescriber(BuiltInPermissionObjectType.class);
 
         VariableDescriber<DKPermsPlayerDesign> designDescriber = VariableDescriberRegistry.registerDescriber(DKPermsPlayerDesign.class);
         ColoredString.makeDescriberColored(designDescriber);
@@ -73,7 +75,7 @@ public class DescriberRegistrar {
         objectDescriber.registerFunction("displayName", object -> {
             if(object.getType().equals(PermissionObjectType.USER_ACCOUNT)){
                 MinecraftPlayer player = object.getHolder(MinecraftPlayer.class);
-                if(player != null) return player.getDisplayName();
+                if(player != null) return new ColoredString(player.getDisplayName());
                 return object.getName();
             }else {
                 ObjectMetaEntry color = object.getMeta().getHighest("color");

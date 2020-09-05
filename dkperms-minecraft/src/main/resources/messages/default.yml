@@ -45,7 +45,7 @@ messages:
   dkperms.object.meta.tree.header: '${dkperms.prefix} &7Meta tree of {object.type} &e{object}'
   dkperms.object.meta.tree.scope: '{spaces}&8» &9{scope.key}&8=&9{scope.name} &8(&7{scope.level}&8)'
   dkperms.object.meta.tree.entry: '{spaces}  &8- &7{entry.key}&8: &e{entry.value}'
-  dkperms.object.meta.clear: '${dkperms.prefix} &7The meta of {object.type.name} &e{object.name} &7was cleared.
+  dkperms.object.meta.clear: '${dkperms.prefix} &7The meta of {object.type} &e{object.name} &7was cleared.
   &8» &7Scope&8: &e{scope}'
   dkperms.object.meta.check: '${dkperms.prefix} &7Checked meta &e{key} &7for &e{object.displayName}  @for("entry" in {entries},${dkperms.object.meta.check.loop},"\n","\n")
   &8» &7Result&8: &e{finalEntry.vale}'
@@ -75,7 +75,7 @@ messages:
   dkperms.object.permission.tree.header: '${dkperms.prefix} &7Permission tree of {object.type} &e{object}'
   dkperms.object.permission.tree.scope: '{spaces}&8» &9{scope.key}&8=&9{scope.name} &8(&7{scope.level}&8)'
   dkperms.object.permission.tree.entry: '{spaces}  &8- &7{entry.permission} &8(&e{entry.action}&8)'
-  dkperms.object.permission.clear: '${dkperms.prefix} &7The permissions of {object.type.name} &e{object.name} &7 were cleared.
+  dkperms.object.permission.clear: '${dkperms.prefix} &7The permissions of {object.type} &e{object.name} &7 were cleared.
   &8» &7Scope&8: &e{scope}'
   dkperms.object.permission.check: '${dkperms.prefix} &7Checked permission &e{permission} &7for &e{object.displayName}  @for("entity" in {result.entries},${dkperms.object.permission.check.loop},"\n","\n")
   &8» &7Result&8: &e{result.finalAction}'
@@ -89,7 +89,7 @@ messages:
    &8- &7group show <group> [scope]
    &8- &7group clear [scope]
    &8- &7group list [scope]
-   &8- &77group tree'
+   &8- &7group tree'
   dkperms.object.group.set: '${dkperms.prefix} &7The group of {object.type} &e{object} &7was set to&8: ${dkperms.object.group.info}'
   dkperms.object.group.add: '${dkperms.prefix} &7A group was added to {object.type} &e{object}&8: ${dkperms.object.group.info}'
   dkperms.object.group.info: '&8
@@ -101,7 +101,7 @@ messages:
   dkperms.object.group.remove: '${dkperms.prefix} &7A group was removed from {object.type} &e{object}&8: ${dkperms.object.group.info}'
   dkperms.object.group.show: '${dkperms.prefix} &7The group of {type} &e{object}&8: ${dkperms.object.group.info}'
   dkperms.object.group.notSet: '${dkperms.object.group.show}'
-  dkperms.object.group.clear: '${dkperms.prefix} &7The meta of {object.type.name} &e{object.name} &7was cleared.
+  dkperms.object.group.clear: '${dkperms.prefix} &7The meta of {object.type} &e{object.name} &7was cleared.
   &8» &7Scope&8: &e{scope}'
   dkperms.object.group.list: '${dkperms.prefix} &7Groups of {object.type} &e{object.name}
   &8» &7Scope&8: &e{scope} @for("entry" in {entries},${dkperms.object.group.list.loop},"\n","\n")'
@@ -211,8 +211,9 @@ messages:
   dkperms.rank.noPermissionForRank: '${dkperms.prefix} &cYou are not allowed to use the rank &e{group.name}'
   dkperms.rank.noPermissionForPlayer: '${dkperms.prefix} &cYou are not allowed to modify the rank of &{user.name}'
   dkperms.team: '${dkperms.prefix} &7Team members&8:
-  @for("group" in {groups},${dkperms.team.loop},"\n")'
-  dkperms.team.loop: '&8» {group.displayName} &8| &7{group.property.description} @for("member" in {group.members},${dkperms.team.loop.member},"\n","\n")\n'
+
+  @for("team" in {teamTree},${dkperms.team.loop},"\n")'
+  dkperms.team.loop: '&8» {team.group.displayName} &8| &7{team.group.property.description} @for("member" in {team.members},${dkperms.team.loop.member},"\n","\n")\n'
   dkperms.team.loop.member: ' &8- {member.displayName}'
   dkperms.synchronized: '${dkperms.prefix} &7Synchronized DKPerms on the local server'
 
