@@ -38,14 +38,6 @@ public class ScopeGraph extends UnusedObservable<PermissionObject,SyncAction> im
         this.start = start;
         this.end = end;
         this.result = new ArrayList<>();
-
-        System.out.println("Created new Scope Graph");
-        try{
-            throw new UnsupportedOperationException();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        System.out.println("----------------------------");
     }
 
     @Override
@@ -60,7 +52,6 @@ public class ScopeGraph extends UnusedObservable<PermissionObject,SyncAction> im
             SystemUtil.sleepAsLong(sleeper);
             return;
         }
-        System.out.println("Starting Traverse "+hashCode()+" | "+Thread.currentThread().getName());
         try{
             traversing = true;
             result.add(start);
@@ -82,7 +73,6 @@ public class ScopeGraph extends UnusedObservable<PermissionObject,SyncAction> im
                 }
             });
             traversing = false;
-            System.out.println("Finished Traverse "+hashCode()+" | "+Thread.currentThread().getName());
         }catch (Exception e){
             traversing = false;
             throw  e;
