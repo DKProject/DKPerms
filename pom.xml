@@ -54,7 +54,7 @@
 
         <!-- Dependency version -->
         <dependency.pretronic.libraries>1.2.21.159-SNAPSHOT</dependency.pretronic.libraries>
-        <dependency.mcnative.version>1.6.24.374-SNAPSHOT</dependency.mcnative.version>
+        <dependency.mcnative.version>1.6.28.378-SNAPSHOT</dependency.mcnative.version>
         <dependency.pretronic.databasequery>1.2.42.69-SNAPSHOT</dependency.pretronic.databasequery>
 
         <dependency.hikaricp>3.4.1</dependency.hikaricp>
