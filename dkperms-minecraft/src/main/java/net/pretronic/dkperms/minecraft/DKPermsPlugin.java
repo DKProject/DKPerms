@@ -54,6 +54,7 @@ import org.mcnative.common.plugin.MinecraftPlugin;
 import org.mcnative.common.plugin.configuration.Configuration;
 import org.mcnative.common.serviceprovider.permission.PermissionProvider;
 import org.mcnative.common.serviceprovider.placeholder.PlaceholderProvider;
+import org.mcnative.licensing.ReportingService;
 import org.mcnative.licensing.exceptions.CloudNotCheckoutLicenseException;
 import org.mcnative.licensing.exceptions.LicenseNotValidException;
 import org.mcnative.licensing.platform.McNativeIntegration;
@@ -85,10 +86,11 @@ public class DKPermsPlugin extends MinecraftPlugin {
             getLogger().error("-> Invalid license");
             getLogger().error("-> Error: "+e.getMessage());
             getLogger().error("--------------------------------");
-            getLogger().info("DKPerms is is shutting down");
+            getLogger().info("DKPerms is shutting down");
             getLoader().shutdown();
             return;
         }
+        McNativeIntegration.startReportingService(this,RESOURCE_ID);
 
         copyLegacyConfig();
 
