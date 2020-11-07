@@ -54,9 +54,8 @@ public class TeamCommand extends BasicCommand {
             }
             lastSynchronised = System.currentTimeMillis();
         }
-        Collection<PermissionObject> result = DKPerms.getInstance().getObjectManager().search()
-                .hasMeta("team", DKPermsConfig.OBJECT_GROUP_SCOPE).directLoading().execute().getAll();
-        sender.sendMessage(Messages.TEAM, VariableSet.create().addDescribed("groups",result));
+        sender.sendMessage(Messages.TEAM, VariableSet.create()
+                .addDescribed("teamTree",cached));
     }
 
     public static class TeamTree {

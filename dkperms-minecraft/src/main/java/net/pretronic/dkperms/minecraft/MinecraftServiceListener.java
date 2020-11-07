@@ -51,5 +51,4 @@ public class MinecraftServiceListener {
             permissionObject.checkDefaultGroupAssignment(result,permissionObject.getCurrentSnapshot().getScopeRange());
         }
     }
-
 }

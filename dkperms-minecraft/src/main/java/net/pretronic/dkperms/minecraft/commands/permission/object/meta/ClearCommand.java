@@ -34,7 +34,7 @@ public class ClearCommand extends ObjectCommand<PermissionObject> {
         object.getMeta().clear(CommandUtil.getExecutor(sender),scope);
 
         VariableSet variables = VariableSet.create();
-        variables.addDescribed("object",object);
+        variables.addDescribed("object",object).addDescribed("scope",scope);
         sender.sendMessage(Messages.OBJECT_META_CLEAR,variables);
     }
 }

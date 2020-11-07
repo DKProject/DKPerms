@@ -65,6 +65,10 @@ public final class DefaultParentGraph extends AbstractObservable<PermissionObjec
     }
 
     private void traverseInternal(){
+        if(traversing){//Additional check
+            SystemUtil.sleepAsLong(sleeper);
+            return;
+        }
         traversing = true;
         try{
             traverse0();
@@ -76,6 +80,8 @@ public final class DefaultParentGraph extends AbstractObservable<PermissionObjec
     }
 
     private void traverse0(){
+
+
         findNextGroups(owner,1);
 
         for (PermissionObject defaultGroup : DKPerms.getInstance().getObjectManager().getDefaultGroups(scopes)) {
