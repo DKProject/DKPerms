@@ -32,6 +32,7 @@ import net.pretronic.libraries.utility.Validate;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
@@ -62,6 +63,10 @@ public class DefaultPermissionGraph extends AbstractObservable<PermissionObject,
     }
 
     private void traverseInternal(){
+        if(traversing){//Additional check
+            SystemUtil.sleepAsLong(sleeper);
+            return;
+        }
         traversing = true;
         try{
             if(groups == null) traverseOne();

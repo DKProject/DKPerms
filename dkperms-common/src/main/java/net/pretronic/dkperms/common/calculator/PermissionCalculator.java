@@ -11,8 +11,6 @@
 package net.pretronic.dkperms.common.calculator;
 
 import net.pretronic.dkperms.api.entity.PermissionEntity;
-import net.pretronic.dkperms.api.event.object.DKPermsPermissionObjectDeleteEvent;
-import net.pretronic.dkperms.api.event.permission.DKPermsPermissionCalculationEvent;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.libraries.utility.Iterators;
@@ -58,16 +56,21 @@ public class PermissionCalculator {
     }
 
     public static boolean compare(String[] nodes1, String[] nodes2){
-        if(nodes1.length <= nodes2.length){
-            for (int i = 0; i < nodes2.length; i++) {
+        if(nodes1.length == nodes2.length){
+            for (int i = 0; i < nodes1.length; i++) {
                 if(nodes1[i].equals(ALL)) return true;
-                else{
-                    if(!nodes1[i].equalsIgnoreCase(nodes2[i])){
-                        return false;
-                    }
+                else if(!nodes1[i].equalsIgnoreCase(nodes2[i])){
+                    return false;
                 }
             }
             return true;
+        }else if(nodes1.length < nodes2.length){
+            for (int i = 0; i < nodes1.length; i++) {
+                if(nodes1[i].equals(ALL)) return true;
+                else if(!nodes1[i].equalsIgnoreCase(nodes2[i])){
+                    return false;
+                }
+            }
         }
         return false;
     }

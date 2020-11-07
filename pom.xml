@@ -17,7 +17,7 @@
     <groupId>net.pretronic.dkperms</groupId>
     <artifactId>DKPerms</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.82.117-BETA</version>
+    <version>1.2.17.141-SNAPSHOT</version>
 
     <modules>
         <module>dkperms-api</module>
@@ -53,9 +53,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependency version -->
-        <dependency.pretronic.libraries>1.2.19.157-SNAPSHOT</dependency.pretronic.libraries>
-        <dependency.mcnative.version>1.6.0.347-SNAPSHOT</dependency.mcnative.version>
-        <dependency.pretronic.databasequery>1.2.41.68-SNAPSHOT</dependency.pretronic.databasequery>
+        <dependency.pretronic.libraries>1.2.24.162-SNAPSHOT</dependency.pretronic.libraries>
+        <dependency.mcnative.version>1.6.48.404-SNAPSHOT</dependency.mcnative.version>
+        <dependency.pretronic.databasequery>1.2.43.70-SNAPSHOT</dependency.pretronic.databasequery>
 
         <dependency.hikaricp>3.4.1</dependency.hikaricp>
         <dependency.mariadb.driver>2.4.1</dependency.mariadb.driver>

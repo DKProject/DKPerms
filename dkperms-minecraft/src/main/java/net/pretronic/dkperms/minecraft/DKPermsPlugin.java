@@ -51,8 +51,13 @@ import org.mcnative.common.McNative;
 import org.mcnative.common.event.player.login.MinecraftPlayerLoginEvent;
 import org.mcnative.common.player.MinecraftPlayer;
 import org.mcnative.common.plugin.MinecraftPlugin;
+import org.mcnative.common.plugin.configuration.Configuration;
 import org.mcnative.common.serviceprovider.permission.PermissionProvider;
 import org.mcnative.common.serviceprovider.placeholder.PlaceholderProvider;
+import org.mcnative.licensing.ReportingService;
+import org.mcnative.licensing.exceptions.CloudNotCheckoutLicenseException;
+import org.mcnative.licensing.exceptions.LicenseNotValidException;
+import org.mcnative.licensing.platform.McNativeIntegration;
 
 import java.io.File;
 import java.time.Duration;
@@ -62,12 +67,34 @@ import java.util.function.Predicate;
 
 public class DKPermsPlugin extends MinecraftPlugin {
 
-    @Lifecycle(state = LifecycleState.BOOTSTRAP)
-    public void onBootstrap(LifecycleState state){
+    public static String RESOURCE_ID ="19303be6-0b2d-11eb-9f43-0242ac180002";
+    public static String PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnnSPzyd1FIBtozSjgibJ4ne7uKuJgK/3FN3yQAWGfnlahInKDUdY+eg0aaQGMsc8onJMiVFpsAfIImhdhnRFPwMXQXHTOYKhsYbAz8fNhcZP9O+FFgpBMyLHUMq6deD3l1skp2h9vYPCHG5D04VHiL/v8a20RProUxfxbW4ym4ZBspUM/wEKiWy37P4mavNZtfzpKg+pslINjiQZEcrD+UMXGP0kDQLJ6r8NPRwZiTNWNsQ1JeXaGVd2YaOcd0IR7gwA5DEzjBi+1DlHV8d8cJ7m19k12NY7hxSwRGKPRRiMW5GhWBXI87lRnY4cAWdMKE4X/lAVa0PPltUxf6o0RQIDAQAB";
+
+    @Lifecycle(state = LifecycleState.LOAD)
+    public void onLoad(LifecycleState state){
+        Configuration config = getConfiguration();
+        internalBootstrap(config);
+    }
+
+    private void internalBootstrap(Configuration config){
         getLogger().info("DKPerms is starting, please wait..");
+
+        try{
+            McNativeIntegration.verifyOrCheckout(this,RESOURCE_ID,PUBLIC_KEY);
+        }catch (LicenseNotValidException | CloudNotCheckoutLicenseException e){
+            getLogger().error("--------------------------------");
+            getLogger().error("-> Invalid license");
+            getLogger().error("-> Error: "+e.getMessage());
+            getLogger().error("--------------------------------");
+            getLogger().info("DKPerms is shutting down");
+            getLoader().shutdown();
+            return;
+        }
+        McNativeIntegration.startReportingService(this,RESOURCE_ID);
+
         copyLegacyConfig();
 
-        getConfiguration().load(DKPermsConfig.class);
+        config.load(DKPermsConfig.class);
 
         PluginVersion version = getDescription().getVersion();
 
@@ -140,39 +167,6 @@ public class DKPermsPlugin extends MinecraftPlugin {
                         }
                     });
         }
-
-
-        /*
-        McNative.getInstance().getScheduler().createTask(this)
-                .interval(5,TimeUnit.SECONDS)
-                .delay(10,TimeUnit.SECONDS).execute(() -> {
-                    try {
-                        System.out.println("-----------------");
-
-                        long start = System.currentTimeMillis();
-                        ObjectSearchResult result = objectManager.search().withName("Dkrieger").execute();
-                        long end = System.currentTimeMillis()-start;
-
-                        System.out.println(end+"ms");
-
-                        System.out.println(" -> Result: ");
-                        for (PermissionObject object : result) {
-                            System.out.println(object.getName());
-                        }
-
-                        System.out.println("-----------------");
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                });
-         */
-    }
-
-    @Lifecycle(state = LifecycleState.SHUTDOWN)
-    public void onShutdown(LifecycleState state){
-        getLogger().info("DKPerms is shutting down, please wait..");
-        DKPerms.setInstance(null);
-        getLogger().info("DKPerms successfully shutted down");
     }
 
     private void copyLegacyConfig(){

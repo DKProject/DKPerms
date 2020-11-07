@@ -15,7 +15,7 @@
     <parent>
         <artifactId>DKPerms</artifactId>
         <groupId>net.pretronic.dkperms</groupId>
-        <version>1.1.82.117-BETA</version>
+        <version>1.2.17.141-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -51,13 +51,13 @@
 
                     <manifest>
                         <name>DKPerms</name>
-                        <id>edda82b3-344b-418a-a935-e507a1f9a9fc</id>
+                        <id>19303be6-0b2d-11eb-9f43-0242ac180002</id>
                         <category>Network Management</category>
                         <version>${project.version}</version>
                         <main>net.pretronic.dkperms.minecraft.DKPermsPlugin</main>
                         <website>https://pretronic.net</website>
                         <author>Davide Wietlisbach</author>
-                        <messageModule>DKPerms</messageModule>
+                        <messageModule>Pretronic</messageModule>
                     </manifest>
 
                     <loader>
@@ -91,6 +91,44 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
+
+            <!--
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>2.0.8</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals><goal>proguard</goal></goals>
+                        <configuration>
+                            <injar>dkperms-minecraft-1.2.13.134-SNAPSHOT.jar</injar>
+                            <proguardVersion>5.3.3</proguardVersion>
+                            <options>
+                                <option>-allowaccessmodification</option>
+                                <option>-mergeinterfacesaggressively</option>
+                                <option>-dontoptimize</option>
+                                <option>-overloadaggressively</option>
+                                <option>-adaptresourcefilecontents</option>
+                                <option>-adaptclassstrings</option>
+                                <option>-dontshrink</option>
+                                <option>-dontnote</option>
+                                <option>-dontwarn</option>
+                                <option>-keepattributes Signature</option>
+                                <option>-repackageclasses net.pretronic.dkperms</option>
+                                <option>-keep class net.pretronic.dkperms.api.** { *; }</option>
+                                <option>-keep class net.pretronic.dkperms.loader.** { *; }</option>
+                                <option>-keep class ch.dkrieger.permissionsystem.lib.** { *; }</option>
+                                <option>-forceprocessing</option>
+                            </options>
+                            <libs>
+                                <lib>C:/Program Files/Java/jre1.8.0_201/lib/rt.jar</lib>
+                            </libs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        -->
         </plugins>
     </build>
 
@@ -142,6 +180,13 @@
             <artifactId>mcnative-service</artifactId>
             <version>${dependency.mcnative.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mcnative</groupId>
+            <artifactId>mcnative-licensing</artifactId>
+            <version>${dependency.mcnative.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>

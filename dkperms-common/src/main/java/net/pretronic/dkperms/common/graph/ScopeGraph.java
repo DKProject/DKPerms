@@ -14,6 +14,7 @@ import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.SyncAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
+import net.pretronic.libraries.logging.format.FormatHelper;
 import net.pretronic.libraries.synchronisation.observer.UnusedObservable;
 import net.pretronic.libraries.utility.SystemUtil;
 
@@ -47,6 +48,10 @@ public class ScopeGraph extends UnusedObservable<PermissionObject,SyncAction> im
     }
 
     private void traverse0(){
+        if(traversing){//Additional check
+            SystemUtil.sleepAsLong(sleeper);
+            return;
+        }
         try{
             traversing = true;
             result.add(start);
