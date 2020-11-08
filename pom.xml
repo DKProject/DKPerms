@@ -70,5 +70,4 @@
         <!-- Test dependencies -->
         <test.junit.jupiter>5.5.2</test.junit.jupiter>
     </properties>
-
 </project>
