@@ -43,6 +43,7 @@ public class TeamCommand extends BasicCommand {
             cached.clear();
             Collection<PermissionObject> result = DKPerms.getInstance().getObjectManager().search()
                     .hasMeta("team", DKPermsConfig.OBJECT_GROUP_SCOPE).directLoading().execute().getAll();
+            System.out.println("Loaded groups with team"+result.size());
             for (PermissionObject object : result) {
                 TeamTree team = new TeamTree(object,new ArrayList<>());
                 cached.add(team);
