@@ -57,7 +57,7 @@
                         <main>net.pretronic.dkperms.minecraft.DKPermsPlugin</main>
                         <website>https://pretronic.net</website>
                         <author>Davide Wietlisbach</author>
-                        <messageModule>Pretronic</messageModule>
+                        <messageModule>DKPerms</messageModule>
                     </manifest>
 
                     <loader>
