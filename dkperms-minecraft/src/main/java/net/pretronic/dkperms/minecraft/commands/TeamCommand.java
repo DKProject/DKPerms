@@ -39,11 +39,15 @@ public class TeamCommand extends BasicCommand {
 
     @Override
     public void execute(CommandSender sender, String[] arguments) {
+        System.out.println("Executing team command -----------");
+        System.out.println("Cache: "+cached.isEmpty());
+        System.out.println("Sync: "+(lastSynchronised+syncDelay < System.currentTimeMillis()));
         if(cached.isEmpty() || lastSynchronised+syncDelay < System.currentTimeMillis()){
             cached.clear();
+            System.out.println("loading data");
             Collection<PermissionObject> result = DKPerms.getInstance().getObjectManager().search()
                     .hasMeta("team", DKPermsConfig.OBJECT_GROUP_SCOPE).directLoading().execute().getAll();
-            System.out.println("Loaded groups with team"+result.size());
+            System.out.println("Loaded groups with team "+result.size());
             for (PermissionObject object : result) {
                 TeamTree team = new TeamTree(object,new ArrayList<>());
                 cached.add(team);

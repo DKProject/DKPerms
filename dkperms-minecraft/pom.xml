@@ -56,7 +56,7 @@
                         <version>${project.version}</version>
                         <main>net.pretronic.dkperms.minecraft.DKPermsPlugin</main>
                         <website>https://pretronic.net</website>
-                        <author>Davide Wietlisbach</author>
+                        <author>Pretronic</author>
                         <messageModule>DKPerms</messageModule>
                     </manifest>
 
