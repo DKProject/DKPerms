@@ -13,6 +13,8 @@ package net.pretronic.dkperms.minecraft.commands;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
+import net.pretronic.dkperms.api.object.search.sort.SortColumn;
+import net.pretronic.dkperms.api.object.search.sort.SortOrder;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.BasicCommand;
@@ -42,7 +44,9 @@ public class TeamCommand extends BasicCommand {
         if(cached.isEmpty() || lastSynchronised+syncDelay < System.currentTimeMillis()){
             cached.clear();
             Collection<PermissionObject> result = DKPerms.getInstance().getObjectManager().search()
-                    .hasMeta("team",true, DKPermsConfig.OBJECT_GROUP_SCOPE).directLoading().execute().getAll();
+                    .hasMeta("team",true, DKPermsConfig.OBJECT_GROUP_SCOPE)
+                    .sortBy(SortColumn.PRIORITY, SortOrder.ASC)
+                    .directLoading().execute().getAll();
             for (PermissionObject object : result) {
                 TeamTree team = new TeamTree(object,new ArrayList<>());
                 cached.add(team);
