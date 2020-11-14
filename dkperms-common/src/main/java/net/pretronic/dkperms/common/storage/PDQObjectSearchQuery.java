@@ -215,6 +215,7 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
         if(cached != null) return cached;
         if(directLoading){
             QueryResult result = query.execute();
+            System.out.println("Query Result: "+result.size());
             if(result.isEmpty()){
                 return new DirectObjectSearchResult(this, Collections.emptyList());
             }
