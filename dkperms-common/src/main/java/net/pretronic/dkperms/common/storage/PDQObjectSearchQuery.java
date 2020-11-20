@@ -192,11 +192,11 @@ public class PDQObjectSearchQuery implements ObjectSearchQuery {
         SearchOrder order = order0 == SortOrder.ASC ? SearchOrder.ASC : SearchOrder.DESC;
 
         if(column.equals(SortColumn.NAME)){
-            query.orderBy("Name",order);
+            query.orderBy(objectCollection.getName()+".Name",order);
         }else if(column.equals(SortColumn.ID)){
-            query.orderBy("Id",order);
+            query.orderBy(objectCollection.getName()+".Id",order);
         }else if(column.equals(SortColumn.PRIORITY)){
-            query.orderBy("Priority",order);
+            query.orderBy(objectCollection.getName()+".Priority",order);
         }else throw new IllegalArgumentException("Invalid order column");
         return this;
     }
