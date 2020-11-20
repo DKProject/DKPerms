@@ -28,8 +28,6 @@ import net.pretronic.libraries.message.bml.variable.describer.VariableDescriberR
 import org.mcnative.common.player.MinecraftPlayer;
 import org.mcnative.common.serviceprovider.message.ColoredString;
 
-import java.util.function.Function;
-
 public class DescriberRegistrar {
 
     public static void register(){
@@ -47,6 +45,7 @@ public class DescriberRegistrar {
         VariableDescriberRegistry.registerDescriber(TeamCommand.TeamTree.class);
         VariableDescriberRegistry.registerDescriber(PermissionAnalyseResult.class);
         VariableDescriberRegistry.registerDescriber(BuiltInPermissionObjectType.class);
+        VariableDescriberRegistry.registerDescriber(DKPermsPlayerDesign.class);
 
         VariableDescriber<DKPermsPlayerDesign> designDescriber = VariableDescriberRegistry.registerDescriber(DKPermsPlayerDesign.class);
         ColoredString.makeDescriberColored(designDescriber);

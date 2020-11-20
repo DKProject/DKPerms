@@ -15,7 +15,7 @@
     <parent>
         <artifactId>DKPerms</artifactId>
         <groupId>net.pretronic.dkperms</groupId>
-        <version>1.3.0.146-BETA</version>
+        <version>1.4.5.152-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -56,8 +56,8 @@
                         <version>${project.version}</version>
                         <main>net.pretronic.dkperms.minecraft.DKPermsPlugin</main>
                         <website>https://pretronic.net</website>
-                        <author>Davide Wietlisbach</author>
-                        <messageModule>Pretronic</messageModule>
+                        <author>Pretronic</author>
+                        <messageModule>DKPerms</messageModule>
                     </manifest>
 
                     <loader>
