@@ -52,17 +52,12 @@
                     <manifest>
                         <name>DKPerms</name>
                         <id>19303be6-0b2d-11eb-9f43-0242ac180002</id>
-                        <category>Network Management</category>
                         <version>${project.version}</version>
                         <main>net.pretronic.dkperms.minecraft.DKPermsPlugin</main>
                         <website>https://pretronic.net</website>
                         <author>Pretronic</author>
                         <messageModule>DKPerms</messageModule>
                     </manifest>
-
-                    <loader>
-                        <version>${project.version}</version>
-                    </loader>
                 </configuration>
             </plugin>
 
