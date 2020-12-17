@@ -22,7 +22,7 @@ import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 public class MetaCommand extends MainObjectCommand<PermissionObject> implements DefinedNotFindable<PermissionObject> {
 
     public MetaCommand(ObjectOwner owner) {
-        super(owner, CommandConfiguration.name("meta","properties","p","m"));
+        super(owner, CommandConfiguration.name("meta","properties","m"));
 
         registerCommand(new SetCommand(owner));
         registerCommand(new UnsetCommand(owner));

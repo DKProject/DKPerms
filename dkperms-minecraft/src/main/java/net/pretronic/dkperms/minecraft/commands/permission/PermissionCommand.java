@@ -10,6 +10,10 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission;
 
+import net.pretronic.dkperms.minecraft.commands.AnalyseCommand;
+import net.pretronic.dkperms.minecraft.commands.InfoCommand;
+import net.pretronic.dkperms.minecraft.commands.MigrationCommand;
+import net.pretronic.dkperms.minecraft.commands.SyncCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.group.GroupMainCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.group.ListCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.track.TrackMainCommand;
