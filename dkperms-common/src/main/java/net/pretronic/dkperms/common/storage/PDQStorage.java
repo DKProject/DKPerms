@@ -76,21 +76,21 @@ public class PDQStorage implements DKPermsStorage {
     }
 
     private void createTables(){
-        DatabaseCollection scope = database.createCollection("DKPerms_Scope")
+        DatabaseCollection scope = database.createCollection("dkperms_scope")
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL,FieldOption.INDEX)
                 .field("ParentId",DataType.INTEGER, ForeignKey.of(database.getName(),"DKPerms_Scope","Id", ForeignKey.Option.CASCADE),FieldOption.INDEX)
                 .field("Key",DataType.STRING,64,FieldOption.NOT_NULL)
                 .field("Name",DataType.STRING,64,FieldOption.NOT_NULL)
                 .create();
 
-        DatabaseCollection object_type = database.createCollection("DKPerms_Object_Type")
+        DatabaseCollection object_type = database.createCollection("dkperms_object_type")
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
                 .field("Name",DataType.STRING,64,FieldOption.NOT_NULL,FieldOption.UNIQUE)
                 .field("DisplayName",DataType.STRING,64,FieldOption.NOT_NULL)
                 .field("IsParentAble",DataType.BOOLEAN,FieldOption.NOT_NULL)
                 .create();
 
-        DatabaseCollection object = database.createCollection("DKPerms_Object")//@Todo check inconsistent with displayName and description
+        DatabaseCollection object = database.createCollection("dkperms_object")//@Todo check inconsistent with displayName and description
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL,FieldOption.INDEX)
                 .field("AssignmentId", DataType.UUID,FieldOption.INDEX)
                 .field("Name",DataType.STRING,64,FieldOption.NOT_NULL,FieldOption.INDEX)
@@ -101,7 +101,7 @@ public class PDQStorage implements DKPermsStorage {
                 .field("DisplayName",DataType.STRING,64,FieldOption.NOT_NULL)
                 .create();
 
-        DatabaseCollection object_meta = database.createCollection("DKPerms_Object_Meta")
+        DatabaseCollection object_meta = database.createCollection("dkperms_object_meta")
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
                 .field("ObjectId",DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
                 .field("ScopeId",DataType.INTEGER,ForeignKey.of(scope,"Id"),FieldOption.NOT_NULL)
@@ -111,7 +111,7 @@ public class PDQStorage implements DKPermsStorage {
                 .field("Timeout",DataType.LONG,FieldOption.NOT_NULL)
                 .create();
 
-        DatabaseCollection object_groups = database.createCollection("DKPerms_Object_Parents")
+        DatabaseCollection object_groups = database.createCollection("dkperms_object_parents")
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
                 .field("ObjectId",DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
                 .field("ScopeId",DataType.INTEGER,ForeignKey.of(scope,"Id"),FieldOption.NOT_NULL)
@@ -120,7 +120,7 @@ public class PDQStorage implements DKPermsStorage {
                 .field("Timeout",DataType.LONG,FieldOption.NOT_NULL)
                 .create();
 
-        DatabaseCollection object_permissions = database.createCollection("DKPerms_Object_Permissions")
+        DatabaseCollection object_permissions = database.createCollection("dkperms_object_permissions")
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
                 .field("ObjectId",DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
                 .field("ScopeId",DataType.INTEGER,ForeignKey.of(scope,"Id"),FieldOption.NOT_NULL)
@@ -129,7 +129,7 @@ public class PDQStorage implements DKPermsStorage {
                 .field("Timeout",DataType.LONG,FieldOption.NOT_NULL)
                 .create();
 
-        DatabaseCollection auditLog = database.createCollection("DKPerms_AuditLog")
+        DatabaseCollection auditLog = database.createCollection("dkperms_auditLog")
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
                 .field("Time",DataType.INTEGER,FieldOption.NOT_NULL)
                 .field("ExecutorId", DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
@@ -143,13 +143,13 @@ public class PDQStorage implements DKPermsStorage {
                 .field("Data",DataType.STRING,1024,FieldOption.NOT_NULL)
                 .create();
 
-        DatabaseCollection track = database.createCollection("DKPerms_Track")
+        DatabaseCollection track = database.createCollection("dkperms_track")
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
                 .field("Name",DataType.STRING,FieldOption.NOT_NULL)
                 .field("ScopeId",DataType.INTEGER,ForeignKey.of(scope,"Id"),FieldOption.NOT_NULL)
                 .create();
 
-        DatabaseCollection track_assignments = database.createCollection("DKPerms_Track_Assignments")
+        DatabaseCollection track_assignments = database.createCollection("dkperms_track_assignments")
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
                 .field("TrackId",DataType.INTEGER,ForeignKey.of(track,"Id"),FieldOption.NOT_NULL)
                 .field("ObjectId",DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
