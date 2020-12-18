@@ -87,6 +87,9 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         this.meta = new DefaultObjectMeta(this);
         this.groupCache = new GroupCache(this);
         this.permissionCache = new PermissionCache(this);
+
+
+        System.out.println("Created object for "+getName()+" ("+System.identityHashCode(this)+")");
     }
 
     @Override
@@ -570,6 +573,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     @Override
     public void onUpdate(Document data) {
         SyncAction action = SyncAction.of(data.getInt("action"));
+        System.out.println("[DKP-DEBUG] "+getName()+" | Received update "+action);
         if(action != null) {
            if(action == SyncAction.OBJECT_NAME_UPDATE){
                this.name = data.getString("name");
