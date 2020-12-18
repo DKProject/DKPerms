@@ -174,6 +174,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         Validate.notNull(executor,scope);
         DKPerms.getInstance().getStorage().getObjectStorage().updateObjectScope(this.id,scope);
         executeSynchronisationUpdate(SyncAction.OBJECT_SCOPE_UPDATE,Document.newDocument().set("scope",scope.getId()));
+        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.OBJECT, LogAction.UPDATE,id,id,"Scope",this.scope.getId(),scope.getId(),this);
         this.scope = scope;
     }
 

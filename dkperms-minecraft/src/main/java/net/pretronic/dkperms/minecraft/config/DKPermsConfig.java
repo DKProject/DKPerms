@@ -60,7 +60,8 @@ public class DKPermsConfig {
 
     //Security Configuration
 
-    public static boolean SECURITY_COMMANDS_ENABLED = McNative.getInstance().getPlatform().isProxy() || !McNative.getInstance().isNetworkAvailable();
+    public static boolean SECURITY_LOGGING_ENABLED = true;
+    public static boolean SECURITY_COMMANDS_ENABLED = true;
     public static boolean SECURITY_OPERATOR_ENABLED = false;
     public static boolean SECURITY_RESTRICTED_ENABLED = false;
     public static Collection<String> SECURITY_RESTRICTED_USERS = Arrays.asList("Dkrieger","cb7f0812-1fbb-4715-976e-a81e52be4b67");

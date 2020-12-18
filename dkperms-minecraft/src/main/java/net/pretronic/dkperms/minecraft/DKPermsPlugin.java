@@ -103,7 +103,7 @@ public class DKPermsPlugin extends MinecraftPlugin {
                 ,version.getBuild(),getLogger()
                 ,new DefaultMigrationAssistant()
                 ,new PDQStorage(getDatabaseOrCreate())
-                ,new DefaultAuditLog(false)
+                ,new DefaultAuditLog(DKPermsConfig.SECURITY_LOGGING_ENABLED)
                 ,scopeManager
                 ,objectManager
                 ,new MinecraftFormatter()
@@ -229,6 +229,7 @@ public class DKPermsPlugin extends MinecraftPlugin {
     }
 
     private void registerCommands(){
+        if(!DKPermsConfig.SECURITY_COMMANDS_ENABLED) return;
         getRuntime().getLocal().getCommandManager().registerCommand(new PermissionCommand(this,DKPermsConfig.COMMAND_PERMISSION));
         getRuntime().getLocal().getCommandManager().registerCommand(new RankCommand(this,DKPermsConfig.COMMAND_RANK));
         getRuntime().getLocal().getCommandManager().registerCommand(new TeamCommand(this,DKPermsConfig.COMMAND_TEAM));
