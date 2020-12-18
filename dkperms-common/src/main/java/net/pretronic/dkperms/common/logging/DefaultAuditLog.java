@@ -53,12 +53,17 @@ public class DefaultAuditLog implements AuditLog {
     @Override
     public void createRecord(PermissionObject executor, LogType type, LogAction action, int owner, int key, String field, Object oldValue, Object newValue, Object data) {
         if(enabled){
-            DKPerms.getInstance().getStorage().getAuditLogStorage()
-                    .createRecord(System.currentTimeMillis()
-                            ,executor.getId(),type,action,owner,key,field
-                            ,oldValue != null ? oldValue.toString() : null
-                            ,newValue != null ? newValue.toString() : null
-                            ,data != null ? data.toString() : null);
+            try{
+                DKPerms.getInstance().getStorage().getAuditLogStorage()
+                        .createRecord(System.currentTimeMillis()
+                                ,executor.getId(),type,action,owner,key,field
+                                ,oldValue != null ? oldValue.toString() : null
+                                ,newValue != null ? newValue.toString() : null
+                                ,data != null ? data.toString() : null);
+            }catch (Exception e){
+                System.out.println("Audit error:");
+                e.printStackTrace();
+            }
         }
     }
 
