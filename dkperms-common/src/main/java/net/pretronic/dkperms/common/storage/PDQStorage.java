@@ -78,7 +78,7 @@ public class PDQStorage implements DKPermsStorage {
     private void createTables(){
         DatabaseCollection scope = database.createCollection("dkperms_scope")
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL,FieldOption.INDEX)
-                .field("ParentId",DataType.INTEGER, ForeignKey.of(database.getName(),"DKPerms_Scope","Id", ForeignKey.Option.CASCADE),FieldOption.INDEX)
+                .field("ParentId",DataType.INTEGER, ForeignKey.of(database.getName(),"dkperms_scope","Id", ForeignKey.Option.CASCADE),FieldOption.INDEX)
                 .field("Key",DataType.STRING,64,FieldOption.NOT_NULL)
                 .field("Name",DataType.STRING,64,FieldOption.NOT_NULL)
                 .create();
