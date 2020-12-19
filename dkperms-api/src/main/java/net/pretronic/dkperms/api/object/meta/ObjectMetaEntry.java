@@ -11,13 +11,14 @@
 package net.pretronic.dkperms.api.object.meta;
 
 import net.pretronic.dkperms.api.TimeoutAble;
+import net.pretronic.dkperms.api.logging.Loggable;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.libraries.document.Document;
 
 import java.util.concurrent.CompletableFuture;
 
-public interface ObjectMetaEntry extends TimeoutAble {
+public interface ObjectMetaEntry extends TimeoutAble, Loggable {
 
     int getId();
 

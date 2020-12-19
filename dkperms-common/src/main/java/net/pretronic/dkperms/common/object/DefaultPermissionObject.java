@@ -112,7 +112,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         Validate.notNull(executor,name);
         DKPerms.getInstance().getStorage().getObjectStorage().updateObjectName(this.id,name);
         executeSynchronisationUpdate(SyncAction.OBJECT_NAME_UPDATE,Document.newDocument().set("name",name));
-        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.OBJECT, LogAction.UPDATE,id,id,"Name",this.name,name,this);
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.OBJECT,this,this,"Name",this.name,name);
         this.name = name;
     }
 
@@ -131,7 +131,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         Validate.notNull(executor,type);
         DKPerms.getInstance().getStorage().getObjectStorage().updateObjectType(this.id,type);
         executeSynchronisationUpdate(SyncAction.OBJECT_TYPE_UPDATE,Document.newDocument().set("type",type.getId()));
-        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.OBJECT, LogAction.UPDATE,id,id,"Type",this.type.getId(),type.getId(),this);
+        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.OBJECT, LogAction.UPDATE,this,this,"Type",this.type.getId(),type.getId());
         this.type = type;
     }
 
@@ -146,7 +146,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         Validate.notNull(executor);
         DKPerms.getInstance().getStorage().getObjectStorage().updateObjectPriority(this.id,priority);
         executeSynchronisationUpdate(SyncAction.OBJECT_PRIORITY_UPDATE,Document.newDocument().set("priority",priority));
-        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.OBJECT, LogAction.UPDATE,id,id,"Priority",this.priority,priority,this);
+        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.OBJECT, LogAction.UPDATE,this,this,"Priority",this.priority,priority);
         this.priority = priority;
     }
 
@@ -160,7 +160,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         Validate.notNull(executor);
         DKPerms.getInstance().getStorage().getObjectStorage().updateObjectDisabled(this.id,disabled);
         executeSynchronisationUpdate(SyncAction.OBJECT_DISABLED_UPDATE,Document.newDocument().set("disabled",disabled));
-        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.OBJECT, LogAction.UPDATE,id,id,"Disabled",this.disabled,disabled,this);
+        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.OBJECT, LogAction.UPDATE,this,this,"Disabled",this.disabled,disabled);
         this.disabled = disabled;
     }
 
@@ -174,7 +174,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         Validate.notNull(executor,scope);
         DKPerms.getInstance().getStorage().getObjectStorage().updateObjectScope(this.id,scope);
         executeSynchronisationUpdate(SyncAction.OBJECT_SCOPE_UPDATE,Document.newDocument().set("scope",scope.getId()));
-        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.OBJECT, LogAction.UPDATE,id,id,"Scope",this.scope.getId(),scope.getId(),this);
+        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.OBJECT, LogAction.UPDATE,this,this,"Scope",this.scope.getId(),scope.getId());
         this.scope = scope;
     }
 
@@ -319,9 +319,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         DefaultPermissionParentEntity entity =  new DefaultPermissionParentEntity(this,entityId,group,action,scope,timeout);
         groupCache.insert(scope,entity);
         synchronizeGroups(scope);
-
-        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_PARENT, LogAction.CREATE,id,entityId,null,null,null,entity);
-
+        DKPerms.getInstance().getAuditLog().createCreateRecordAsync(executor, LogType.ENTITY_PARENT,this,entity);
         return entity;
     }
 
@@ -339,7 +337,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         this.groupCache.remove(entity.getScope(),entity);
         DKPerms.getInstance().getStorage().getParentStorage().removeParentReference(entity.getId());
         synchronizeGroups(entity.getScope());
-        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_PARENT, LogAction.DELETE,id,entity.getId(),null,null,null,entity);
+        DKPerms.getInstance().getAuditLog().createDeleteRecordAsync(executor, LogType.ENTITY_PARENT,this,entity);
     }
 
     @Override
@@ -347,8 +345,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         Validate.notNull(scope);
 
         for (ParentEntity parent : getParents(scope)) {
-            DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_PARENT
-                    , LogAction.DELETE,id,parent.getId(),null,null,null,parent);
+            DKPerms.getInstance().getAuditLog().createDeleteRecordAsync(executor, LogType.ENTITY_PARENT,this,parent);
         }
 
 
@@ -363,8 +360,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
 
         for (ScopeBasedData<ParentEntity> allParent : getAllParents()) {
             for (ParentEntity entity : allParent.getData()) {
-                DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_PARENT
-                        , LogAction.DELETE,id,entity.getId(),null,null,null,entity);
+                DKPerms.getInstance().getAuditLog().createDeleteRecordAsync(executor, LogType.ENTITY_PARENT, this,entity);
             }
         }
 
@@ -484,8 +480,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         PermissionEntity entity = new DefaultPermissionEntity(this,id,permission,action,scope,timeout);
         this.permissionCache.insert(scope,entity);
         synchronizePermissions(scope);
-        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_PERMISSION
-                , LogAction.CREATE,id,entity.getId(),null,null,null,entity);
+        DKPerms.getInstance().getAuditLog().createCreateRecordAsync(executor, LogType.ENTITY_PERMISSION,this,entity);
         return entity;
     }
 
@@ -496,16 +491,14 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
             DKPerms.getInstance().getStorage().getPermissionStorage().deletePermissions(entity.getId());
             this.permissionCache.remove(scope,entity);
             synchronizePermissions(scope);
-            DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_PERMISSION
-                    , LogAction.DELETE,id,entity.getId(),null,null,null,entity);
+            DKPerms.getInstance().getAuditLog().createDeleteRecordAsync(executor, LogType.ENTITY_PERMISSION,this,entity);
         }
     }
 
     @Override
     public void clearPermission(PermissionObject executor,PermissionScope scope) {
         for (PermissionEntity entity : getPermissions(scope)) {
-            DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_PERMISSION
-                    , LogAction.DELETE,id,entity.getId(),null,null,null,entity);
+            DKPerms.getInstance().getAuditLog().createDeleteRecordAsync(executor, LogType.ENTITY_PERMISSION,this,entity);
         }
         DKPerms.getInstance().getStorage().getPermissionStorage().clearPermissions(id,scope.getId());
         this.permissionCache.clear(scope);
@@ -516,8 +509,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     public void clearAllPermission(PermissionObject executor) {
         for (ScopeBasedData<PermissionEntity> allPermission : getAllPermissions()) {
             for (PermissionEntity entity : allPermission.getData()) {
-                DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_PERMISSION
-                        , LogAction.DELETE,id,entity.getId(),null,null,null,entity);
+                DKPerms.getInstance().getAuditLog().createDeleteRecordAsync(executor, LogType.ENTITY_PERMISSION,this,entity);
             }
         }
         DKPerms.getInstance().getStorage().getPermissionStorage().clearPermissions(id);
@@ -572,9 +564,20 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     }
 
     @Override
+    public Document serializeRecord() {
+        Document document = Document.newDocument();
+        document.set("name",this.name);
+        document.set("assignmentId",this.assignmentId);
+        document.set("priority",this.priority);
+        document.set("disabled",this.disabled);
+        document.set("type",this.type.getId());
+        document.set("scope",this.scope.getId());
+        return document;
+    }
+
+    @Override
     public void onUpdate(Document data) {
         SyncAction action = SyncAction.of(data.getInt("action"));
-        System.out.println("[DKP-DEBUG] "+getName()+" | Received update "+action);
         if(action != null) {
            if(action == SyncAction.OBJECT_NAME_UPDATE){
                this.name = data.getString("name");

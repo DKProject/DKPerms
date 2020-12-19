@@ -19,6 +19,10 @@ public class PDQAuditLogStorage implements AuditLogStorage {
 
     private DatabaseCollection auditCollection;
 
+    public void setCollections(DatabaseCollection auditCollection){
+        this.auditCollection = auditCollection;
+    }
+
     @Override
     public void createRecord(long timeStamp, int executorId, LogType type, LogAction action, int ownerId, int keyId, String field, String oldValue, String newValue, String data) {
         auditCollection.insert()
@@ -33,9 +37,5 @@ public class PDQAuditLogStorage implements AuditLogStorage {
                 .set("NewValue",newValue)
                 .set("Data",data)
                 .execute();
-    }
-
-    public void setCollections(DatabaseCollection auditCollection){
-        this.auditCollection = auditCollection;
     }
 }

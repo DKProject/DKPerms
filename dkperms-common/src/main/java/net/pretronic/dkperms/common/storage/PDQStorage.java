@@ -135,13 +135,12 @@ public class PDQStorage implements DKPermsStorage {
                 .field("ExecutorId", DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
                 .field("Type",DataType.STRING,20,FieldOption.NOT_NULL)
                 .field("Action",DataType.STRING,20,FieldOption.NOT_NULL)
-                .field("OwnerId",DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
+                .field("OwnerId",DataType.INTEGER,ForeignKey.of(object,"Id"))
                 .field("ObjectId",DataType.INTEGER,FieldOption.NOT_NULL)
-                .field("ScopeId",DataType.INTEGER,ForeignKey.of(scope,"Id"),FieldOption.NOT_NULL)
-                .field("Field",DataType.STRING,32,FieldOption.NOT_NULL)
-                .field("OldValue",DataType.STRING,500,FieldOption.NOT_NULL)
-                .field("NewValue",DataType.STRING,500,FieldOption.NOT_NULL)
-                .field("Data",DataType.STRING,1024,FieldOption.NOT_NULL)
+                .field("Field",DataType.STRING,32)
+                .field("OldValue",DataType.STRING,512)
+                .field("NewValue",DataType.STRING,512)
+                .field("Data",DataType.LONG_TEXT,1024,FieldOption.NOT_NULL)
                 .create();
 
         DatabaseCollection track = database.createCollection("dkperms_track")

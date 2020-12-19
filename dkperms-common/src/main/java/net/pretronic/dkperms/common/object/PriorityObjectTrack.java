@@ -111,13 +111,12 @@ public class PriorityObjectTrack implements PermissionObjectTrack {
         while (objects.hasNext()){
             if(objects.next().equals(object)) return objects.previous();
         }
-
         return null;
     }
-
 
     @Override
     public int size() {
         return groups.size();
     }
+
 }

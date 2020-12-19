@@ -10,6 +10,7 @@
 
 package net.pretronic.dkperms.api.object;
 
+import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.message.bml.variable.describer.VariableObjectToString;
 
 import java.util.concurrent.CompletableFuture;
@@ -78,5 +79,14 @@ public class BuiltInPermissionObjectType implements PermissionObjectType, Variab
     @Override
     public String toStringVariable() {
         return displayName;
+    }
+
+    @Override
+    public Document serializeRecord() {
+        Document document = Document.newDocument();
+        document.set("name",this.name);
+        document.set("displayName",this.displayName);
+        document.set("parentAble",this.parentAble);
+        return document;
     }
 }

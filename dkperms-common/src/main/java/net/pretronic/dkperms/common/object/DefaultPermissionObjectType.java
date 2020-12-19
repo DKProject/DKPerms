@@ -11,8 +11,10 @@
 package net.pretronic.dkperms.common.object;
 
 import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.logging.LogType;
 import net.pretronic.dkperms.api.object.PermissionHolderFactory;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
+import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.message.bml.variable.describer.VariableObjectToString;
 
 import java.util.Objects;
@@ -54,6 +56,7 @@ public class DefaultPermissionObjectType implements PermissionObjectType, Variab
         DKPerms.getInstance().getStorage().getObjectStorage().updateObjectType(this.id,name,displayName);
         this.name = name;
         this.displayName = displayName;
+        //@Todo add to audit log
     }
 
     @Override
@@ -86,4 +89,14 @@ public class DefaultPermissionObjectType implements PermissionObjectType, Variab
     public String toStringVariable() {
         return displayName;
     }
+
+    @Override
+    public Document serializeRecord() {
+        Document document = Document.newDocument();
+        document.set("name",this.name);
+        document.set("displayName",this.displayName);
+        document.set("parentAble",this.parentAble);
+        return document;
+    }
+
 }

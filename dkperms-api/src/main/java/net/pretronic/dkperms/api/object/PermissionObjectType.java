@@ -10,9 +10,11 @@
 
 package net.pretronic.dkperms.api.object;
 
+import net.pretronic.dkperms.api.logging.Loggable;
+
 import java.util.concurrent.CompletableFuture;
 
-public interface PermissionObjectType {
+public interface PermissionObjectType extends Loggable {
 
     PermissionObjectType SERVICE_ACCOUNT = new BuiltInPermissionObjectType(1,"BUILTIN/SERVICE_ACCOUNT","Service",false);
 

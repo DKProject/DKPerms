@@ -12,11 +12,13 @@ package net.pretronic.dkperms.common.entity;
 
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.entity.PermissionEntity;
+import net.pretronic.dkperms.api.logging.LogType;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.common.calculator.PermissionCalculator;
 import net.pretronic.dkperms.common.object.DefaultPermissionObject;
+import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.utility.StringUtil;
 import net.pretronic.libraries.utility.Validate;
 
@@ -96,8 +98,8 @@ public class DefaultPermissionEntity implements PermissionEntity {
 
     @Override
     public void setAction(PermissionObject executor, PermissionAction action) {
-        DKPerms.getInstance().getStorage().getPermissionStorage()
-                .updatePermissionTimeout(id,action.ordinal());
+        DKPerms.getInstance().getStorage().getPermissionStorage().updatePermissionTimeout(id,action.ordinal());
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.ENTITY_PERMISSION,owner,this,"action",this.action.ordinal(),action.ordinal());
         this.action = action;
     }
 
@@ -108,8 +110,8 @@ public class DefaultPermissionEntity implements PermissionEntity {
 
     @Override
     public void setScope(PermissionObject executor, PermissionScope scope) {
-        DKPerms.getInstance().getStorage().getPermissionStorage()
-                .updatePermissionScope(id,scope.getId());
+        DKPerms.getInstance().getStorage().getPermissionStorage().updatePermissionScope(id,scope.getId());
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.ENTITY_PERMISSION,owner,this,"scope",this.scope.getId(),scope.getId());
         this.scope = scope;
     }
 
@@ -120,8 +122,8 @@ public class DefaultPermissionEntity implements PermissionEntity {
 
     @Override
     public void setTimeout(PermissionObject executor, long timeout) {
-        DKPerms.getInstance().getStorage().getPermissionStorage()
-                .updatePermissionTimeout(id,timeout);
+        DKPerms.getInstance().getStorage().getPermissionStorage().updatePermissionTimeout(id,timeout);
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.ENTITY_PERMISSION,owner,this,"timeout",this.timeout,timeout);
         this.timeout = timeout;
     }
 
@@ -139,8 +141,22 @@ public class DefaultPermissionEntity implements PermissionEntity {
             }
         }
 
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.ENTITY_PERMISSION,owner,this,"action",this.action.ordinal(),action.ordinal());
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.ENTITY_PERMISSION,owner,this,"scope",this.scope.getId(),scope.getId());
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.ENTITY_PERMISSION,owner,this,"timeout",this.timeout,timeout);
+
         this.action = action;
         this.scope = scope;
         this.timeout = timeout;
+    }
+
+    @Override
+    public Document serializeRecord() {
+        Document document = Document.newDocument();
+        document.set("permission",this.getPermission());
+        document.set("timeout",timeout);
+        document.set("action",this.action.ordinal());
+        document.set("scope",this.scope.getId());
+        return document;
     }
 }
