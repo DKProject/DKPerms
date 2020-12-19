@@ -47,12 +47,12 @@ public class BuiltInPermissionObjectType implements PermissionObjectType, Variab
     }
 
     @Override
-    public void rename(String name, String displayName) {
+    public void rename(PermissionObject executor,String name, String displayName) {
         throw new UnsupportedOperationException("This is not possible to rename a built in type");
     }
 
     @Override
-    public CompletableFuture<Void> renameAsync(String name, String displayName) {
+    public CompletableFuture<Void> renameAsync(PermissionObject executor,String name, String displayName) {
         throw new UnsupportedOperationException("This is not possible to rename a built in type");
     }
 

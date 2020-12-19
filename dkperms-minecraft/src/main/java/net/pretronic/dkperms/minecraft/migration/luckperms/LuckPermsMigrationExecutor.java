@@ -84,11 +84,11 @@ public class LuckPermsMigrationExecutor implements MigrationExecutor {
         luckPerms.getTrackManager().loadAllTracks().get(30,TimeUnit.SECONDS);
         for (Track track : luckPerms.getTrackManager().getLoadedTracks()) {
             PermissionObjectTrack newTrack = DKPerms.getInstance().getObjectManager().getTrack(track.getName(),DKPermsConfig.OBJECT_TRACK_SCOPE);
-            if(newTrack == null) newTrack = DKPerms.getInstance().getObjectManager().createTrack(track.getName(),DKPermsConfig.OBJECT_TRACK_SCOPE);
+            if(newTrack == null) newTrack = DKPerms.getInstance().getObjectManager().createTrack(admin,track.getName(),DKPermsConfig.OBJECT_TRACK_SCOPE);
             for (String group : track.getGroups()) {
                 PermissionObject newGroup = migratedGroups.get(group);
                 if(newGroup != null){
-                    newTrack.addBefore(newGroup);
+                    newTrack.addBefore(admin,newGroup);
                 }
             }
         }
