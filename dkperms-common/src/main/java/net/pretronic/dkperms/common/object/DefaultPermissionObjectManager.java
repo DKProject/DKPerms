@@ -278,21 +278,23 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
     }
 
     @Override
-    public PermissionObjectTrack createTrack(String name, PermissionScope scope) {
+    public PermissionObjectTrack createTrack(PermissionObject executor,String name, PermissionScope scope) {
         Validate.notNull(name,scope);
         if(!scope.isSaved()) scope.insert();
         if(getTrack(name,scope) != null) throw new IllegalArgumentException("A track with the name "+name+" does already exist");
         int id = dkperms.getStorage().getTrackStorage().createTrack(name,scope.getId());
         PermissionObjectTrack track = new DefaultPermissionObjectTrack(id,name,scope,new ArrayList<>());
         this.tracks.add(track);
+        DKPerms.getInstance().getAuditLog().createCreateRecordAsync(executor, LogType.TRACK,null,track);
         return track;
     }
 
     @Override
-    public void deleteTrack(PermissionObjectTrack track) {
+    public void deleteTrack(PermissionObject executor,PermissionObjectTrack track) {
         Validate.notNull(track);
         dkperms.getStorage().getTrackStorage().deleteTrack(track.getId());
         this.tracks.remove(track);
+        DKPerms.getInstance().getAuditLog().createDeleteRecordAsync(executor, LogType.TRACK,null,track);
     }
 
     @Override

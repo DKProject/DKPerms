@@ -43,7 +43,7 @@ public interface AuditLog {
     }
 
     default void createDeleteRecordAsync(PermissionObject executor, LogType type, PermissionObject owner,Loggable object){
-        createRecordAsync(executor,type,LogAction.CREATE,owner,object,null,null,null);
+        createRecordAsync(executor,type,LogAction.DELETE,owner,object,null,null,null);
     }
 
 }

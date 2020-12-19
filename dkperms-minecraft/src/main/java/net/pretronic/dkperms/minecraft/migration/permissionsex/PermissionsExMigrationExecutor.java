@@ -75,11 +75,11 @@ public class PermissionsExMigrationExecutor implements MigrationExecutor {
             Map<Integer,PermissionGroup> order = new TreeMap<>(Integer::compare);
             order.putAll(manager.getRankLadder(ladderName));
             PermissionObjectTrack track = DKPerms.getInstance().getObjectManager().getTrack(ladderName,DKPermsConfig.OBJECT_TRACK_SCOPE);
-            if(track == null) track = DKPerms.getInstance().getObjectManager().createTrack(ladderName,DKPermsConfig.OBJECT_TRACK_SCOPE);
+            if(track == null) track = DKPerms.getInstance().getObjectManager().createTrack(admin,ladderName,DKPermsConfig.OBJECT_TRACK_SCOPE);
             for (Map.Entry<Integer, PermissionGroup> entry : order.entrySet()) {
                 PermissionObject object = migratedGroups.get(entry.getValue().getIdentifier());
                 if(object != null){
-                    track.addAfter(object);
+                    track.addAfter(admin,object);
                 }
             }
         }

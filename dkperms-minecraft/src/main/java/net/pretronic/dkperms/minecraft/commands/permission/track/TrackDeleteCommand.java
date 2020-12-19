@@ -12,6 +12,7 @@ package net.pretronic.dkperms.minecraft.commands.permission.track;
 
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.object.PermissionObjectTrack;
+import net.pretronic.dkperms.minecraft.commands.CommandUtil;
 import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.ObjectCommand;
@@ -27,7 +28,7 @@ public class TrackDeleteCommand extends ObjectCommand<PermissionObjectTrack> {
 
     @Override
     public void execute(CommandSender sender, PermissionObjectTrack track, String[] arguments) {
-        DKPerms.getInstance().getObjectManager().deleteTrack(track);
+        DKPerms.getInstance().getObjectManager().deleteTrack(CommandUtil.getExecutor(sender),track);
         sender.sendMessage(Messages.TRACK_DELETED, VariableSet.create()
                 .addDescribed("track",track));
     }

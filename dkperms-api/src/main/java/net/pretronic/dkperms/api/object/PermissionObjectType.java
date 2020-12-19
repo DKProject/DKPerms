@@ -29,9 +29,9 @@ public interface PermissionObjectType extends Loggable {
 
     String getDisplayName();
 
-    void rename(String name, String displayName);
+    void rename(PermissionObject executor,String name, String displayName);
 
-    CompletableFuture<Void> renameAsync(String name, String displayName);
+    CompletableFuture<Void> renameAsync(PermissionObject executor,String name, String displayName);
 
     boolean isParentAble();
 

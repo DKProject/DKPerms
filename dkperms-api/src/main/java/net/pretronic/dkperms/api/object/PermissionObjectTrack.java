@@ -10,19 +10,20 @@
 
 package net.pretronic.dkperms.api.object;
 
+import net.pretronic.dkperms.api.logging.Loggable;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 
-public interface PermissionObjectTrack {
+public interface PermissionObjectTrack extends Loggable {
 
     int getId();
 
     String getName();
 
-    void setName(String name);
+    void setName(PermissionObject executor,String name);
 
     PermissionScope getScope();
 
-    void setScope(PermissionScope scope);
+    void setScope(PermissionObject executor,PermissionScope scope);
 
 
     int getPosition(PermissionObject object);
@@ -32,14 +33,14 @@ public interface PermissionObjectTrack {
         return getPosition(object) > 0;
     }
 
-    void addBefore(PermissionObject object);
+    void addBefore(PermissionObject executor,PermissionObject object);
 
-    void addAfter(PermissionObject object);
+    void addAfter(PermissionObject executor,PermissionObject object);
 
-    void addGroup(PermissionObject object, int position);
+    void addGroup(PermissionObject executor,PermissionObject object, int position);
 
 
-    void removeGroup(PermissionObject object);
+    void removeGroup(PermissionObject executor,PermissionObject object);
 
     void clearGroups();
 

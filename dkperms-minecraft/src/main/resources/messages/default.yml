@@ -112,6 +112,7 @@ messages:
   dkperms.object.group.check: '${dkperms.prefix} &7Checked group &e{group.name} &7for &e{object.displayName}  @for("entity" in {result.entries},${dkperms.object.group.check.loop},"\n","\n")
   &8» &7Result&8: &e{result.finalAction}'
   dkperms.object.group.check.loop: ' &8- &7{entity.group.name} &e{entity.action}'
+  dkperms.object.group.priority.set: '${dkperms.prefix} &7The priority of group &e{group.name} &7was set to &e${priority}'
 
   dkperms.user.help: '${dkperms.prefix} &7Group commands&8:
   &7/perms user <name>

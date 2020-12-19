@@ -104,7 +104,7 @@ public class PDQParentStorage implements ParentStorage {
     @Override
     public void removeParentReference(int entityId) {
         this.parent_entities.delete()
-                .where("Id")
+                .where("Id",entityId)
                 .execute();
     }
 

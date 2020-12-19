@@ -35,7 +35,7 @@ public class TrackRemoveCommand extends ObjectCommand<PermissionObjectTrack> {
 
         PermissionObject group = CommandUtil.getGroup(sender,arguments[1]);
         if(group == null) return;
-        track.removeGroup(group);
+        track.removeGroup(CommandUtil.getExecutor(sender),group);
         sender.sendMessage(Messages.TRACK_REMOVE, VariableSet.create()
                 .addDescribed("track",track)
                 .addDescribed("group",group));
