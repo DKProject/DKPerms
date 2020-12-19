@@ -87,9 +87,6 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         this.meta = new DefaultObjectMeta(this);
         this.groupCache = new GroupCache(this);
         this.permissionCache = new PermissionCache(this);
-
-
-        System.out.println("Created object for "+getName()+" ("+System.identityHashCode(this)+")");
     }
 
     @Override
