@@ -131,7 +131,7 @@ public class PDQStorage implements DKPermsStorage {
 
         DatabaseCollection auditLog = database.createCollection("dkperms_auditlog")
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
-                .field("Time",DataType.INTEGER,FieldOption.NOT_NULL)
+                .field("Time",DataType.LONG,FieldOption.NOT_NULL)
                 .field("ExecutorId", DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
                 .field("Type",DataType.STRING,20,FieldOption.NOT_NULL)
                 .field("Action",DataType.STRING,20,FieldOption.NOT_NULL)
