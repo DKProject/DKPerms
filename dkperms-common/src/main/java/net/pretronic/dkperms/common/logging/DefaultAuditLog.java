@@ -61,7 +61,7 @@ public class DefaultAuditLog implements AuditLog {
                                 ,newValue != null ? newValue.toString() : null
                                 ,data != null ? data.toString() : null);
             }catch (Exception e){
-                System.out.println("Audit error:");
+
                 e.printStackTrace();
             }
         }
