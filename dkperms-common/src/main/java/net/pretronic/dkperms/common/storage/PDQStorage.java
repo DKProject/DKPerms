@@ -47,7 +47,7 @@ public class PDQStorage implements DKPermsStorage {
 
     @Override
     public AuditLogStorage getAuditLogStorage() {
-        return null;
+        return auditLogStorage;
     }
 
     @Override
