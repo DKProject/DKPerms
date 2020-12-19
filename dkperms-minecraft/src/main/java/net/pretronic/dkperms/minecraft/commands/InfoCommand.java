@@ -25,12 +25,12 @@ public class InfoCommand extends BasicCommand {
     }
 
     @Override
-    public void execute(CommandSender sender, String[] strings) {//&8» &9DKPerms &8|&f
+    public void execute(CommandSender sender, String[] strings) {
         sender.sendMessage(Text.newBuilder()
                 .color(TextColor.DARK_GRAY).text("» ")
                 .color(TextColor.BLUE).text("DKPerms")
                 .color(TextColor.DARK_GRAY).text(" | ")
-                .color(TextColor.GRAY).text("PermissionSystem v")
+                .color(TextColor.GRAY).text("v")
                 .color(TextColor.RED).text(((MinecraftPlugin)getOwner()).getDescription().getVersion().getName())
                 .color(TextColor.GRAY).text(" by ")
                 .color(TextColor.RED).text(((MinecraftPlugin)getOwner()).getDescription().getAuthor())

@@ -112,7 +112,7 @@ public class DefaultPermissionScopeManager implements PermissionScopeManager, In
         if(root != null) throw new IllegalArgumentException("ScopeManager is already initialised");
         List<PermissionScope> result = dkPerms.getStorage().getScopeStorage().loadScopes(null);
         if(result.isEmpty()){
-            this.root = new DefaultPermissionScope(-1,"Root","Root",null);
+            this.root = new DefaultPermissionScope(-1,"root","Root",null);
             this.root.insert();
         }else{
             this.root = result.get(0);
