@@ -18,8 +18,6 @@ import net.pretronic.dkperms.api.logging.Loggable;
 import net.pretronic.dkperms.api.logging.record.LogRecordResult;
 import net.pretronic.dkperms.api.object.PermissionObject;
 
-import java.util.Locale;
-
 public class DefaultAuditLog implements AuditLog {
 
     private final boolean enabled;

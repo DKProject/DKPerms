@@ -15,7 +15,6 @@ import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.document.annotations.DocumentIgnored;
 import net.pretronic.libraries.document.annotations.DocumentKey;
-import org.mcnative.common.McNative;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;

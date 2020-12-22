@@ -11,7 +11,6 @@
 package net.pretronic.dkperms.common.object.meta;
 
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.logging.LogAction;
 import net.pretronic.dkperms.api.logging.LogType;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.SyncAction;

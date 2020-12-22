@@ -45,7 +45,6 @@ public class DescriberRegistrar {
         VariableDescriberRegistry.registerDescriber(TeamCommand.TeamTree.class);
         VariableDescriberRegistry.registerDescriber(PermissionAnalyseResult.class);
         VariableDescriberRegistry.registerDescriber(BuiltInPermissionObjectType.class);
-        VariableDescriberRegistry.registerDescriber(DKPermsPlayerDesign.class);
 
         VariableDescriber<DKPermsPlayerDesign> designDescriber = VariableDescriberRegistry.registerDescriber(DKPermsPlayerDesign.class);
         ColoredString.makeDescriberColored(designDescriber);
