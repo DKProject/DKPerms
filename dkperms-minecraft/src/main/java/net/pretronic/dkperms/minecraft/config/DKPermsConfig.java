@@ -75,7 +75,7 @@ public class DKPermsConfig {
     public static String DELETE_TIMED_OUT_ENTRIES_INTERVAL = "30m";
 
     @DocumentKey("format.date.pattern")
-    public static String FORMAT_DATE_PATTERN = "dd.MM.yyyy hh:mm";
+    public static String FORMAT_DATE_PATTERN = "dd-MM-yyyy HH:mm";
 
     public static String FORMAT_DATE_ENDLESSLY = "-";
 
