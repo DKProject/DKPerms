@@ -25,10 +25,8 @@ import net.pretronic.dkperms.common.scope.DefaultPermissionScope;
 import net.pretronic.dkperms.minecraft.commands.TeamCommand;
 import net.pretronic.libraries.message.bml.variable.describer.VariableDescriber;
 import net.pretronic.libraries.message.bml.variable.describer.VariableDescriberRegistry;
-import org.mcnative.common.player.MinecraftPlayer;
-import org.mcnative.common.serviceprovider.message.ColoredString;
-
-import java.util.function.Function;
+import org.mcnative.runtime.api.player.MinecraftPlayer;
+import org.mcnative.runtime.api.text.format.ColoredString;
 
 public class DescriberRegistrar {
 

@@ -111,9 +111,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         int id = dkperms.getStorage().getObjectStorage().createObjectType(name,displayName,group);
         PermissionObjectType type = new DefaultPermissionObjectType(id,name,displayName,group);
         this.types.add(type);
-
-        dkperms.getAuditLog().createCreateRecordAsync(executor,LogType.OBJECT_TYPE,0,type.getId(),type);
-
+        dkperms.getAuditLog().createCreateRecordAsync(executor,LogType.OBJECT_TYPE,null,type);
         return type;
     }
 
@@ -137,8 +135,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         if(type != null){
             dkperms.getStorage().getObjectStorage().deleteObjectType(type.getId());
             Iterators.removeOne(this.types, type0 -> type0.getId() == type.getId());
-
-            dkperms.getAuditLog().createDeleteRecordAsync(executor,LogType.OBJECT_TYPE,0,type.getId(),type);
+            dkperms.getAuditLog().createDeleteRecordAsync(executor,LogType.OBJECT_TYPE,null,type);
         }
     }
 
@@ -218,7 +215,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         if(getObject(name,scope,type) != null) throw new IllegalArgumentException("There is already an object with the same name in the same scope");
         PermissionObject object = DKPerms.getInstance().getStorage().getObjectStorage().createObject(scope,type,name,assignmentId);
         this.objects.insert(object);
-        this.dkperms.getAuditLog().createCreateRecordAsync(executor,LogType.OBJECT,object.getId(),object.getId(),object);
+        this.dkperms.getAuditLog().createCreateRecordAsync(executor == null ? object : executor,LogType.OBJECT,object,object);
         this.dkperms.getEventBus().callEvent(new DKPermsPermissionObjectCreateEvent(executor,object));
         return object;
     }
@@ -236,7 +233,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         this.objects.remove(object);
         this.dkperms.getStorage().getObjectStorage().deleteObject(object.getId());
         this.objects.getCaller().createAndIgnore(object.getId(), Document.newDocument());
-        this.dkperms.getAuditLog().createDeleteRecordAsync(executor,LogType.OBJECT,object.getId(),object.getId(),object);
+        this.dkperms.getAuditLog().createDeleteRecordAsync(executor,LogType.OBJECT,object,object);
         this.dkperms.getEventBus().callEvent(new DKPermsPermissionObjectDeleteEvent(executor,object));
     }
 
@@ -281,21 +278,23 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
     }
 
     @Override
-    public PermissionObjectTrack createTrack(String name, PermissionScope scope) {
+    public PermissionObjectTrack createTrack(PermissionObject executor,String name, PermissionScope scope) {
         Validate.notNull(name,scope);
         if(!scope.isSaved()) scope.insert();
         if(getTrack(name,scope) != null) throw new IllegalArgumentException("A track with the name "+name+" does already exist");
         int id = dkperms.getStorage().getTrackStorage().createTrack(name,scope.getId());
         PermissionObjectTrack track = new DefaultPermissionObjectTrack(id,name,scope,new ArrayList<>());
         this.tracks.add(track);
+        DKPerms.getInstance().getAuditLog().createCreateRecordAsync(executor, LogType.TRACK,null,track);
         return track;
     }
 
     @Override
-    public void deleteTrack(PermissionObjectTrack track) {
+    public void deleteTrack(PermissionObject executor,PermissionObjectTrack track) {
         Validate.notNull(track);
         dkperms.getStorage().getTrackStorage().deleteTrack(track.getId());
         this.tracks.remove(track);
+        DKPerms.getInstance().getAuditLog().createDeleteRecordAsync(executor, LogType.TRACK,null,track);
     }
 
     @Override
@@ -416,6 +415,5 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
             if(identifiers.length != 1) throw new IllegalArgumentException("Invalid search identifier.");
         }
     }
-
 
 }

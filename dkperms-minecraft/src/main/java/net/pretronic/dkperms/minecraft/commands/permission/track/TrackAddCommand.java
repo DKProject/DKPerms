@@ -41,7 +41,7 @@ public class TrackAddCommand extends ObjectCommand<PermissionObjectTrack> {
                     .addDescribed("group",group));
             return;
         }
-        track.addAfter(group);
+        track.addAfter(CommandUtil.getExecutor(sender),group);
         sender.sendMessage(Messages.TRACK_ADD, VariableSet.create()
                 .addDescribed("track",track)
                 .addDescribed("group",group));

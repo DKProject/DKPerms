@@ -29,9 +29,9 @@ import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.dkperms.minecraft.migration.MigrationUtil;
-import org.mcnative.common.McNative;
-import org.mcnative.common.player.MinecraftPlayer;
-import org.mcnative.common.player.data.PlayerDataProvider;
+import org.mcnative.runtime.api.McNative;
+import org.mcnative.runtime.api.player.MinecraftPlayer;
+import org.mcnative.runtime.api.player.data.PlayerDataProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -84,11 +84,11 @@ public class LuckPermsMigrationExecutor implements MigrationExecutor {
         luckPerms.getTrackManager().loadAllTracks().get(30,TimeUnit.SECONDS);
         for (Track track : luckPerms.getTrackManager().getLoadedTracks()) {
             PermissionObjectTrack newTrack = DKPerms.getInstance().getObjectManager().getTrack(track.getName(),DKPermsConfig.OBJECT_TRACK_SCOPE);
-            if(newTrack == null) newTrack = DKPerms.getInstance().getObjectManager().createTrack(track.getName(),DKPermsConfig.OBJECT_TRACK_SCOPE);
+            if(newTrack == null) newTrack = DKPerms.getInstance().getObjectManager().createTrack(admin,track.getName(),DKPermsConfig.OBJECT_TRACK_SCOPE);
             for (String group : track.getGroups()) {
                 PermissionObject newGroup = migratedGroups.get(group);
                 if(newGroup != null){
-                    newTrack.addBefore(newGroup);
+                    newTrack.addBefore(admin,newGroup);
                 }
             }
         }

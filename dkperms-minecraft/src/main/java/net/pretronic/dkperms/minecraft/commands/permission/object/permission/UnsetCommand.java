@@ -25,7 +25,7 @@ import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 public class UnsetCommand extends ObjectCommand<PermissionObject> {
 
     public UnsetCommand(ObjectOwner owner) {
-        super(owner, CommandConfiguration.name("unset","u"));
+        super(owner, CommandConfiguration.name("unset","u","remove","r"));
     }
 
     @Override

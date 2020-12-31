@@ -13,11 +13,13 @@ package net.pretronic.dkperms.common.object.meta;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.graph.ObjectMetaGraph;
+import net.pretronic.dkperms.api.logging.LogType;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.SyncAction;
 import net.pretronic.dkperms.api.object.meta.ObjectMeta;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import net.pretronic.dkperms.api.scope.PermissionScope;
+import net.pretronic.dkperms.api.scope.data.ScopeBasedData;
 import net.pretronic.dkperms.api.scope.data.ScopeBasedDataList;
 import net.pretronic.dkperms.common.cache.ObjectMetaCache;
 import net.pretronic.dkperms.common.graph.DefaultObjectMetaGraph;
@@ -115,6 +117,9 @@ public class DefaultObjectMeta implements ObjectMeta {
         }else{
             if(!entries.isEmpty()){
                 DKPerms.getInstance().getStorage().getObjectStorage().deleteMetaEntries(object.getId(),scope.getId(),key);
+                for (ObjectMetaEntry entry : entries) {
+                    DKPerms.getInstance().getAuditLog().createDeleteRecordAsync(executor, LogType.ENTITY_META,object,entry);
+                }
             }
             return add(executor, key, value, priority, scope, timeout);
         }
@@ -127,6 +132,7 @@ public class DefaultObjectMeta implements ObjectMeta {
         int id = DKPerms.getInstance().getStorage().getObjectStorage().insertMeta(object.getId(),scope.getId(),key,value.toString(),priority,timeout);
         ObjectMetaEntry entry = new DefaultObjectMetaEntry(object,scope,id,key,value,priority,timeout);
         cache.insert(scope,entry);
+        DKPerms.getInstance().getAuditLog().createCreateRecordAsync(executor, LogType.ENTITY_META,object,entry);
         synchronizeMeta(scope);
         return entry;
     }
@@ -137,7 +143,10 @@ public class DefaultObjectMeta implements ObjectMeta {
         List<ObjectMetaEntry> entries = get(key,scope);
         if(!entries.isEmpty()){
             DKPerms.getInstance().getStorage().getObjectStorage().deleteMetaEntries(object.getId(),scope.getId(),key);
-            for(ObjectMetaEntry entry : entries) this.cache.remove(scope,entry);
+            for(ObjectMetaEntry entry : entries){
+                DKPerms.getInstance().getAuditLog().createDeleteRecordAsync(executor, LogType.ENTITY_META,object,entry);
+                this.cache.remove(scope,entry);
+            }
             synchronizeMeta(scope);
         }
     }
@@ -146,6 +155,7 @@ public class DefaultObjectMeta implements ObjectMeta {
     public void remove(PermissionObject executor, ObjectMetaEntry entry, PermissionScope scope) {
         if(entry.getOwner().equals(object)){
             DKPerms.getInstance().getStorage().getObjectStorage().deleteMetaEntry(object.getId());
+            DKPerms.getInstance().getAuditLog().createDeleteRecordAsync(executor, LogType.ENTITY_META,object,entry);
             cache.remove(scope,entry);
             synchronizeMeta(scope);
         }
@@ -153,6 +163,11 @@ public class DefaultObjectMeta implements ObjectMeta {
 
     @Override
     public void clear(PermissionObject executor) {
+        for (ScopeBasedData<ObjectMetaEntry> entries : getEntries()) {
+            for (ObjectMetaEntry entry : entries.getData()) {
+                DKPerms.getInstance().getAuditLog().createDeleteRecordAsync(executor, LogType.ENTITY_META,object,entry);
+            }
+        }
         DKPerms.getInstance().getStorage().getObjectStorage().clearMeta(object.getId());
         this.cache.clear();
         synchronizeMeta(null);
@@ -160,6 +175,10 @@ public class DefaultObjectMeta implements ObjectMeta {
 
     @Override
     public void clear(PermissionObject executor,PermissionScope scope) {
+        for (ObjectMetaEntry entry : getEntries(scope)) {
+            DKPerms.getInstance().getAuditLog().createDeleteRecordAsync(executor, LogType.ENTITY_META,object,entry);
+        }
+
         DKPerms.getInstance().getStorage().getObjectStorage().clearMeta(object.getId(),scope.getId());
         cache.clear(scope);
         synchronizeMeta(scope);

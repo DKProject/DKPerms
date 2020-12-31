@@ -16,7 +16,7 @@ String PROJECT_NAME = "DKPerms"
 
 boolean JAVADOCS_ENABLED = true
 String JAVADOCS_NAME = "dkperms"
-String JAVADOCS_MODULES = ":DKPerms,:dkperms-api,:dkperms-api-minecraft"
+String JAVADOCS_MODULES = ":DKPerms,:dkperms-api"
 
 def MIRROR_SERVER_PUBLISHING = [
         "dkperms-minecraft/target/dkperms-minecraft-%version%.jar": "default",
@@ -110,7 +110,7 @@ pipeline {
             when { equals expected: false, actual: SKIP }
             steps {
                 configFileProvider([configFile(fileId: MAVEN_SETTINGS_FILE_ID, variable: 'MAVEN_GLOBAL_SETTINGS')]) {
-                    sh 'mvn -B -gs $MAVEN_GLOBAL_SETTINGS clean deploy'
+                    sh 'mvn -B -gs $MAVEN_GLOBAL_SETTINGS clean deploy -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true'
                 }
             }
         }

@@ -57,9 +57,9 @@ public interface PermissionScope {
 
     void insert();
 
-    void delete();
+    //void delete(); Deletion of scopes is dangerous
 
-    CompletableFuture<Void> deleteAsync();
+    //CompletableFuture<Void> deleteAsync();
 
     void rename(String key, String name);
 

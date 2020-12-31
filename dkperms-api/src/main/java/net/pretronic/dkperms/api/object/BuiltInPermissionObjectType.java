@@ -10,6 +10,7 @@
 
 package net.pretronic.dkperms.api.object;
 
+import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.message.bml.variable.describer.VariableObjectToString;
 
 import java.util.concurrent.CompletableFuture;
@@ -46,12 +47,12 @@ public class BuiltInPermissionObjectType implements PermissionObjectType, Variab
     }
 
     @Override
-    public void rename(String name, String displayName) {
+    public void rename(PermissionObject executor,String name, String displayName) {
         throw new UnsupportedOperationException("This is not possible to rename a built in type");
     }
 
     @Override
-    public CompletableFuture<Void> renameAsync(String name, String displayName) {
+    public CompletableFuture<Void> renameAsync(PermissionObject executor,String name, String displayName) {
         throw new UnsupportedOperationException("This is not possible to rename a built in type");
     }
 
@@ -78,5 +79,14 @@ public class BuiltInPermissionObjectType implements PermissionObjectType, Variab
     @Override
     public String toStringVariable() {
         return displayName;
+    }
+
+    @Override
+    public Document serializeRecord() {
+        Document document = Document.newDocument();
+        document.set("name",this.name);
+        document.set("displayName",this.displayName);
+        document.set("parentAble",this.parentAble);
+        return document;
     }
 }

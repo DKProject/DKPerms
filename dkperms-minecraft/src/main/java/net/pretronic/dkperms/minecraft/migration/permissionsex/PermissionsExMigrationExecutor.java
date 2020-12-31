@@ -21,7 +21,9 @@ import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.dkperms.minecraft.migration.MigrationUtil;
 import net.pretronic.libraries.utility.GeneralUtil;
 import net.pretronic.libraries.utility.reflect.ReflectionUtil;
-import org.bukkit.Bukkit;
+import org.mcnative.runtime.api.McNative;
+import org.mcnative.runtime.api.player.profile.GameProfileInfo;
+import org.mcnative.runtime.api.player.profile.GameProfileLoader;
 import ru.tehkode.permissions.*;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
@@ -60,7 +62,9 @@ public class PermissionsExMigrationExecutor implements MigrationExecutor {
                 uniqueId = UUID.fromString(identifier);
             }catch (Exception ignored){}
             if(uniqueId == null){
-                uniqueId = Bukkit.getOfflinePlayer(identifier).getUniqueId();
+                GameProfileInfo lookup = McNative.getInstance().getRegistry().getService(GameProfileLoader.class).getGameProfileInfo(identifier);
+                if(lookup == null) continue;
+                uniqueId = lookup.getUniqueId();
             }
             PermissionObject object = DKPerms.getInstance().getObjectManager().getObjectByAssignment(uniqueId);
             if(object == null){
@@ -75,11 +79,11 @@ public class PermissionsExMigrationExecutor implements MigrationExecutor {
             Map<Integer,PermissionGroup> order = new TreeMap<>(Integer::compare);
             order.putAll(manager.getRankLadder(ladderName));
             PermissionObjectTrack track = DKPerms.getInstance().getObjectManager().getTrack(ladderName,DKPermsConfig.OBJECT_TRACK_SCOPE);
-            if(track == null) track = DKPerms.getInstance().getObjectManager().createTrack(ladderName,DKPermsConfig.OBJECT_TRACK_SCOPE);
+            if(track == null) track = DKPerms.getInstance().getObjectManager().createTrack(admin,ladderName,DKPermsConfig.OBJECT_TRACK_SCOPE);
             for (Map.Entry<Integer, PermissionGroup> entry : order.entrySet()) {
                 PermissionObject object = migratedGroups.get(entry.getValue().getIdentifier());
                 if(object != null){
-                    track.addAfter(object);
+                    track.addAfter(admin,object);
                 }
             }
         }

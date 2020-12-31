@@ -22,13 +22,13 @@ import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.libraries.synchronisation.observer.ObserveCallback;
 import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
-import org.mcnative.common.McNative;
-import org.mcnative.common.event.player.design.MinecraftPlayerDesignUpdateEvent;
-import org.mcnative.common.player.MinecraftPlayer;
-import org.mcnative.common.player.OnlineMinecraftPlayer;
-import org.mcnative.common.player.PlayerDesign;
-import org.mcnative.common.serviceprovider.permission.PermissionHandler;
-import org.mcnative.common.serviceprovider.permission.PermissionResult;
+import org.mcnative.runtime.api.McNative;
+import org.mcnative.runtime.api.event.player.design.MinecraftPlayerDesignUpdateEvent;
+import org.mcnative.runtime.api.player.MinecraftPlayer;
+import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
+import org.mcnative.runtime.api.player.PlayerDesign;
+import org.mcnative.runtime.api.serviceprovider.permission.PermissionHandler;
+import org.mcnative.runtime.api.serviceprovider.permission.PermissionResult;
 
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
@@ -185,8 +185,8 @@ public class DKPermsPermissionHandler implements PermissionHandler, ObserveCallb
                     .createTask(ObjectOwner.SYSTEM)
                     .delay(1, TimeUnit.SECONDS)
                     .execute(() -> {
-                MinecraftPlayerDesignUpdateEvent event = new MinecraftPlayerDesignUpdateEvent(player,design);
-                McNative.getInstance().getLocal().getEventBus().callEvent(event);
+                MinecraftPlayerDesignUpdateEvent event = new DKPermsMinecraftPlayerDesignUpdateEvent(player,design);
+                McNative.getInstance().getLocal().getEventBus().callEvent(MinecraftPlayerDesignUpdateEvent.class,event);
             });
         }
     }

@@ -14,7 +14,6 @@ import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.object.PermissionHolderFactory;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectType;
-import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.api.scope.PermissionScopeManager;
 import net.pretronic.dkperms.common.DefaultDKPerms;
@@ -47,17 +46,16 @@ import net.pretronic.libraries.utility.concurrent.AsyncExecutor;
 import net.pretronic.libraries.utility.duration.DurationProcessor;
 import net.pretronic.libraries.utility.io.FileUtil;
 import net.pretronic.libraries.utility.io.IORuntimeException;
-import org.mcnative.common.McNative;
-import org.mcnative.common.event.player.login.MinecraftPlayerLoginEvent;
-import org.mcnative.common.player.MinecraftPlayer;
-import org.mcnative.common.plugin.MinecraftPlugin;
-import org.mcnative.common.plugin.configuration.Configuration;
-import org.mcnative.common.serviceprovider.permission.PermissionProvider;
-import org.mcnative.common.serviceprovider.placeholder.PlaceholderProvider;
-import org.mcnative.licensing.ReportingService;
 import org.mcnative.licensing.exceptions.CloudNotCheckoutLicenseException;
 import org.mcnative.licensing.exceptions.LicenseNotValidException;
 import org.mcnative.licensing.platform.McNativeIntegration;
+import org.mcnative.runtime.api.McNative;
+import org.mcnative.runtime.api.event.player.login.MinecraftPlayerLoginEvent;
+import org.mcnative.runtime.api.player.MinecraftPlayer;
+import org.mcnative.runtime.api.plugin.MinecraftPlugin;
+import org.mcnative.runtime.api.plugin.configuration.Configuration;
+import org.mcnative.runtime.api.serviceprovider.permission.PermissionProvider;
+import org.mcnative.runtime.api.serviceprovider.placeholder.PlaceholderProvider;
 
 import java.io.File;
 import java.time.Duration;
@@ -105,7 +103,7 @@ public class DKPermsPlugin extends MinecraftPlugin {
                 ,version.getBuild(),getLogger()
                 ,new DefaultMigrationAssistant()
                 ,new PDQStorage(getDatabaseOrCreate())
-                ,new DefaultAuditLog(false)
+                ,new DefaultAuditLog(DKPermsConfig.SECURITY_LOGGING_ENABLED)
                 ,scopeManager
                 ,objectManager
                 ,new MinecraftFormatter()
@@ -231,6 +229,7 @@ public class DKPermsPlugin extends MinecraftPlugin {
     }
 
     private void registerCommands(){
+        if(!DKPermsConfig.SECURITY_COMMANDS_ENABLED) return;
         getRuntime().getLocal().getCommandManager().registerCommand(new PermissionCommand(this,DKPermsConfig.COMMAND_PERMISSION));
         getRuntime().getLocal().getCommandManager().registerCommand(new RankCommand(this,DKPermsConfig.COMMAND_RANK));
         getRuntime().getLocal().getCommandManager().registerCommand(new TeamCommand(this,DKPermsConfig.COMMAND_TEAM));
@@ -276,7 +275,6 @@ public class DKPermsPlugin extends MinecraftPlugin {
             return object;
         }
     }
-
     private static class UserFactory implements PermissionHolderFactory {
 
         @Override
@@ -284,5 +282,4 @@ public class DKPermsPlugin extends MinecraftPlugin {
             return McNative.getInstance().getPlayerManager().getPlayer(object.getAssignmentId());
         }
     }
-
 }

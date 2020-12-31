@@ -14,7 +14,6 @@ import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.SyncAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
-import net.pretronic.libraries.logging.format.FormatHelper;
 import net.pretronic.libraries.synchronisation.observer.UnusedObservable;
 import net.pretronic.libraries.utility.SystemUtil;
 

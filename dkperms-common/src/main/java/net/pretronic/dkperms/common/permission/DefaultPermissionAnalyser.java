@@ -20,8 +20,6 @@ import java.util.function.Consumer;
 
 public class DefaultPermissionAnalyser implements PermissionAnalyser {
 
-    private static int MAXIMUM_SIZE = 10000;
-
     private boolean enabled;
     private final Collection<Consumer<PermissionRequest>> listeners;
     private final List<PermissionRequest> requests;
