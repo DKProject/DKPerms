@@ -16,7 +16,7 @@ String PROJECT_NAME = "DKPerms"
 
 boolean JAVADOCS_ENABLED = true
 String JAVADOCS_NAME = "dkperms"
-String JAVADOCS_MODULES = ":DKPerms,:dkperms-api,:dkperms-api-minecraft"
+String JAVADOCS_MODULES = ":DKPerms,:dkperms-api"
 
 def MIRROR_SERVER_PUBLISHING = [
         "dkperms-minecraft/target/dkperms-minecraft-%version%.jar": "default",
