@@ -12,10 +12,12 @@ package net.pretronic.dkperms.common.entity;
 
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.entity.ParentEntity;
+import net.pretronic.dkperms.api.logging.LogType;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.common.object.DefaultPermissionObject;
+import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.utility.Validate;
 
 public class DefaultPermissionParentEntity implements ParentEntity {
@@ -57,6 +59,8 @@ public class DefaultPermissionParentEntity implements ParentEntity {
     public void setAction(PermissionObject executor, PermissionAction action) {
         Validate.notNull(action);
         DKPerms.getInstance().getStorage().getParentStorage().updateParentReferenceAction(this.id,action);
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.ENTITY_PERMISSION,owner,this,"action",this.action.ordinal(),action.ordinal());
+        this.action = action;
     }
 
     @Override
@@ -69,6 +73,8 @@ public class DefaultPermissionParentEntity implements ParentEntity {
         Validate.notNull(scope);
         if(!scope.isSaved()) scope.insert();
         DKPerms.getInstance().getStorage().getParentStorage().updateParentReferenceScope(this.id,scope.getId());
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.ENTITY_PERMISSION,owner,this,"scope",this.scope.getId(),scope.getId());
+        this.scope = scope;
     }
 
 
@@ -85,6 +91,7 @@ public class DefaultPermissionParentEntity implements ParentEntity {
     @Override
     public void setTimeout(PermissionObject executor, long timeout) {
         DKPerms.getInstance().getStorage().getParentStorage().updateParentReferenceTimeout(this.id,timeout);
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.ENTITY_PERMISSION,owner,this,"timeout",this.timeout,timeout);
         this.timeout = timeout;
     }
 
@@ -101,9 +108,23 @@ public class DefaultPermissionParentEntity implements ParentEntity {
             }
         }
 
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.ENTITY_PERMISSION,owner,this,"scope",this.scope.getId(),scope.getId());
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.ENTITY_PERMISSION,owner,this,"action",this.action.ordinal(),action.ordinal());
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.ENTITY_PERMISSION,owner,this,"timeout",this.timeout,timeout);
+
         this.scope = scope;
         this.action = action;
         this.timeout = timeout;
+    }
+
+    @Override
+    public Document serializeRecord() {
+        Document document = Document.newDocument();
+        document.set("parentId",this.group.getId());
+        document.set("timeout",timeout);
+        document.set("action",this.action.ordinal());
+        document.set("scope",this.scope.getId());
+        return document;
     }
 
 }

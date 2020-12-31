@@ -22,6 +22,7 @@ public class MinecraftFormatter implements DKPermsFormatter {
         return DKPermsConfig.FORMAT_DATE.format(time);
     }
 
+
     @Override
     public String formatRemainingDuration(long timeout) {
         if(timeout <= 0) return DKPermsConfig.FORMAT_DATE_ENDLESSLY;

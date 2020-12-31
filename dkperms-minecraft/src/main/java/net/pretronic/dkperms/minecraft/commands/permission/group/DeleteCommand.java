@@ -33,7 +33,7 @@ public class DeleteCommand extends ObjectCommand<PermissionObject> {
                 .addDescribed("object",object));
         /*
         if(arguments.length == 1 && arguments[0].equalsIgnoreCase("confirm")){
-            object.delete(null);//@Todo add executor
+            object.delete(null);//@Todo update scope deletion
             sender.sendMessage(Messages.GROUP_DELETED, VariableSet.create()
                     .addDescribed("group",object)
                     .addDescribed("object",object));

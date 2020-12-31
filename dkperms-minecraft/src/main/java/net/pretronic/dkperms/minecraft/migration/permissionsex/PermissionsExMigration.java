@@ -11,7 +11,7 @@
 package net.pretronic.dkperms.minecraft.migration.permissionsex;
 
 import net.pretronic.dkperms.api.migration.PermissionMigration;
-import org.bukkit.Bukkit;
+import org.mcnative.runtime.api.McNative;
 
 public class PermissionsExMigration implements PermissionMigration {
 
@@ -27,7 +27,7 @@ public class PermissionsExMigration implements PermissionMigration {
 
     @Override
     public boolean isAvailable() {
-        return Bukkit.getPluginManager().getPlugin("PermissionsEx") != null;
+        return McNative.getInstance().getPluginManager().getPlugin("PermissionsEx") != null;
     }
 
     @Override

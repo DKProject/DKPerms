@@ -15,7 +15,7 @@
     <parent>
         <artifactId>DKPerms</artifactId>
         <groupId>net.pretronic.dkperms</groupId>
-        <version>1.4.5.155-BETA</version>
+        <version>1.5.16.179-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -34,9 +34,9 @@
             </plugin>
 
             <plugin>
-                <groupId>org.mcnative</groupId>
+                <groupId>org.mcnative.buildtool</groupId>
                 <artifactId>mcnative-buildtool-maven</artifactId>
-                <version>${dependency.mcnative.version}</version>
+                <version>${dependency.mcnative.buildtool}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -46,23 +46,18 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mcnative-loader-version>${dependency.mcnative.version}</mcnative-loader-version>
+                    <mcnative-loader-version>${dependency.mcnative.loader}</mcnative-loader-version>
                     <resource-loader-version>${dependency.pretronic.libraries}</resource-loader-version>
 
                     <manifest>
                         <name>DKPerms</name>
                         <id>19303be6-0b2d-11eb-9f43-0242ac180002</id>
-                        <category>Network Management</category>
                         <version>${project.version}</version>
                         <main>net.pretronic.dkperms.minecraft.DKPermsPlugin</main>
                         <website>https://pretronic.net</website>
                         <author>Pretronic</author>
                         <messageModule>DKPerms</messageModule>
                     </manifest>
-
-                    <loader>
-                        <version>${project.version}</version>
-                    </loader>
                 </configuration>
             </plugin>
 
@@ -72,6 +67,14 @@
                 <version>${plugin.maven.shade}</version>
                 <configuration>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/maven/**</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
                 </configuration>
                 <executions>
                     <execution>
@@ -157,35 +160,29 @@
         </dependency>
         <dependency>
             <groupId>net.pretronic.dkperms</groupId>
-            <artifactId>dkperms-api-minecraft</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.pretronic.dkperms</groupId>
             <artifactId>dkperms-common</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.mcnative</groupId>
-            <artifactId>mcnative-build</artifactId>
-            <version>${dependency.mcnative.version}</version>
+            <groupId>org.mcnative.runtime.api</groupId>
+            <artifactId>mcnative-runtime-api-service</artifactId>
+            <version>${dependency.mcnative.api}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.mcnative</groupId>
-            <artifactId>mcnative-service</artifactId>
-            <version>${dependency.mcnative.version}</version>
+            <groupId>org.mcnative.runtime</groupId>
+            <artifactId>mcnative-runtime-build</artifactId>
+            <version>${dependency.mcnative.runtime}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.mcnative</groupId>
+            <groupId>org.mcnative.licensing</groupId>
             <artifactId>mcnative-licensing</artifactId>
-            <version>${dependency.mcnative.version}</version>
+            <version>${dependency.mcnative.licensing}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -202,46 +199,46 @@
         <dependency>
             <groupId>ru.tehkode</groupId>
             <artifactId>PermissionsEx</artifactId>
-            <version>1.23.5-SNAPSHOT</version>
+            <version>${dependency.pex}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet-api-bridge</artifactId>
-            <version>2.1.17</version>
+            <version>${dependency.cloudnet.v2}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet-bridge</artifactId>
-            <version>3.3.0-RELEASE</version>
+            <version>${dependency.cloudnet.v3}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet-wrapper-jvm</artifactId>
-            <version>3.3.0-RELEASE</version>
+            <version>${dependency.cloudnet.v3}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet-driver</artifactId>
-            <version>3.3.0-RELEASE</version>
+            <version>${dependency.cloudnet.v3}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>de.dytanic.cloudnet</groupId>
             <artifactId>cloudnet-cloudperms</artifactId>
-            <version>3.3.0-RELEASE</version>
+            <version>${dependency.cloudnet.v3}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>net.luckperms</groupId>
             <artifactId>api</artifactId>
-            <version>5.0</version>
+            <version>${dependency.luckperms}</version>
             <scope>provided</scope>
         </dependency>
 

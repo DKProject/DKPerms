@@ -175,6 +175,7 @@ public class DefaultPermissionScope implements PermissionScope, VariableObjectTo
         return DKPerms.getInstance().getExecutor().executeVoid(() -> rename(key, name));
     }
 
+    /*
     @Override
     public void delete() {
         this.children.forEach(PermissionScope::delete);
@@ -187,6 +188,7 @@ public class DefaultPermissionScope implements PermissionScope, VariableObjectTo
     public CompletableFuture<Void> deleteAsync() {
         return DKPerms.getInstance().getExecutor().executeVoid(this::delete);
     }
+     */
 
     @Override
     public void move(PermissionScope newParent) {

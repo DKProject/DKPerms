@@ -40,7 +40,7 @@ public class CreateCommand extends ObjectCommand<String> {
             return;
         }
 
-        object = DKPerms.getInstance().getObjectManager().createObject(scope, PermissionObjectType.GROUP,name);
+        object = DKPerms.getInstance().getObjectManager().createObject(CommandUtil.getExecutor(sender),scope, PermissionObjectType.GROUP,name);
 
         sender.sendMessage(Messages.GROUP_CREATED, VariableSet.create()
                 .addDescribed("group",object)

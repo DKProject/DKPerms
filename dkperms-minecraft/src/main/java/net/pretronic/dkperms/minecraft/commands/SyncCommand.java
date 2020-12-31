@@ -2,13 +2,13 @@
  * (C) Copyright 2020 The DKPerms Project (Davide Wietlisbach & Philipp Elvin Friedhoff)
  *
  * @author Davide Wietlisbach
- * @since 19.04.20, 13:31
+ * @since 15.12.20, 18:39
  * @website %web%
  *
  * %license%
  */
 
-package net.pretronic.dkperms.minecraft.commands.permission;
+package net.pretronic.dkperms.minecraft.commands;
 
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.minecraft.config.Messages;

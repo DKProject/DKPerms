@@ -29,9 +29,9 @@ import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.dkperms.minecraft.migration.MigrationUtil;
 import net.pretronic.libraries.utility.exception.OperationFailedException;
 import net.pretronic.libraries.utility.map.caseintensive.CaseIntensiveHashMap;
-import org.mcnative.common.McNative;
-import org.mcnative.common.player.MinecraftPlayer;
-import org.mcnative.common.player.data.PlayerDataProvider;
+import org.mcnative.runtime.api.McNative;
+import org.mcnative.runtime.api.player.MinecraftPlayer;
+import org.mcnative.runtime.api.player.data.PlayerDataProvider;
 
 import java.util.List;
 import java.util.Map;
@@ -83,7 +83,7 @@ public class CloudNetV2CPermsMigrationExecutor implements MigrationExecutor {
             for (Map.Entry<String, Object> entry : group.getOptions().entrySet()) {
                 object.getMeta().set(admin,entry.getKey(),entry.getValue(),0,object.getScope(), Entity.PERMANENTLY);
             }
-            
+
             migratedGroups.put(group.getName(),object);
         }
 

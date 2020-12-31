@@ -2,13 +2,13 @@
  * (C) Copyright 2020 The DKPerms Project (Davide Wietlisbach & Philipp Elvin Friedhoff)
  *
  * @author Davide Wietlisbach
- * @since 30.05.20, 20:39
+ * @since 15.12.20, 18:39
  * @website %web%
  *
  * %license%
  */
 
-package net.pretronic.dkperms.minecraft.commands.permission;
+package net.pretronic.dkperms.minecraft.commands;
 
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.migration.PermissionMigration;
@@ -20,7 +20,7 @@ import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.synchronisation.SynchronisationCaller;
 import net.pretronic.libraries.synchronisation.UnconnectedSynchronisationCaller;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
-import org.mcnative.common.McNative;
+import org.mcnative.runtime.api.McNative;
 
 public class MigrationCommand extends BasicCommand {
 

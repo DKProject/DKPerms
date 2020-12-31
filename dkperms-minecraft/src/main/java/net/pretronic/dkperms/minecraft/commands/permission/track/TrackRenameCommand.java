@@ -32,7 +32,7 @@ public class TrackRenameCommand extends ObjectCommand<PermissionObjectTrack> {
             return;
         }
         String oldName = track.getName();
-        track.setName(arguments[0]);
+        track.setName(CommandUtil.getExecutor(sender),arguments[0]);
         sender.sendMessage(Messages.TRACK_RENAMED, VariableSet.create()
                 .addDescribed("track",track)
                 .add("oldName",oldName)

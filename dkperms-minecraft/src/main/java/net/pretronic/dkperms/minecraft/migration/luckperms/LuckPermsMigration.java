@@ -11,7 +11,7 @@
 package net.pretronic.dkperms.minecraft.migration.luckperms;
 
 import net.pretronic.dkperms.api.migration.PermissionMigration;
-import org.bukkit.Bukkit;
+import org.mcnative.runtime.api.McNative;
 
 public class LuckPermsMigration implements PermissionMigration {
 
@@ -27,7 +27,7 @@ public class LuckPermsMigration implements PermissionMigration {
 
     @Override
     public boolean isAvailable() {
-        return Bukkit.getPluginManager().getPlugin("LuckPerms") != null;
+        return McNative.getInstance().getPluginManager().getPlugin("LuckPerms") != null;
     }
 
     @Override

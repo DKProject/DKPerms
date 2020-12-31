@@ -15,7 +15,6 @@ import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.document.annotations.DocumentIgnored;
 import net.pretronic.libraries.document.annotations.DocumentKey;
-import org.mcnative.common.McNative;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -60,7 +59,8 @@ public class DKPermsConfig {
 
     //Security Configuration
 
-    public static boolean SECURITY_COMMANDS_ENABLED = McNative.getInstance().getPlatform().isProxy() || !McNative.getInstance().isNetworkAvailable();
+    public static boolean SECURITY_LOGGING_ENABLED = true;
+    public static boolean SECURITY_COMMANDS_ENABLED = true;
     public static boolean SECURITY_OPERATOR_ENABLED = false;
     public static boolean SECURITY_RESTRICTED_ENABLED = false;
     public static Collection<String> SECURITY_RESTRICTED_USERS = Arrays.asList("Dkrieger","cb7f0812-1fbb-4715-976e-a81e52be4b67");
@@ -75,7 +75,7 @@ public class DKPermsConfig {
     public static String DELETE_TIMED_OUT_ENTRIES_INTERVAL = "30m";
 
     @DocumentKey("format.date.pattern")
-    public static String FORMAT_DATE_PATTERN = "dd.MM.yyyy hh:mm";
+    public static String FORMAT_DATE_PATTERN = "dd-MM-yyyy HH:mm";
 
     public static String FORMAT_DATE_ENDLESSLY = "-";
 

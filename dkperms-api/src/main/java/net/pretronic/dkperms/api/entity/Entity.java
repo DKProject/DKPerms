@@ -11,6 +11,7 @@
 package net.pretronic.dkperms.api.entity;
 
 import net.pretronic.dkperms.api.TimeoutAble;
+import net.pretronic.dkperms.api.logging.Loggable;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.api.scope.PermissionScope;
@@ -18,7 +19,7 @@ import net.pretronic.dkperms.api.scope.PermissionScope;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-public interface Entity extends TimeoutAble {
+public interface Entity extends TimeoutAble, Loggable {
 
     Duration PERMANENTLY = TimeoutAble.PERMANENTLY;
 

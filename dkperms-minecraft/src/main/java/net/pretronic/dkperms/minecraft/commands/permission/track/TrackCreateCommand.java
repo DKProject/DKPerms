@@ -39,7 +39,7 @@ public class TrackCreateCommand extends ObjectCommand<String> {
             return;
         }
 
-        PermissionObjectTrack track = DKPerms.getInstance().getObjectManager().createTrack(name, DKPermsConfig.OBJECT_TRACK_SCOPE);
+        PermissionObjectTrack track = DKPerms.getInstance().getObjectManager().createTrack(CommandUtil.getExecutor(sender),name, DKPermsConfig.OBJECT_TRACK_SCOPE);
         sender.sendMessage(Messages.TRACK_CREATED, VariableSet.create()
                 .addDescribed("track",track));
     }

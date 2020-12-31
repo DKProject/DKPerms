@@ -17,6 +17,7 @@ import net.pretronic.dkperms.api.graph.Graph;
 import net.pretronic.dkperms.api.graph.ObjectGraph;
 import net.pretronic.dkperms.api.graph.ParentGraph;
 import net.pretronic.dkperms.api.graph.PermissionGraph;
+import net.pretronic.dkperms.api.logging.Loggable;
 import net.pretronic.dkperms.api.object.meta.ObjectMeta;
 import net.pretronic.dkperms.api.object.search.ObjectSearchResult;
 import net.pretronic.dkperms.api.permission.PermissionAction;
@@ -34,7 +35,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-public interface PermissionObject extends Observable<PermissionObject,SyncAction> {
+public interface PermissionObject extends Loggable,Observable<PermissionObject,SyncAction> {
 
     int getId();
 

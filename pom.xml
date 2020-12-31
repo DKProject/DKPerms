@@ -17,13 +17,12 @@
     <groupId>net.pretronic.dkperms</groupId>
     <artifactId>DKPerms</artifactId>
     <packaging>pom</packaging>
-    <version>1.4.5.155-BETA</version>
+    <version>1.5.16.179-SNAPSHOT</version>
 
     <modules>
         <module>dkperms-api</module>
         <module>dkperms-common</module>
         <module>dkperms-minecraft</module>
-        <module>dkperms-api-minecraft</module>
         <module>dkperms-legacy</module>
     </modules>
 
@@ -53,9 +52,20 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependency version -->
-        <dependency.pretronic.libraries>1.2.24.162-SNAPSHOT</dependency.pretronic.libraries>
-        <dependency.mcnative.version>1.6.48.404-SNAPSHOT</dependency.mcnative.version>
+        <dependency.pretronic.libraries>1.2.37.175-SNAPSHOT</dependency.pretronic.libraries>
         <dependency.pretronic.databasequery>1.2.43.70-SNAPSHOT</dependency.pretronic.databasequery>
+
+        <dependency.mcnative.runtime>1.7.80.7-SNAPSHOT</dependency.mcnative.runtime>
+        <dependency.mcnative.api>1.0.6.13-SNAPSHOT</dependency.mcnative.api>
+        <dependency.mcnative.licensing>1.0.0.2-SNAPSHOT</dependency.mcnative.licensing>
+        <dependency.mcnative.buildtool>1.0.0.5</dependency.mcnative.buildtool>
+        <dependency.mcnative.loader>1.7.75.9</dependency.mcnative.loader>
+
+        <dependency.cloudnet.v2>2.1.17</dependency.cloudnet.v2>
+        <dependency.cloudnet.v3>3.3.0-RELEASE</dependency.cloudnet.v3>
+        <dependency.pex>1.23.5-SNAPSHOT</dependency.pex>
+        <dependency.luckperms>5.0</dependency.luckperms>
+
 
         <dependency.hikaricp>3.4.1</dependency.hikaricp>
         <dependency.mariadb.driver>2.4.1</dependency.mariadb.driver>

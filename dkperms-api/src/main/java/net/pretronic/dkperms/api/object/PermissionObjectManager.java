@@ -111,9 +111,9 @@ public interface PermissionObjectManager {
 
     PermissionObjectTrack getTrack(String name, PermissionScope scope);
 
-    PermissionObjectTrack createTrack(String name, PermissionScope scope);
+    PermissionObjectTrack createTrack(PermissionObject executor, String name, PermissionScope scope);
 
-    void deleteTrack(PermissionObjectTrack track);
+    void deleteTrack(PermissionObject executor,PermissionObjectTrack track);
 
 
     void sync();

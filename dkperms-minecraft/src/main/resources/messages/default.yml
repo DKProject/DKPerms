@@ -16,11 +16,11 @@ messages:
   &7/perms group &8- &7For more group information
   &7/perms user &8- &7For more user information'
 
-  dkperms.command.invalid.syntax: '${dkperms.prefix} &cInvalid usage of &e{command} &ccommand.
+  dkperms.command.invalid.syntax: '${dkperms.prefix} &cInvalid usage of &e{command} &ccommand
   &8» &7{usage}'
-  dkperms.sender.only.console: '${dkperms.prefix} &cThis command can only be executed from console.'
-  dkperms.scope.invalid: '${dkperms.prefix} &cThe scope &e{scope} &cis not valid.'
-  dkperms.scope.notfound: '${dkperms.prefix} &cThe scope &e{scope} &cwas not found.'
+  dkperms.sender.only.console: '${dkperms.prefix} &cThis command can only be executed from console'
+  dkperms.scope.invalid: '${dkperms.prefix} &cThe scope &e{scope} &cis not valid'
+  dkperms.scope.notfound: '${dkperms.prefix} &cThe scope &e{scope} &cwas not found'
 
   dkperms.object.meta.help: '${dkperms.prefix} &7Meta commands&8:
   &7/perms {type} <name>
@@ -112,13 +112,14 @@ messages:
   dkperms.object.group.check: '${dkperms.prefix} &7Checked group &e{group.name} &7for &e{object.displayName}  @for("entity" in {result.entries},${dkperms.object.group.check.loop},"\n","\n")
   &8» &7Result&8: &e{result.finalAction}'
   dkperms.object.group.check.loop: ' &8- &7{entity.group.name} &e{entity.action}'
+  dkperms.object.group.priority.set: '${dkperms.prefix} &7The priority of group &e{group.name} &7was set to &e${priority}'
 
   dkperms.user.help: '${dkperms.prefix} &7Group commands&8:
   &7/perms user <name>
    &8- &7permission &8- &7Manage group permissions
    &8- &7meta &8- &7Manage group metas
    &8- &7group &8- &7Manage inheritance groups'
-  dkperms.user.notfound: '${dkperms.prefix} &cThe user &c{user} &cwas not found.'
+  dkperms.user.notfound: '${dkperms.prefix} &cThe user &c{user} &cwas not found'
   dkperms.user.info: '${dkperms.prefix} &7Player information
   &8» &7Id&8: &e{user.id}
   &8» &7Name&8: &e{snapshot.property.color}{user.name}
@@ -143,7 +144,7 @@ messages:
    &8- &7meta &8- &7Manage group metas
    &8- &7group &8- &7Manage inheritance groups
    &8- &7priority <priority>&8- &7Set the priority of the group'
-  dkperms.group.notfound: '${dkperms.prefix} &cThe group &e{group} &cwas not found.'
+  dkperms.group.notfound: '${dkperms.prefix} &cThe group &e{group} &cwas not found'
   dkperms.group.info: '${dkperms.prefix} &7Group information
   &8» &7Id&8: &e{group.id}
   &8» &7Name&8: &e{group.property.color}{group.name}
@@ -161,12 +162,12 @@ messages:
   &8» &7Inheritance Groups&8:
   @for("subGroup" in {group.globalGroups},${dkperms.group.info.groups.loop},"\n")'
   dkperms.group.info.groups.loop: '  &8- {subGroup.property.color}{subGroup.name}'
-  dkperms.group.alreadyExists: '${dkperms.prefix} &7The group &e{name} &7does already exist.'
+  dkperms.group.alreadyExists: '${dkperms.prefix} &7The group &e{name} &7does already exist'
   dkperms.group.created: '${dkperms.prefix} &7The group &e{group.name} &7was created'
   dkperms.group.delete.confirm: '${dkperms.prefix} &7Are you sure to delete the group &e{group.name}&7? !["&8[&eConfirm&8]"]("run://perms group delete confirm")'
   dkperms.group.deleted: '${dkperms.prefix} &7The group &e{group.name} &7was deleted'
-  dkperms.group.renamed: '${dkperms.prefix} &7The group &e{oldName} &7was renamed to &e{newName}&7.'
-  dkperms.group.copy: '${dkperms.prefix} &7The group &e{object.name} &7was copied to &e{newObject.name}&7.'
+  dkperms.group.renamed: '${dkperms.prefix} &7The group &e{oldName} &7was renamed to &e{newName}&7'
+  dkperms.group.copy: '${dkperms.prefix} &7The group &e{object.name} &7was copied to &e{newObject.name}&7'
   dkperms.group.list: '${dkperms.prefix} &7Available permission groups&8:
   &8» &7Scope&8: &e{scope} @for("group" in {groups},${dkperms.group.list.loop},"\n","\n")'
   dkperms.group.list.loop: '&8- &7{group.displayName}'
@@ -184,9 +185,9 @@ messages:
    &7insert <group> <id>
    &7remove <group>
    &7clear'
-  dkperms.track.alreadyExists: '${dkperms.prefix} &7A track with the &e{name} &7does already exist.'
-  dkperms.track.alreadyContains: '${dkperms.prefix} &7A track with the &e{name} &7does already exist.'
-  dkperms.track.notFound: '${dkperms.prefix} &7The track &e{name} &7was not found.'
+  dkperms.track.alreadyExists: '${dkperms.prefix} &7A track with the &e{name} &7does already exist'
+  dkperms.track.alreadyContains: '${dkperms.prefix} &7A track with the &e{name} &7does already exist'
+  dkperms.track.notFound: '${dkperms.prefix} &7The track &e{name} &7was not found'
   dkperms.track.list: '${dkperms.prefix} &7Available tracks @for("track" in {tracks},${dkperms.track.list.loop},"\n")'
   dkperms.track.list.loop: ' &8- &7{track.name}'
   dkperms.track.created: '${dkperms.prefix} &7The track &e{track.name} &7was created'

@@ -13,6 +13,7 @@ package net.pretronic.dkperms.common.object;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.api.scope.PermissionScope;
+import net.pretronic.libraries.document.Document;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -38,7 +39,7 @@ public class PriorityObjectTrack implements PermissionObjectTrack {
     }
 
     @Override
-    public void setName(String name) {
+    public void setName(PermissionObject executor,String name) {
         throw new UnsupportedOperationException("A priority track can not be modified");
     }
 
@@ -48,7 +49,7 @@ public class PriorityObjectTrack implements PermissionObjectTrack {
     }
 
     @Override
-    public void setScope(PermissionScope scope) {
+    public void setScope(PermissionObject executor,PermissionScope scope) {
         throw new UnsupportedOperationException("A priority track can not be modified");
     }
 
@@ -58,22 +59,22 @@ public class PriorityObjectTrack implements PermissionObjectTrack {
     }
 
     @Override
-    public void addBefore(PermissionObject object) {
+    public void addBefore(PermissionObject executor,PermissionObject object) {
         throw new UnsupportedOperationException("A priority track can not be modified");
     }
 
     @Override
-    public void addAfter(PermissionObject object) {
+    public void addAfter(PermissionObject executor,PermissionObject object) {
         throw new UnsupportedOperationException("A priority track can not be modified");
     }
 
     @Override
-    public void addGroup(PermissionObject object, int position) {
+    public void addGroup(PermissionObject executor,PermissionObject object, int position) {
         throw new UnsupportedOperationException("A priority track can not be modified");
     }
 
     @Override
-    public void removeGroup(PermissionObject object) {
+    public void removeGroup(PermissionObject executor,PermissionObject object) {
         throw new UnsupportedOperationException("A priority track can not be modified");
     }
 
@@ -111,13 +112,17 @@ public class PriorityObjectTrack implements PermissionObjectTrack {
         while (objects.hasNext()){
             if(objects.next().equals(object)) return objects.previous();
         }
-
         return null;
     }
-
 
     @Override
     public int size() {
         return groups.size();
     }
+
+    @Override
+    public Document serializeRecord() {
+        throw new UnsupportedOperationException("A priority track can not be modified");
+    }
+
 }

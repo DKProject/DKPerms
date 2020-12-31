@@ -29,31 +29,21 @@ public interface AuditLog {
 
     //LogId | Time | ExecutorId | Type | Action | ObjectId | ScopeId | Field | OldValue | NewValue
 
-    void createRecord(PermissionObject executor, LogType type, LogAction action, int owner,int key, String field,Object oldValue,Object newValue, Object data);
+    void createRecord(PermissionObject executor, LogType type, LogAction action, PermissionObject owner,Loggable object, String field,Object oldValue,Object newValue);
 
-    void createRecordAsync(PermissionObject executor, LogType type, LogAction action, int owner,int key, String field,Object oldValue,Object newValue,Object data);
+    void createRecordAsync(PermissionObject executor, LogType type, LogAction action, PermissionObject owner,Loggable object, String field,Object oldValue,Object newValue);
 
 
-    default void createUpdateRecordAsync(PermissionObject executor, LogType type, int owner,int key, String field,Object oldValue,Object newValue,Object data){
-        createRecordAsync(executor,type,LogAction.UPDATE,owner,key,field,oldValue,newValue,data);
+    default void createUpdateRecordAsync(PermissionObject executor, LogType type, PermissionObject owner,Loggable object, String field,Object oldValue,Object newValue){
+        createRecordAsync(executor,type,LogAction.UPDATE,owner,object,field,oldValue,newValue);
     }
 
-    default void createCreateRecordAsync(PermissionObject executor, LogType type, int owner,int key,Object data){
-        createRecordAsync(executor,type,LogAction.CREATE,owner,key,null,null,null,data);
+    default void createCreateRecordAsync(PermissionObject executor, LogType type, PermissionObject owner,Loggable object){
+        createRecordAsync(executor,type,LogAction.CREATE,owner,object,null,null,null);
     }
 
-    default void createDeleteRecordAsync(PermissionObject executor, LogType type, int owner,int key,Object data){
-        createRecordAsync(executor,type,LogAction.CREATE,owner,key,null,null,null,data);
+    default void createDeleteRecordAsync(PermissionObject executor, LogType type, PermissionObject owner,Loggable object){
+        createRecordAsync(executor,type,LogAction.DELETE,owner,object,null,null,null);
     }
-
-
-
-
-
-    //LogId | Time | ExecutorId | Type | DELETE | ObjectId | Id | Name | Hallo | "Test"
-    //LogId | Time | ExecutorId | Type | DELETE | ObjectId | Id | Disabled | Hallo | "Test"
-    //LogId | Time | ExecutorId | Type | UPDATE | ObjectId | Id | Name | Hallo | "Test"
-    //LogId | Time | ExecutorId | Type | CREATE | ObjectId | Id | Name | null | "Hallo"
-
 
 }

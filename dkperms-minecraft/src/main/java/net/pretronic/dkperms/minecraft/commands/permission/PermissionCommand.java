@@ -2,7 +2,7 @@
  * (C) Copyright 2020 The DKPerms Project (Davide Wietlisbach & Philipp Elvin Friedhoff)
  *
  * @author Davide Wietlisbach
- * @since 19.01.20, 12:47
+ * @since 19.12.20, 21:58
  * @website %web%
  *
  * %license%
@@ -10,6 +10,10 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission;
 
+import net.pretronic.dkperms.minecraft.commands.AnalyseCommand;
+import net.pretronic.dkperms.minecraft.commands.InfoCommand;
+import net.pretronic.dkperms.minecraft.commands.MigrationCommand;
+import net.pretronic.dkperms.minecraft.commands.SyncCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.group.GroupMainCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.group.ListCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.track.TrackMainCommand;
@@ -22,9 +26,9 @@ import net.pretronic.libraries.command.command.MainCommand;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
-import org.mcnative.common.McNative;
-import org.mcnative.common.player.MinecraftPlayer;
-import org.mcnative.common.player.OnlineMinecraftPlayer;
+import org.mcnative.runtime.api.McNative;
+import org.mcnative.runtime.api.player.MinecraftPlayer;
+import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 
 public class PermissionCommand extends MainCommand implements NotFindable, NoPermissionAble {
 

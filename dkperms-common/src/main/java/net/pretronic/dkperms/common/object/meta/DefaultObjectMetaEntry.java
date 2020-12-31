@@ -11,7 +11,6 @@
 package net.pretronic.dkperms.common.object.meta;
 
 import net.pretronic.dkperms.api.DKPerms;
-import net.pretronic.dkperms.api.logging.LogAction;
 import net.pretronic.dkperms.api.logging.LogType;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.SyncAction;
@@ -82,7 +81,7 @@ public class DefaultObjectMetaEntry implements ObjectMetaEntry {
     public void setTimeout(PermissionObject executor, long timeout) {
         DKPerms.getInstance().getStorage().getObjectStorage().updateMetaTimeout(id,timeout);
         executeMetaSync(scope);
-        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_META, LogAction.UPDATE,id,id,"Timeout",this.timeout,timeout,this);
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.ENTITY_META,owner,this,"Timeout",this.timeout,timeout);
         this.timeout = timeout;
     }
 
@@ -133,7 +132,7 @@ public class DefaultObjectMetaEntry implements ObjectMetaEntry {
         DKPerms.getInstance().getStorage().getObjectStorage().updateMetaScope(id,scope.getId());
         executeMetaSync(scope);
         executeMetaSync(this.scope);
-        DKPerms.getInstance().getAuditLog().createRecordAsync(executor, LogType.ENTITY_META, LogAction.UPDATE,id,id,"Scope",this.scope.getId(),scope.getId(),this);
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.ENTITY_META,owner,this,"scope",this.scope.getId(),scope.getId());
         this.scope = scope;
     }
 
@@ -141,6 +140,7 @@ public class DefaultObjectMetaEntry implements ObjectMetaEntry {
     public void setValue(PermissionObject executor,Object value) {
         Objects.requireNonNull(value,"Value can't be null");
         DKPerms.getInstance().getStorage().getObjectStorage().updateMetaValue(id,value.toString());
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.ENTITY_META,owner,this,"value",this.value,value);
         this.value = value;
         executeMetaSync(scope);
     }
@@ -153,6 +153,7 @@ public class DefaultObjectMetaEntry implements ObjectMetaEntry {
     @Override
     public void setPriority(PermissionObject executor, int priority) {
         DKPerms.getInstance().getStorage().getObjectStorage().updateObjectPriority(id,priority);
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.ENTITY_META,owner,this,"priority",this.priority,priority);
         this.priority = priority;
         executeMetaSync(scope);
     }
@@ -168,6 +169,10 @@ public class DefaultObjectMetaEntry implements ObjectMetaEntry {
         DKPerms.getInstance().getStorage().getObjectStorage().updateMeta(id,scope.getId(),value.toString(),priority,timeout);
         executeMetaSync(scope);
         if(scope != this.scope) executeMetaSync(this.scope);
+
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.ENTITY_META,owner,this,"scope",this.scope.getId(),scope.getId());
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.ENTITY_META,owner,this,"priority",this.priority,priority);
+        DKPerms.getInstance().getAuditLog().createUpdateRecordAsync(executor, LogType.ENTITY_META,owner,this,"value",this.value,value);
 
         this.value = value;
         this.scope = scope;
@@ -204,4 +209,16 @@ public class DefaultObjectMetaEntry implements ObjectMetaEntry {
         }
         return false;
     }
+
+    @Override
+    public Document serializeRecord() {
+        Document document = Document.newDocument();
+        document.set("key",this.key);
+        document.set("value",this.value);
+        document.set("priority",this.priority);
+        document.set("timeout",this.timeout);
+        document.set("scope",this.scope.getId());
+        return document;
+    }
+
 }

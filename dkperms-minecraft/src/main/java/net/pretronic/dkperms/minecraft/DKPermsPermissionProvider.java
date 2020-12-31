@@ -18,9 +18,9 @@ import net.pretronic.dkperms.api.permission.PermissionAction;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.libraries.logging.PretronicLogger;
 import net.pretronic.libraries.utility.Iterators;
-import org.mcnative.common.player.MinecraftPlayer;
-import org.mcnative.common.serviceprovider.permission.PermissionHandler;
-import org.mcnative.common.serviceprovider.permission.PermissionProvider;
+import org.mcnative.runtime.api.player.MinecraftPlayer;
+import org.mcnative.runtime.api.serviceprovider.permission.PermissionHandler;
+import org.mcnative.runtime.api.serviceprovider.permission.PermissionProvider;
 
 import java.util.Collection;
 
