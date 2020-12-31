@@ -283,5 +283,4 @@ public class DKPermsPlugin extends MinecraftPlugin {
             return McNative.getInstance().getPlayerManager().getPlayer(object.getAssignmentId());
         }
     }
-
 }
