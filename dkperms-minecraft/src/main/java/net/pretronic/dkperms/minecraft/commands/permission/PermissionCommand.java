@@ -26,9 +26,9 @@ import net.pretronic.libraries.command.command.MainCommand;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
-import org.mcnative.common.McNative;
-import org.mcnative.common.player.MinecraftPlayer;
-import org.mcnative.common.player.OnlineMinecraftPlayer;
+import org.mcnative.runtime.api.McNative;
+import org.mcnative.runtime.api.player.MinecraftPlayer;
+import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 
 public class PermissionCommand extends MainCommand implements NotFindable, NoPermissionAble {
 

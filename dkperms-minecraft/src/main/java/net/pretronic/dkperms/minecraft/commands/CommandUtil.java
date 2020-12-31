@@ -22,7 +22,7 @@ import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.duration.DurationProcessor;
-import org.mcnative.common.player.MinecraftPlayer;
+import org.mcnative.runtime.api.player.MinecraftPlayer;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;

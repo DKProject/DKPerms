@@ -95,19 +95,11 @@
         </dependency>
 
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>${test.junit.jupiter}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>net.pretronic.databasequery</groupId>
             <artifactId>pretronicdatabasequery-sql</artifactId>
             <version>${dependency.pretronic.databasequery}</version>
             <scope>test</scope>
         </dependency>
-
 
     </dependencies>
 

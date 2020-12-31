@@ -16,10 +16,10 @@ import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.libraries.event.Listener;
-import org.mcnative.common.player.MinecraftPlayer;
-import org.mcnative.service.event.player.MinecraftPlayerJoinEvent;
-import org.mcnative.service.event.player.MinecraftPlayerWorldChangedEvent;
-import org.mcnative.service.world.World;
+import org.mcnative.runtime.api.player.MinecraftPlayer;
+import org.mcnative.runtime.api.service.event.player.MinecraftPlayerJoinEvent;
+import org.mcnative.runtime.api.service.event.player.MinecraftPlayerWorldChangedEvent;
+import org.mcnative.runtime.api.service.world.World;
 
 import java.util.Collection;
 

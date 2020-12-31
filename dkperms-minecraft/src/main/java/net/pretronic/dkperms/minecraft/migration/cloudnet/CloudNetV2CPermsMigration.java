@@ -11,7 +11,7 @@
 package net.pretronic.dkperms.minecraft.migration.cloudnet;
 
 import net.pretronic.dkperms.api.migration.PermissionMigration;
-import org.bukkit.Bukkit;
+import org.mcnative.runtime.api.McNative;
 
 public class CloudNetV2CPermsMigration implements PermissionMigration {
 
@@ -27,7 +27,7 @@ public class CloudNetV2CPermsMigration implements PermissionMigration {
 
     @Override
     public boolean isAvailable() {
-        return Bukkit.getPluginManager().getPlugin("CloudNetAPI") != null;
+        return McNative.getInstance().getPluginManager().getPlugin("CloudNetAPI") != null;
     }
 
     @Override

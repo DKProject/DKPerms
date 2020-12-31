@@ -13,10 +13,10 @@ package net.pretronic.dkperms.minecraft;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
-import org.mcnative.common.player.PlayerDesign;
+import org.mcnative.runtime.api.player.PlayerDesign;
 
 public class DKPermsPlayerDesign implements PlayerDesign {
-    
+
     private final PermissionObject object;
 
     public DKPermsPlayerDesign(PermissionObject object) {

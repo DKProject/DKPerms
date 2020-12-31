@@ -12,8 +12,8 @@ package net.pretronic.dkperms.minecraft.integration;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
-import org.mcnative.common.player.MinecraftPlayer;
-import org.mcnative.common.serviceprovider.placeholder.PlaceholderHook;
+import org.mcnative.runtime.api.player.MinecraftPlayer;
+import org.mcnative.runtime.api.serviceprovider.placeholder.PlaceholderHook;
 
 public class DKPermsPlaceholders implements PlaceholderHook {
 

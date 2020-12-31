@@ -20,7 +20,7 @@ import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.synchronisation.SynchronisationCaller;
 import net.pretronic.libraries.synchronisation.UnconnectedSynchronisationCaller;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
-import org.mcnative.common.McNative;
+import org.mcnative.runtime.api.McNative;
 
 public class MigrationCommand extends BasicCommand {
 
