@@ -15,7 +15,7 @@
     <parent>
         <artifactId>DKPerms</artifactId>
         <groupId>net.pretronic.dkperms</groupId>
-        <version>1.5.14.175-SNAPSHOT</version>
+        <version>1.5.15.176-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -155,12 +155,6 @@
         <dependency>
             <groupId>net.pretronic.dkperms</groupId>
             <artifactId>dkperms-api</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.pretronic.dkperms</groupId>
-            <artifactId>dkperms-api-minecraft</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
