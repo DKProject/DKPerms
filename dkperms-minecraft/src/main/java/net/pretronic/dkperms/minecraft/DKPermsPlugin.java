@@ -275,7 +275,6 @@ public class DKPermsPlugin extends MinecraftPlugin {
             return object;
         }
     }
-
     private static class UserFactory implements PermissionHolderFactory {
 
         @Override
