@@ -57,7 +57,7 @@
 
         <dependency.mcnative.runtime>1.7.80.7-SNAPSHOT</dependency.mcnative.runtime>
         <dependency.mcnative.api>1.0.6.13-SNAPSHOT</dependency.mcnative.api>
-        <dependency.mcnative.licensing>1.0.0.2-SNAPSHOT</dependency.mcnative.licensing>
+        <dependency.mcnative.licensing>1.0.1.3-SNAPSHOT</dependency.mcnative.licensing>
         <dependency.mcnative.buildtool>1.0.0.5</dependency.mcnative.buildtool>
         <dependency.mcnative.loader>1.7.75.9</dependency.mcnative.loader>
 
