@@ -46,9 +46,9 @@ import net.pretronic.libraries.utility.concurrent.AsyncExecutor;
 import net.pretronic.libraries.utility.duration.DurationProcessor;
 import net.pretronic.libraries.utility.io.FileUtil;
 import net.pretronic.libraries.utility.io.IORuntimeException;
+import org.mcnative.licensing.context.platform.McNativeLicenseIntegration;
 import org.mcnative.licensing.exceptions.CloudNotCheckoutLicenseException;
 import org.mcnative.licensing.exceptions.LicenseNotValidException;
-import org.mcnative.licensing.platform.McNativeIntegration;
 import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.event.player.login.MinecraftPlayerLoginEvent;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
@@ -78,7 +78,7 @@ public class DKPermsPlugin extends MinecraftPlugin {
         getLogger().info("DKPerms is starting, please wait..");
 
         try{
-            McNativeIntegration.verifyOrCheckout(this,RESOURCE_ID,PUBLIC_KEY);
+            McNativeLicenseIntegration.newContext(this,RESOURCE_ID,PUBLIC_KEY).verifyOrCheckout();
         }catch (LicenseNotValidException | CloudNotCheckoutLicenseException e){
             getLogger().error("--------------------------------");
             getLogger().error("-> Invalid license");
@@ -88,7 +88,6 @@ public class DKPermsPlugin extends MinecraftPlugin {
             getLoader().shutdown();
             return;
         }
-        McNativeIntegration.startReportingService(this,RESOURCE_ID);
 
         copyLegacyConfig();
 
@@ -282,4 +281,5 @@ public class DKPermsPlugin extends MinecraftPlugin {
             return McNative.getInstance().getPlayerManager().getPlayer(object.getAssignmentId());
         }
     }
+
 }

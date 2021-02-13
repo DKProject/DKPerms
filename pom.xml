@@ -17,7 +17,7 @@
     <groupId>net.pretronic.dkperms</groupId>
     <artifactId>DKPerms</artifactId>
     <packaging>pom</packaging>
-    <version>1.5.16.183</version>
+    <version>1.6.3.188-BETA</version>
 
     <modules>
         <module>dkperms-api</module>
@@ -52,14 +52,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependency version -->
-        <dependency.pretronic.libraries>1.2.37.175-SNAPSHOT</dependency.pretronic.libraries>
-        <dependency.pretronic.databasequery>1.2.43.70-SNAPSHOT</dependency.pretronic.databasequery>
+        <dependency.pretronic.libraries>1.2.39.177-SNAPSHOT</dependency.pretronic.libraries>
+        <dependency.pretronic.databasequery>1.2.55.82-SNAPSHOT</dependency.pretronic.databasequery>
 
-        <dependency.mcnative.runtime>1.7.80.7-SNAPSHOT</dependency.mcnative.runtime>
-        <dependency.mcnative.api>1.0.6.13-SNAPSHOT</dependency.mcnative.api>
-        <dependency.mcnative.licensing>1.0.0.2-SNAPSHOT</dependency.mcnative.licensing>
+        <dependency.mcnative.runtime>1.7.102.30</dependency.mcnative.runtime>
+        <dependency.mcnative.api>1.0.19.26</dependency.mcnative.api>
+        <dependency.mcnative.licensing>1.0.2.4-SNAPSHOT</dependency.mcnative.licensing>
         <dependency.mcnative.buildtool>1.0.0.5</dependency.mcnative.buildtool>
-        <dependency.mcnative.loader>1.7.75.9</dependency.mcnative.loader>
+        <dependency.mcnative.loader>1.7.75.45</dependency.mcnative.loader>
 
         <dependency.cloudnet.v2>2.1.17</dependency.cloudnet.v2>
         <dependency.cloudnet.v3>3.3.0-RELEASE</dependency.cloudnet.v3>
