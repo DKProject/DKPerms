@@ -17,7 +17,7 @@
     <groupId>net.pretronic.dkperms</groupId>
     <artifactId>DKPerms</artifactId>
     <packaging>pom</packaging>
-    <version>1.6.3.188-BETA</version>
+    <version>1.6.3.190</version>
 
     <modules>
         <module>dkperms-api</module>
