@@ -39,7 +39,7 @@ public class TrackInsertCommand extends ObjectCommand<PermissionObjectTrack> {
             return;
         }
 
-        PermissionObject group = CommandUtil.getGroup(sender,arguments[1]);
+        PermissionObject group = CommandUtil.getGroup(sender,arguments[0]);
         if(group == null) return;
 
         if(track.contains(group)){

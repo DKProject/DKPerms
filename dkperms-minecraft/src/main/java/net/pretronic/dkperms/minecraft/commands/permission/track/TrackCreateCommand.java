@@ -24,7 +24,7 @@ import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 public class TrackCreateCommand extends ObjectCommand<String> {
 
     public TrackCreateCommand(ObjectOwner owner) {
-        super(owner, CommandConfiguration.name("list","l"));
+        super(owner, CommandConfiguration.name("create","c"));
     }
 
     @Override
