@@ -14,9 +14,9 @@ import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.dkperms.minecraft.config.Messages;
-import net.pretronic.libraries.command.NotFindable;
 import net.pretronic.libraries.command.command.Command;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
+import net.pretronic.libraries.command.command.object.DefinedNotFindable;
 import net.pretronic.libraries.command.command.object.MainObjectCommand;
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.command.object.ObjectNotFindable;
@@ -26,7 +26,7 @@ import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
 import java.util.Arrays;
 
-public class TrackMainCommand extends MainObjectCommand<PermissionObjectTrack> implements NotFindable, ObjectNotFindable {
+public class TrackMainCommand extends MainObjectCommand<PermissionObjectTrack> implements ObjectNotFindable, DefinedNotFindable<PermissionObjectTrack> {
 
     private final Command listCommand;
     private final ObjectCommand<String> createCommand;
@@ -52,8 +52,12 @@ public class TrackMainCommand extends MainObjectCommand<PermissionObjectTrack> i
     }
 
     @Override
-    public void commandNotFound(CommandSender sender, String s, String[] strings) {
-        sender.sendMessage(Messages.TRACK_HELP);
+    public void commandNotFound(CommandSender sender, PermissionObjectTrack track, String command, String[] args) {
+        if(command == null && track != null){
+            sender.sendMessage(Messages.TRACK_INFO, VariableSet.create().addDescribed("track", track));
+        }else {
+            sender.sendMessage(Messages.TRACK_HELP);
+        }
     }
 
     @Override

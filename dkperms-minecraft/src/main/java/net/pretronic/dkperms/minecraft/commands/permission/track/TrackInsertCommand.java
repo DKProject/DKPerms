@@ -50,7 +50,7 @@ public class TrackInsertCommand extends ObjectCommand<PermissionObjectTrack> {
         }
 
         track.addGroup(CommandUtil.getExecutor(sender),group,Integer.parseInt(arguments[1]));
-        sender.sendMessage(Messages.TRACK_ADD, VariableSet.create()
+        sender.sendMessage(Messages.TRACK_INSERT, VariableSet.create()
                 .addDescribed("track",track)
                 .addDescribed("group",group));
     }

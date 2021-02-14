@@ -13,6 +13,8 @@ package net.pretronic.dkperms.api.object;
 import net.pretronic.dkperms.api.logging.Loggable;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 
+import java.util.List;
+
 public interface PermissionObjectTrack extends Loggable {
 
     int getId();
@@ -44,6 +46,8 @@ public interface PermissionObjectTrack extends Loggable {
 
     void clearGroups();
 
+
+    List<PermissionObject> getGroups();
 
     PermissionObject getFirstGroup();
 

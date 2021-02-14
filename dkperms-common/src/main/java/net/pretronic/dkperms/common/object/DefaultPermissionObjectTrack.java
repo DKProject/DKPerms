@@ -129,6 +129,11 @@ public class DefaultPermissionObjectTrack implements PermissionObjectTrack, Vari
     }
 
     @Override
+    public List<PermissionObject> getGroups() {
+        return groups;
+    }
+
+    @Override
     public PermissionObject getFirstGroup() {
         if(isEmpty()) return null;
         return groups.get(0);

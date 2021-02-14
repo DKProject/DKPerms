@@ -83,7 +83,7 @@ public final class Messages {
     public static final MessageKeyComponent OBJECT_GROUP_TREE_SCOPE = Text.ofMessageKey("dkperms.object.group.tree.scope");
     public static final MessageKeyComponent OBJECT_GROUP_TREE_ENTRY = Text.ofMessageKey("dkperms.object.group.tree.entry");
     public static final MessageKeyComponent OBJECT_GROUP_NOT_SET = Text.ofMessageKey("dkperms.object.group.notSet");
-    public static final MessageKeyComponent OBJECT_GROUP_PRIORITY_SET = Text.ofMessageKey("dkperms.object.group.priority.set");//Add
+    public static final MessageKeyComponent OBJECT_GROUP_PRIORITY_SET = Text.ofMessageKey("dkperms.object.group.priority.set");
     public static final MessageKeyComponent OBJECT_GROUP_CHECK = Text.ofMessageKey("dkperms.object.group.check");
 
     public static final MessageKeyComponent TRACK_HELP = Text.ofMessageKey("dkperms.track.help");
@@ -91,6 +91,7 @@ public final class Messages {
     public static final MessageKeyComponent TRACK_ALREADY_CONTAINS = Text.ofMessageKey("dkperms.track.alreadyContains");
     public static final MessageKeyComponent TRACK_NOT_FOUND = Text.ofMessageKey("dkperms.track.notFound");
     public static final MessageKeyComponent TRACK_LIST = Text.ofMessageKey("dkperms.track.list");
+    public static final MessageKeyComponent TRACK_INFO = Text.ofMessageKey("dkperms.track.info");
     public static final MessageKeyComponent TRACK_CREATED = Text.ofMessageKey("dkperms.track.created");
     public static final MessageKeyComponent TRACK_RENAMED = Text.ofMessageKey("dkperms.track.renamed");
     public static final MessageKeyComponent TRACK_DELETED = Text.ofMessageKey("dkperms.track.deleted");
