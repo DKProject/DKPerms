@@ -75,12 +75,13 @@ public class PDQTrackStorage implements TrackStorage {
                 ,loadGroups(entry.getInt("Id")));
     }
 
+    //@Todo Optimize with on demand loading
     private List<PermissionObject> loadGroups(int trackId){
         List<PermissionObject> objects = new ArrayList<>();
         QueryResult result = this.track_assignments.find()
                 .where("TrackId",trackId)
                 .orderBy("Index", SearchOrder.ASC)
-                .join(this.objects).on("ObjectId","Id")
+                .join(this.objects).on("ObjectId",this.objects.getName()+".Id")
                 .execute();
         for (QueryResultEntry entry : result) {
             int id = entry.getInt("ObjectId");
