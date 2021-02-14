@@ -89,7 +89,7 @@ public final class Messages {
     public static final MessageKeyComponent TRACK_HELP = Text.ofMessageKey("dkperms.track.help");
     public static final MessageKeyComponent TRACK_ALREADY_EXISTS = Text.ofMessageKey("dkperms.track.alreadyExists");
     public static final MessageKeyComponent TRACK_ALREADY_CONTAINS = Text.ofMessageKey("dkperms.track.alreadyContains");
-    public static final MessageKeyComponent TRACK_NOT_FOUND = Text.ofMessageKey("dkperms.notFound");
+    public static final MessageKeyComponent TRACK_NOT_FOUND = Text.ofMessageKey("dkperms.track.notFound");
     public static final MessageKeyComponent TRACK_LIST = Text.ofMessageKey("dkperms.track.list");
     public static final MessageKeyComponent TRACK_CREATED = Text.ofMessageKey("dkperms.track.created");
     public static final MessageKeyComponent TRACK_RENAMED = Text.ofMessageKey("dkperms.track.renamed");
