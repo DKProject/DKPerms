@@ -125,6 +125,7 @@ public class DefaultPermissionObjectTrack implements PermissionObjectTrack, Vari
 
     @Override
     public void clearGroups() {
+        DKPerms.getInstance().getStorage().getTrackStorage().clearTrack(id);
         this.groups.clear();
     }
 
