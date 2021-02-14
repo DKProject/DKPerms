@@ -77,7 +77,7 @@ public class PDQTrackStorage implements TrackStorage {
         List<PermissionObject> objects = new ArrayList<>();
         QueryResult result = this.track_assignments.find().where("TrackId",trackId).execute();
         for (QueryResultEntry entry : result) {
-            int id = entry.getInt("Id");
+            int id = entry.getInt("ObjectId");
             PermissionObject object = getObjectManager().getObjects().get("ByIdOnlyCached",id);
             if(object == null) {
                 object = new DefaultPermissionObject(id

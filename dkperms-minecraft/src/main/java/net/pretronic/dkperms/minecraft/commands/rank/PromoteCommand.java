@@ -55,7 +55,7 @@ public class PromoteCommand extends ObjectCommand<PermissionObject> {
         PermissionObject group = track.getNextGroup(object);
         if (group != null && CommandUtil.canChangeRank(sender, object, group)) return;
 
-        Pair<PermissionObject,PermissionObject> result =  object.promote(null,scope,track);
+        Pair<PermissionObject,PermissionObject> result =  object.promote(CommandUtil.getExecutor(sender),scope,track);
         sender.sendMessage(Messages.RANK_DEMOTED, VariableSet.create()
                 .addDescribed("object",object)
                 .addDescribed("user",object)
