@@ -81,7 +81,7 @@ public class PDQTrackStorage implements TrackStorage {
         QueryResult result = this.track_assignments.find()
                 .where("TrackId",trackId)
                 .orderBy("Index", SearchOrder.ASC)
-                .join(this.objects).on("ObjectId",this.objects,".Id")
+                .join(this.objects).on("ObjectId",this.objects,"Id")
                 .execute();
         for (QueryResultEntry entry : result) {
             int id = entry.getInt("ObjectId");
