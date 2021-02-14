@@ -14,6 +14,7 @@ import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.api.object.PermissionObjectTrack;
 import net.pretronic.dkperms.api.scope.PermissionScope;
 import net.pretronic.libraries.document.Document;
+import net.pretronic.libraries.utility.Validate;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -55,7 +56,8 @@ public class PriorityObjectTrack implements PermissionObjectTrack {
 
     @Override
     public int getPosition(PermissionObject object) {
-        throw new UnsupportedOperationException("A priority track can not be modified");
+        Validate.notNull(object);
+        return this.groups.indexOf(object);
     }
 
     @Override

@@ -39,13 +39,12 @@ public class DemoteCommand extends ObjectCommand<PermissionObject> {
         PermissionObjectTrack track = null;
         PermissionScope scope = object.getScope();
 
-        for (int i = 1; i < arguments.length; i++) {
-            String argument = arguments[i];
+        for (String argument : arguments) {
             PermissionObjectTrack track0 = DKPerms.getInstance().getObjectManager().getTrack(argument, DKPermsConfig.OBJECT_TRACK_SCOPE);
-            if(track0 == null){
+            if (track0 == null) {
                 scope = CommandUtil.readScope(sender, argument);
                 if (scope == null) return;
-            }else track = track0;
+            } else track = track0;
         }
 
         if(track == null) {

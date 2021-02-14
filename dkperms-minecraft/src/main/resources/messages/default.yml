@@ -211,8 +211,8 @@ messages:
    &7/rank <name> set <group> [duration] [scope] [modifier]
    &7/rank <name> add <group> [duration] [scope] [modifier]
    &7/rank <name> remove <group>
-   &7/rank <name> promote [scope]
-   &7/rank <name> demote [scope]'
+   &7/rank <name> promote [track] [scope]
+   &7/rank <name> demote [track] [scope]'
   dkperms.rank.list: '${dkperms.prefix} &7Ranks of &e{object.displayName} @for("group" in {groups},${dkperms.rank.list.loop},"\n","\n")'
   dkperms.rank.list.loop: ' &8- &7{group.property.color}{group.name}'
   dkperms.rank.promoted: '${dkperms.prefix} &e{user.name} &7was promoted to &7{newGroup.displayName}'
