@@ -15,7 +15,7 @@
     <parent>
         <artifactId>DKPerms</artifactId>
         <groupId>net.pretronic.dkperms</groupId>
-        <version>1.7.4.195-SNAPSHOT</version>
+        <version>1.7.5.196-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
