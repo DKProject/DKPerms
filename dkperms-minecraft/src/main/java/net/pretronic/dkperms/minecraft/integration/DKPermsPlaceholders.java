@@ -35,7 +35,9 @@ public class DKPermsPlaceholders implements PlaceholderHook {
             for (PermissionObject group : object.getCurrentSnapshot().getEffectedGroupGraph()) {
                 builder.append(group.getName()).append(", ");
             }
-            builder.setLength(builder.length()-1);
+            if(builder.length() > 1){
+                builder.setLength(builder.length()-2);
+            }
             return builder.toString();
         }else if(parameter.equalsIgnoreCase("color")){
             return player.getDesign().getColor();
