@@ -29,7 +29,8 @@ public class DKPermsPlaceholders implements PlaceholderHook {
         }else if(parameter.equalsIgnoreCase("scope")){
             return object.getScope().getPath();
         }else if(parameter.equalsIgnoreCase("rank")){
-            return object.getCurrentSnapshot().getHighestGroup();
+            PermissionObject result = object.getCurrentSnapshot().getHighestGroup();
+            return result != null ? result.getName() : "";
         }else if(parameter.equalsIgnoreCase("ranks")){
             StringBuilder builder = new StringBuilder();
             for (PermissionObject group : object.getCurrentSnapshot().getEffectedGroupGraph()) {
