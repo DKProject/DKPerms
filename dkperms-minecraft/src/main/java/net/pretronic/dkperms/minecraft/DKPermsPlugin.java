@@ -119,6 +119,7 @@ public class DKPermsPlugin extends MinecraftPlugin {
             getRuntime().getNetwork().getMessenger().registerSynchronizingChannel("dkperms_scopes",
                     this,Integer.class,scopeManager.getScopeSynchronizer());
             DefaultPermissionObject.SYNCHRONISATION_CALLER = objectManager.getObjects().getCaller();
+            getRuntime().getNetwork().registerStatusCallback(this,objectManager.getObjects());
         }else{
             objectManager.getObjects().initUnconnected();
             scopeManager.getScopeSynchronizer().init(new UnconnectedSynchronisationCaller<>(true));

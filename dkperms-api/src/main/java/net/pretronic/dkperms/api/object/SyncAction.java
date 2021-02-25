@@ -12,6 +12,7 @@ package net.pretronic.dkperms.api.object;
 
 public enum SyncAction {
 
+    OBJECT_RELOAD,
     OBJECT_NAME_UPDATE,
     OBJECT_TYPE_UPDATE,
     OBJECT_DISABLED_UPDATE,

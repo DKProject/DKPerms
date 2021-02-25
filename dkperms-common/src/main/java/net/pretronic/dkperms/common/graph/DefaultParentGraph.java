@@ -148,7 +148,7 @@ public final class DefaultParentGraph extends AbstractObservable<PermissionObjec
 
     @Override
     public void callback(PermissionObject observable, SyncAction action) {
-        if(action == SyncAction.OBJECT_GROUP_UPDATE){
+        if(action == SyncAction.OBJECT_GROUP_UPDATE || action == SyncAction.OBJECT_RELOAD){
             if(subGroups && subscribe){
                 for (ParentEntity object : objectPriority.keySet()) {
                     object.getParent().unsubscribeObserver(this);
