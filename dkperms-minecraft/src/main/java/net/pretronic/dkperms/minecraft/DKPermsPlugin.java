@@ -40,6 +40,7 @@ import net.pretronic.libraries.plugin.description.PluginVersion;
 import net.pretronic.libraries.plugin.lifecycle.Lifecycle;
 import net.pretronic.libraries.plugin.lifecycle.LifecycleState;
 import net.pretronic.libraries.plugin.service.ServicePriority;
+import net.pretronic.libraries.synchronisation.NetworkSynchronisationCallback;
 import net.pretronic.libraries.synchronisation.UnconnectedSynchronisationCaller;
 import net.pretronic.libraries.utility.GeneralUtil;
 import net.pretronic.libraries.utility.concurrent.AsyncExecutor;
@@ -119,7 +120,17 @@ public class DKPermsPlugin extends MinecraftPlugin {
             getRuntime().getNetwork().getMessenger().registerSynchronizingChannel("dkperms_scopes",
                     this,Integer.class,scopeManager.getScopeSynchronizer());
             DefaultPermissionObject.SYNCHRONISATION_CALLER = objectManager.getObjects().getCaller();
-            getRuntime().getNetwork().registerStatusCallback(this,objectManager.getObjects());
+            getRuntime().getNetwork().registerStatusCallback(this, new NetworkSynchronisationCallback() {
+                @Override
+                public void onConnect() {
+                    dkPerms.getObjectManager().sync();
+                }
+
+                @Override
+                public void onDisconnect() {
+                    objectManager.getObjects().clear();
+                }
+            });
         }else{
             objectManager.getObjects().initUnconnected();
             scopeManager.getScopeSynchronizer().init(new UnconnectedSynchronisationCaller<>(true));
