@@ -230,5 +230,21 @@ messages:
   dkperms.analyse.disabled: '${dkperms.prefix} &7Disabled permission analyser'
   dkperms.analyse.joined: '${dkperms.prefix} &7Joined permission analyser listener'
   dkperms.analyse.leaved: '${dkperms.prefix} &7Leaved permission analyser listener'
+  dkperms.server.notPermitted: '&e&lexample.net
+  &e
+  &cYou are not allowed to join this server.
+  &e'
+  dkperms.server.join.full: '&e&lexample.net
+  &e
+  &cThis server is full &8(&e{playerCount}&8/&e{playerCount}&8).
+  &e'
+  dkperms.server.join.full.kick: '&e&lexample.net
+  &e
+  &cYou were kicked from this network because a player with higher priority joined.
+  &e'
+  dkperms.server.join.full.noKick: '&e&lexample.net
+  &e
+  &cNo player with lower priority found to kick.
+  &e'
 
 

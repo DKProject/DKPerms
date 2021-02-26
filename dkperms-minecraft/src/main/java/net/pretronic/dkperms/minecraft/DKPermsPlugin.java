@@ -29,6 +29,8 @@ import net.pretronic.dkperms.minecraft.commands.permission.PermissionCommand;
 import net.pretronic.dkperms.minecraft.commands.rank.RankCommand;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.dkperms.minecraft.integration.DKPermsPlaceholders;
+import net.pretronic.dkperms.minecraft.listener.MinecraftServiceListener;
+import net.pretronic.dkperms.minecraft.listener.PlayerListener;
 import net.pretronic.dkperms.minecraft.migration.DKPermsLegacyMigration;
 import net.pretronic.dkperms.minecraft.migration.cloudnet.CloudNetV2CPermsMigration;
 import net.pretronic.dkperms.minecraft.migration.cloudnet.CloudNetV3CPermsMigration;
@@ -151,12 +153,10 @@ public class DKPermsPlugin extends MinecraftPlugin {
         PlaceholderProvider placeholderProvider = getRuntime().getRegistry().getServiceOrDefault(PlaceholderProvider.class);
         if(placeholderProvider != null) placeholderProvider.registerPlaceHolders(this,"dkperms",new DKPermsPlaceholders());
 
+        getRuntime().getLocal().getEventBus().subscribe(this,new PlayerListener());
         if(getRuntime().getPlatform().isService()){
             getRuntime().getLocal().getEventBus().subscribe(this,new MinecraftServiceListener());
         }
-
-        getRuntime().getLocal().getEventBus().subscribe(this, MinecraftPlayerLoginEvent.class
-                ,event -> event.getPlayer().getPermissionHandler());
 
         registerCommands();
         registerMigrations(dkPerms);

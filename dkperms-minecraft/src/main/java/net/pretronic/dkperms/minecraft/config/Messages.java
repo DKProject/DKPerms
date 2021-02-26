@@ -115,4 +115,9 @@ public final class Messages {
     public static final MessageKeyComponent ANALYSE_LEAVED = Text.ofMessageKey("dkperms.analyse.leaved");
 
     public static final MessageKeyComponent TEAM = Text.ofMessageKey("dkperms.team");
+
+    public static final MessageKeyComponent SERVER_JOIN_NOT_PERMITTED = Text.ofMessageKey("dkperms.server.notPermitted");
+    public static final MessageKeyComponent SERVER_JOIN_FULL = Text.ofMessageKey("dkperms.server.join.full");
+    public static final MessageKeyComponent SERVER_JOIN_FULL_KICK = Text.ofMessageKey("dkperms.server.join.full.kick");
+    public static final MessageKeyComponent SERVER_JOIN_FULL_NO_KICK = Text.ofMessageKey("dkperms.server.join.full.noKick");
 }
