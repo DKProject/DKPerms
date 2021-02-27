@@ -10,7 +10,7 @@ messages:
 
   dkperms.command.perms.help: '${dkperms.prefix} &Befehle&8:
   &7/perms info &8- &7Informationen über DKPerms
-  &7/perms sync &8- &7Lade Berechtigungen, Gruppen und Metadaten neu
+  &7/perms sync &8- &7Lade Berechtigungen und Gruppen neu
   &7/perms migrate &8- &7Importiere Daten von einem anderen System
   &7/perms groups &8- &7Liste alle Berechtigungen auf
   &7/perms group &8- &7Für weitere Informationen zu Gruppen
