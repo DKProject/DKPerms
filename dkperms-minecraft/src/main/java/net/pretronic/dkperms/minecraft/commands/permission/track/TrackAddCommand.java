@@ -33,7 +33,7 @@ public class TrackAddCommand extends ObjectCommand<PermissionObjectTrack> {
             return;
         }
 
-        PermissionObject group = CommandUtil.getGroup(sender,arguments[1]);
+        PermissionObject group = CommandUtil.getGroup(sender,arguments[0]);
         if(group == null) return;
         if(track.contains(group)){
             sender.sendMessage(Messages.TRACK_ALREADY_CONTAINS, VariableSet.create()

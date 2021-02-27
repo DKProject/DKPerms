@@ -321,6 +321,8 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         if(this.superAdministrator == null){
             this.superAdministrator = createObject(dkPerms.getScopeManager().getRoot(),PermissionObjectType.USER_ACCOUNT,SUPER_ADMINISTRATOR_ACCOUNT_NAME);
         }
+
+        this.tracks.addAll(DKPerms.getInstance().getStorage().getTrackStorage().getTracks());
     }
 
     private void findOrCreateType(PermissionObjectType builtInType){

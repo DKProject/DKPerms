@@ -83,14 +83,15 @@ public final class Messages {
     public static final MessageKeyComponent OBJECT_GROUP_TREE_SCOPE = Text.ofMessageKey("dkperms.object.group.tree.scope");
     public static final MessageKeyComponent OBJECT_GROUP_TREE_ENTRY = Text.ofMessageKey("dkperms.object.group.tree.entry");
     public static final MessageKeyComponent OBJECT_GROUP_NOT_SET = Text.ofMessageKey("dkperms.object.group.notSet");
-    public static final MessageKeyComponent OBJECT_GROUP_PRIORITY_SET = Text.ofMessageKey("dkperms.object.group.priority.set");//Add
+    public static final MessageKeyComponent OBJECT_GROUP_PRIORITY_SET = Text.ofMessageKey("dkperms.object.group.priority.set");
     public static final MessageKeyComponent OBJECT_GROUP_CHECK = Text.ofMessageKey("dkperms.object.group.check");
 
     public static final MessageKeyComponent TRACK_HELP = Text.ofMessageKey("dkperms.track.help");
     public static final MessageKeyComponent TRACK_ALREADY_EXISTS = Text.ofMessageKey("dkperms.track.alreadyExists");
     public static final MessageKeyComponent TRACK_ALREADY_CONTAINS = Text.ofMessageKey("dkperms.track.alreadyContains");
-    public static final MessageKeyComponent TRACK_NOT_FOUND = Text.ofMessageKey("dkperms.notFound");
+    public static final MessageKeyComponent TRACK_NOT_FOUND = Text.ofMessageKey("dkperms.track.notFound");
     public static final MessageKeyComponent TRACK_LIST = Text.ofMessageKey("dkperms.track.list");
+    public static final MessageKeyComponent TRACK_INFO = Text.ofMessageKey("dkperms.track.info");
     public static final MessageKeyComponent TRACK_CREATED = Text.ofMessageKey("dkperms.track.created");
     public static final MessageKeyComponent TRACK_RENAMED = Text.ofMessageKey("dkperms.track.renamed");
     public static final MessageKeyComponent TRACK_DELETED = Text.ofMessageKey("dkperms.track.deleted");
@@ -114,4 +115,9 @@ public final class Messages {
     public static final MessageKeyComponent ANALYSE_LEAVED = Text.ofMessageKey("dkperms.analyse.leaved");
 
     public static final MessageKeyComponent TEAM = Text.ofMessageKey("dkperms.team");
+
+    public static final MessageKeyComponent SERVER_JOIN_NOT_PERMITTED = Text.ofMessageKey("dkperms.server.notPermitted");
+    public static final MessageKeyComponent SERVER_JOIN_FULL = Text.ofMessageKey("dkperms.server.join.full");
+    public static final MessageKeyComponent SERVER_JOIN_FULL_KICK = Text.ofMessageKey("dkperms.server.join.full.kick");
+    public static final MessageKeyComponent SERVER_JOIN_FULL_NO_KICK = Text.ofMessageKey("dkperms.server.join.full.noKick");
 }

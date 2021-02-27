@@ -35,6 +35,8 @@ public interface TrackStorage {
 
     void updateTrackScope(int id, int scopeId);
 
+    void clearTrack(int id);
+
     void deleteTrack(int id);
 
 

@@ -12,6 +12,7 @@ package net.pretronic.dkperms.common.storage;
 
 import net.pretronic.databasequery.api.collection.DatabaseCollection;
 import net.pretronic.databasequery.api.query.QueryGroup;
+import net.pretronic.databasequery.api.query.SearchOrder;
 import net.pretronic.databasequery.api.query.result.QueryResult;
 import net.pretronic.databasequery.api.query.result.QueryResultEntry;
 import net.pretronic.dkperms.api.DKPerms;
@@ -29,6 +30,7 @@ import java.util.List;
 
 public class PDQTrackStorage implements TrackStorage {
 
+    private DatabaseCollection objects;
     private DatabaseCollection tracks;
     private DatabaseCollection track_assignments;
 
@@ -73,11 +75,16 @@ public class PDQTrackStorage implements TrackStorage {
                 ,loadGroups(entry.getInt("Id")));
     }
 
+    //@Todo Optimize with on demand loading
     private List<PermissionObject> loadGroups(int trackId){
         List<PermissionObject> objects = new ArrayList<>();
-        QueryResult result = this.track_assignments.find().where("TrackId",trackId).execute();
+        QueryResult result = this.track_assignments.find()
+                .where("TrackId",trackId)
+                .orderBy("Index", SearchOrder.ASC)
+                .join(this.objects).on("ObjectId",this.objects,"Id")
+                .execute();
         for (QueryResultEntry entry : result) {
-            int id = entry.getInt("Id");
+            int id = entry.getInt("ObjectId");
             PermissionObject object = getObjectManager().getObjects().get("ByIdOnlyCached",id);
             if(object == null) {
                 object = new DefaultPermissionObject(id
@@ -120,6 +127,12 @@ public class PDQTrackStorage implements TrackStorage {
                 .set("ScopeId",scopeId)
                 .where("Id",id)
                 .execute();
+    }
+
+    @Override
+    public void clearTrack(int id) {
+        this.track_assignments.delete().where("TrackId",id).execute();
+        this.tracks.delete().where("Id",id).execute();
     }
 
     @Override
@@ -176,7 +189,8 @@ public class PDQTrackStorage implements TrackStorage {
         group.execute();
     }
 
-    public void setCollections(DatabaseCollection tracks, DatabaseCollection track_assignments){
+    public void setCollections(DatabaseCollection objects,DatabaseCollection tracks, DatabaseCollection track_assignments){
+        this.objects = objects;
         this.tracks = tracks;
         this.track_assignments = track_assignments;
     }

@@ -1,14 +1,14 @@
 /*
- * (C) Copyright 2020 The DKPerms Project (Davide Wietlisbach & Philipp Elvin Friedhoff)
+ * (C) Copyright 2021 The DKPerms Project (Davide Wietlisbach & Philipp Elvin Friedhoff)
  *
  * @author Davide Wietlisbach
- * @since 02.05.20, 13:34
+ * @since 26.02.21, 15:31
  * @website %web%
  *
  * %license%
  */
 
-package net.pretronic.dkperms.minecraft;
+package net.pretronic.dkperms.minecraft.listener;
 
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.object.PermissionObject;
