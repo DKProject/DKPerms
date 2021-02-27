@@ -135,7 +135,7 @@ public class PDQStorage implements DKPermsStorage {
                 .field("ExecutorId", DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
                 .field("Type",DataType.STRING,20,FieldOption.NOT_NULL)
                 .field("Action",DataType.STRING,20,FieldOption.NOT_NULL)
-                .field("OwnerId",DataType.INTEGER,ForeignKey.of(object,"Id"))
+                .field("OwnerId",DataType.INTEGER,ForeignKey.of(object,"Id", ForeignKey.Option.SET_NULL))
                 .field("ObjectId",DataType.INTEGER,FieldOption.NOT_NULL)
                 .field("Field",DataType.STRING,32)
                 .field("OldValue",DataType.STRING,512)
@@ -161,6 +161,6 @@ public class PDQStorage implements DKPermsStorage {
         this.objectStorage.setCollections(object,object_type,object_meta,object_groups);
         this.parentStorage.setCollections(object_groups);
         this.permissionStorage.setCollections(object_permissions);
-        this.trackStorage.setCollections(track,track_assignments);
+        this.trackStorage.setCollections(object,track,track_assignments);
     }
 }

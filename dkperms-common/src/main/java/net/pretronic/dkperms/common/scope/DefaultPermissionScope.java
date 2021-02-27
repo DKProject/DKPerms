@@ -82,7 +82,7 @@ public class DefaultPermissionScope implements PermissionScope, VariableObjectTo
     @Override
     public String getPath() {
         if(parent == null) return "\\";
-        else return parent.getPath()+"\\"+key+"@"+name;
+        else return parent.getPath()+"\\"+key+"="+name;
     }
 
     @Override

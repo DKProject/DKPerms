@@ -24,16 +24,11 @@ import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 public class TrackCreateCommand extends ObjectCommand<String> {
 
     public TrackCreateCommand(ObjectOwner owner) {
-        super(owner, CommandConfiguration.name("list","l"));
+        super(owner, CommandConfiguration.name("create","c"));
     }
 
     @Override
     public void execute(CommandSender sender,String name, String[] arguments) {
-        if(arguments.length < 1){
-            CommandUtil.sendInvalidSyntax(sender,"track create","");
-            return;
-        }
-
         if(DKPerms.getInstance().getObjectManager().getTrack(name, DKPermsConfig.OBJECT_TRACK_SCOPE) != null){
             sender.sendMessage(Messages.TRACK_ALREADY_EXISTS,VariableSet.create().add("name",name));
             return;

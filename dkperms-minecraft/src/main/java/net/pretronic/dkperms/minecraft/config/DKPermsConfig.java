@@ -65,8 +65,14 @@ public class DKPermsConfig {
     public static boolean SECURITY_RESTRICTED_ENABLED = false;
     public static Collection<String> SECURITY_RESTRICTED_USERS = Arrays.asList("Dkrieger","cb7f0812-1fbb-4715-976e-a81e52be4b67");
 
-    //public static boolean SYNCHRONISATION_ENABLED = false;
-    //public static int SYNCHRONISATION_ENABLED = false;
+    // Full join configuration
+    public static int SERVER_JOIN_REQUIRED_JOINPOWER = 0;
+    public static boolean SERVER_JOIN_REQUIRED_PERMISSION_ENABLED = false;
+    public static String SERVER_JOIN_REQUIRED_PERMISSION_PERMISSION = "dkperms.server.join";
+    public static boolean SERVER_JOIN_FULL_ENABLED = true;
+    public static String SERVER_JOIN_FULL_PERMISSION = "dkperms.server.join.full";
+    @DocumentKey("server.join.full.priorityKick")
+    public static boolean SERVER_JOIN_FULL_PRIORITY_KICK = false;
 
     @DocumentKey("deleteTimedOutEntries.enabled")
     public static boolean DELETE_TIMED_OUT_ENTRIES_ENABLED = true;

@@ -39,7 +39,7 @@ public class TrackInsertCommand extends ObjectCommand<PermissionObjectTrack> {
             return;
         }
 
-        PermissionObject group = CommandUtil.getGroup(sender,arguments[1]);
+        PermissionObject group = CommandUtil.getGroup(sender,arguments[0]);
         if(group == null) return;
 
         if(track.contains(group)){
@@ -50,7 +50,7 @@ public class TrackInsertCommand extends ObjectCommand<PermissionObjectTrack> {
         }
 
         track.addGroup(CommandUtil.getExecutor(sender),group,Integer.parseInt(arguments[1]));
-        sender.sendMessage(Messages.TRACK_ADD, VariableSet.create()
+        sender.sendMessage(Messages.TRACK_INSERT, VariableSet.create()
                 .addDescribed("track",track)
                 .addDescribed("group",group));
     }

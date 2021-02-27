@@ -29,13 +29,16 @@ public class DKPermsPlaceholders implements PlaceholderHook {
         }else if(parameter.equalsIgnoreCase("scope")){
             return object.getScope().getPath();
         }else if(parameter.equalsIgnoreCase("rank")){
-            return object.getCurrentSnapshot().getHighestGroup();
+            PermissionObject result = object.getCurrentSnapshot().getHighestGroup();
+            return result != null ? result.getName() : "";
         }else if(parameter.equalsIgnoreCase("ranks")){
             StringBuilder builder = new StringBuilder();
             for (PermissionObject group : object.getCurrentSnapshot().getEffectedGroupGraph()) {
                 builder.append(group.getName()).append(", ");
             }
-            builder.setLength(builder.length()-1);
+            if(builder.length() > 1){
+                builder.setLength(builder.length()-2);
+            }
             return builder.toString();
         }else if(parameter.equalsIgnoreCase("color")){
             return player.getDesign().getColor();

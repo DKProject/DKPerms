@@ -22,7 +22,7 @@ import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 public class TrackRenameCommand extends ObjectCommand<PermissionObjectTrack> {
 
     public TrackRenameCommand(ObjectOwner owner) {
-        super(owner, CommandConfiguration.name("rename","r"));
+        super(owner, CommandConfiguration.name("rename","re"));
     }
 
     @Override

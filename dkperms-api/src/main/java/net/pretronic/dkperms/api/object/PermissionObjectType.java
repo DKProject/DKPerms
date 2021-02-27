@@ -16,11 +16,11 @@ import java.util.concurrent.CompletableFuture;
 
 public interface PermissionObjectType extends Loggable {
 
-    PermissionObjectType SERVICE_ACCOUNT = new BuiltInPermissionObjectType(1,"BUILTIN/SERVICE_ACCOUNT","Service",false);
+    PermissionObjectType SERVICE_ACCOUNT = new BuiltInPermissionObjectType(1,"BUILTIN/SERVICE_ACCOUNT","service",false);
 
-    PermissionObjectType USER_ACCOUNT = new BuiltInPermissionObjectType(2,"BUILTIN/USER_ACCOUNT","User",false);
+    PermissionObjectType USER_ACCOUNT = new BuiltInPermissionObjectType(2,"BUILTIN/USER_ACCOUNT","user",false);
 
-    PermissionObjectType GROUP = new BuiltInPermissionObjectType(3,"BUILTIN/GROUP","Group",true);
+    PermissionObjectType GROUP = new BuiltInPermissionObjectType(3,"BUILTIN/GROUP","group",true);
 
 
     int getId();

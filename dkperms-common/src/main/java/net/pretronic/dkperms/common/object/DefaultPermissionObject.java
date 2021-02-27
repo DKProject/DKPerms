@@ -627,6 +627,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
         this.groupCache.clearCache();
         this.permissionCache.clearCache();
         this.meta.getCache().clearCache();
+        callObservers(SyncAction.OBJECT_RELOAD);
     }
 
     @Override

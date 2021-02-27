@@ -19,6 +19,7 @@ import net.pretronic.dkperms.common.entity.DefaultPermissionEntity;
 import net.pretronic.dkperms.common.entity.DefaultPermissionParentEntity;
 import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.dkperms.common.object.DefaultPermissionObjectSnapshot;
+import net.pretronic.dkperms.common.object.DefaultPermissionObjectTrack;
 import net.pretronic.dkperms.common.object.DefaultPermissionObjectType;
 import net.pretronic.dkperms.common.object.meta.DefaultObjectMetaEntry;
 import net.pretronic.dkperms.common.scope.DefaultPermissionScope;
@@ -42,6 +43,7 @@ public class DescriberRegistrar {
         VariableDescriberRegistry.registerDescriber(DefaultObjectMetaEntry.class);
         VariableDescriberRegistry.registerDescriber(DefaultPermissionEntity.class);
         VariableDescriberRegistry.registerDescriber(DefaultPermissionObjectType.class);
+        VariableDescriberRegistry.registerDescriber(DefaultPermissionObjectTrack.class);
         VariableDescriberRegistry.registerDescriber(TeamCommand.TeamTree.class);
         VariableDescriberRegistry.registerDescriber(PermissionAnalyseResult.class);
         VariableDescriberRegistry.registerDescriber(BuiltInPermissionObjectType.class);
