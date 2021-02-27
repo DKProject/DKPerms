@@ -115,7 +115,7 @@ messages:
   dkperms.object.group.check.loop: ' &8- &7{entity.group.displayName} &e{entity.action}'
   dkperms.object.group.priority.set: '${dkperms.prefix} &7The priority of group &e{group.displayName} &7was set to &e${priority}'
 
-  dkperms.user.help: '${dkperms.prefix} &7Group commands&8:
+  dkperms.user.help: '${dkperms.prefix} &7User commands&8:
   &7/perms user <name>
    &8- &7permission &8- &7Manage group permissions
    &8- &7meta &8- &7Manage group metas
