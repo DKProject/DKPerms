@@ -113,7 +113,7 @@ messages:
   dkperms.object.group.check: '${dkperms.prefix} &7Gruppe &e{group.displayName} &7wurde für &e{object.displayName} &7überprüft&8:  @for("entity" in {result.entries},${dkperms.object.group.check.loop},"\n","\n")
   &8» &7Resultat&8: &e{result.finalAction}'
   dkperms.object.group.check.loop: ' &8- &7{entity.group.displayName} &e{entity.action}'
-  dkperms.object.group.priority.set: '${dkperms.prefix} &7Die Priorität der Gruppe &e{group.displayName} &7wurde zu &e${priority} &7geändert'
+  dkperms.object.group.priority.set: '${dkperms.prefix} &7Die Priorität der Gruppe &e{group.displayName} &7wurde zu &e{priority} &7geändert'
 
   dkperms.user.help: '${dkperms.prefix} &7Spieler Befehle&8:
   &7/perms user <name>
