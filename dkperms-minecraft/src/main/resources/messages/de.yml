@@ -231,6 +231,13 @@ messages:
   dkperms.analyse.disabled: '${dkperms.prefix} &7Permission Analyse &cdeaktiviert'
   dkperms.analyse.joined: '${dkperms.prefix} &7Du bist der Analyse begetreten'
   dkperms.analyse.leaved: '${dkperms.prefix} &7Du hast die Analyse verlassen'
+  dkperms.analyse.help: '${dkperms.prefix} &7Verfügbare Befehle
+  &7/perms track <name>
+   &7off
+   &7on
+   &7join
+   &7leave'
+
   dkperms.server.notPermitted: '&e&lexample.net
   &e
   &cDu darfst diesen Server nicht betreten

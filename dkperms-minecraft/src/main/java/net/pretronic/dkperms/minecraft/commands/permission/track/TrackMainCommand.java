@@ -16,17 +16,18 @@ import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.Command;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
-import net.pretronic.libraries.command.command.object.DefinedNotFindable;
-import net.pretronic.libraries.command.command.object.MainObjectCommand;
-import net.pretronic.libraries.command.command.object.ObjectCommand;
-import net.pretronic.libraries.command.command.object.ObjectNotFindable;
+import net.pretronic.libraries.command.command.object.*;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
+import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
+import org.mcnative.runtime.api.McNative;
+import org.mcnative.runtime.api.player.ConnectedMinecraftPlayer;
 
 import java.util.Arrays;
+import java.util.Collection;
 
-public class TrackMainCommand extends MainObjectCommand<PermissionObjectTrack> implements ObjectNotFindable, DefinedNotFindable<PermissionObjectTrack> {
+public class TrackMainCommand extends MainObjectCommand<PermissionObjectTrack> implements ObjectNotFindable, DefinedNotFindable<PermissionObjectTrack>, ObjectCompletable {
 
     private final Command listCommand;
     private final ObjectCommand<String> createCommand;
@@ -71,5 +72,12 @@ public class TrackMainCommand extends MainObjectCommand<PermissionObjectTrack> i
         }else{
             sender.sendMessage(Messages.TRACK_NOT_FOUND, VariableSet.create().add("name",name));
         }
+    }
+
+    @Override
+    public Collection<String> complete(CommandSender sender, String input) {
+        return Iterators.map(DKPerms.getInstance().getObjectManager().getTracks(DKPermsConfig.OBJECT_TRACK_SCOPE)
+                , PermissionObjectTrack::getName
+                , track -> track.getName().toLowerCase().startsWith(input.toLowerCase()));
     }
 }

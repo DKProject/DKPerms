@@ -115,6 +115,7 @@ public final class Messages {
     public static final MessageKeyComponent ANALYSE_DISABLED = Text.ofMessageKey("dkperms.analyse.disabled");
     public static final MessageKeyComponent ANALYSE_JOINED = Text.ofMessageKey("dkperms.analyse.joined");
     public static final MessageKeyComponent ANALYSE_LEAVED = Text.ofMessageKey("dkperms.analyse.leaved");
+    public static final MessageKeyComponent ANALYSE_HELP = Text.ofMessageKey("dkperms.analyse.help");
 
     public static final MessageKeyComponent TEAM = Text.ofMessageKey("dkperms.team");
 
