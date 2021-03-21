@@ -47,10 +47,4 @@ public class PermissionCommand extends MainObjectCommand<PermissionObject> imple
         sender.sendMessage(Messages.OBJECT_PERMISSION_HELP, VariableSet.create()
                 .add("type",object.getType().getDisplayName().toLowerCase()));
     }
-
-    @Override
-    public Collection<String> complete(CommandSender sender, String[] args) {
-        System.out.println(Arrays.toString(args));
-        return super.complete(sender, args);
-    }
 }
