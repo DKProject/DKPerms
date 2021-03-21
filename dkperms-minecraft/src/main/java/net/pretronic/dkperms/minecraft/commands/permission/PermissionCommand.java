@@ -16,6 +16,7 @@ import net.pretronic.dkperms.minecraft.commands.MigrationCommand;
 import net.pretronic.dkperms.minecraft.commands.SyncCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.group.GroupMainCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.group.ListCommand;
+import net.pretronic.dkperms.minecraft.commands.permission.log.LogListCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.track.TrackMainCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.user.UserMainCommand;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
@@ -44,6 +45,7 @@ public class PermissionCommand extends MainCommand implements NotFindable, NoPer
         registerCommand(new ListCommand(owner));
         registerCommand(new MigrationCommand(owner));
         registerCommand(new SyncCommand(owner));
+        registerCommand(new LogListCommand(owner));
         registerCommand(new AnalyseCommand(owner));
         registerCommand(infoCommand);
     }
@@ -62,7 +64,7 @@ public class PermissionCommand extends MainCommand implements NotFindable, NoPer
                     }
                 }
                 if(!ok){
-                    sender.sendMessage("Permission denied");//@Todo update message
+                    sender.sendMessage(Messages.COMMAND_RESTRICTED);
                 }
             }
         }

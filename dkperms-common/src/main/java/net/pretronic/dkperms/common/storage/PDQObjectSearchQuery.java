@@ -35,7 +35,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-//@Todo check if caching is working
 public class PDQObjectSearchQuery implements ObjectSearchQuery {
 
     private final FindQuery query;

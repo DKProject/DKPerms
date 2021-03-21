@@ -90,7 +90,7 @@ public class PDQStorage implements DKPermsStorage {
                 .field("IsParentAble",DataType.BOOLEAN,FieldOption.NOT_NULL)
                 .create();
 
-        DatabaseCollection object = database.createCollection("dkperms_object")//@Todo check inconsistent with displayName and description
+        DatabaseCollection object = database.createCollection("dkperms_object")
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL,FieldOption.INDEX)
                 .field("AssignmentId", DataType.UUID,FieldOption.INDEX)
                 .field("Name",DataType.STRING,64,FieldOption.NOT_NULL,FieldOption.INDEX)

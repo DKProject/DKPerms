@@ -17,6 +17,7 @@ public final class Messages {
 
     public static final MessageKeyComponent SENDER_ONLY_CONSOLE = Text.ofMessageKey("dkperms.sender.only.console");
     public static final MessageKeyComponent INVALID_NUMBER = Text.ofMessageKey("dkperms.invalid.number");
+    public static final MessageKeyComponent COMMAND_RESTRICTED = Text.ofMessageKey("dkperms.restricted");
     public static final MessageKeyComponent COMMAND_PERMS_HELP = Text.ofMessageKey("dkperms.command.perms.help");
     public static final MessageKeyComponent COMMAND_INVALID_SYNTAX = Text.ofMessageKey("dkperms.command.invalid.syntax");
 
@@ -61,6 +62,7 @@ public final class Messages {
 
     public static final MessageKeyComponent OBJECT_PERMISSION_HELP = Text.ofMessageKey("dkperms.object.permission.help");
     public static final MessageKeyComponent OBJECT_PERMISSION_SET = Text.ofMessageKey("dkperms.object.permission.set");
+    public static final MessageKeyComponent OBJECT_PERMISSION_SET_FAILED = Text.ofMessageKey("dkperms.object.permission.set.failed");
     public static final MessageKeyComponent OBJECT_PERMISSION_UNSET = Text.ofMessageKey("dkperms.object.permission.unset");
     public static final MessageKeyComponent OBJECT_PERMISSION_CLEAR = Text.ofMessageKey("dkperms.object.permission.clear");
     public static final MessageKeyComponent OBJECT_PERMISSION_SHOW = Text.ofMessageKey("dkperms.object.permission.show");
@@ -120,4 +122,6 @@ public final class Messages {
     public static final MessageKeyComponent SERVER_JOIN_FULL = Text.ofMessageKey("dkperms.server.join.full");
     public static final MessageKeyComponent SERVER_JOIN_FULL_KICK = Text.ofMessageKey("dkperms.server.join.full.kick");
     public static final MessageKeyComponent SERVER_JOIN_FULL_NO_KICK = Text.ofMessageKey("dkperms.server.join.full.noKick");
+
+    public static final MessageKeyComponent LOG_LIST = Text.ofMessageKey("dkperms.log.list");
 }

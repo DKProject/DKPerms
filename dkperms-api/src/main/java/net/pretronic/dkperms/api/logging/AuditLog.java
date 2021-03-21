@@ -10,19 +10,13 @@
 
 package net.pretronic.dkperms.api.logging;
 
+import net.pretronic.dkperms.api.logging.record.LogRecordQuery;
 import net.pretronic.dkperms.api.logging.record.LogRecordResult;
 import net.pretronic.dkperms.api.object.PermissionObject;
 
 public interface AuditLog {
 
-    LogRecordResult get();
-
-    LogRecordResult get(long from, long to);
-
-    LogRecordResult getRecent(int last);
-
-    LogRecordResult getRecent(long time);
-
+    LogRecordQuery search();
 
     void clean(long beforeTimestamp);
 

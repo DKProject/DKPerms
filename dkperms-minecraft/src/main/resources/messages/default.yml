@@ -8,6 +8,7 @@ meta:
 messages:
   dkperms.prefix: '&8» &9DKPerms &8|&f'
 
+  dkperms.restricted: '${dkperms.prefix} &cThis command is restricted to special users.'
   dkperms.command.perms.help: '${dkperms.prefix} &7Commands&8:
   &7/perms info &8- &7Get information about DKPerms
   &7/perms sync &8- &7Reload all permissions, groups and players
@@ -61,6 +62,7 @@ messages:
    &8- &7permission list [scope]
    &8- &7permission tree'
   dkperms.object.permission.set: '${dkperms.prefix} &7The permission of {type} &e{object.displayName} &7was changed&8: ${dkperms.object.permission.info}'
+  dkperms.object.permission.set.failed: '${dkperms.prefix} &cPermission could not be set.'
   dkperms.object.permission.unset: '${dkperms.prefix} &7The permission of {object.type} &e{object.displayName} &7was changed&8: ${dkperms.object.permission.info}'
   dkperms.object.permission.show: '${dkperms.prefix} &7The permission of {type} &e{object.displayName}&8: ${dkperms.object.permission.info}'
   dkperms.object.permission.notSet: '${dkperms.object.permission.show}'
@@ -230,6 +232,7 @@ messages:
   dkperms.analyse.disabled: '${dkperms.prefix} &7Disabled permission analyser'
   dkperms.analyse.joined: '${dkperms.prefix} &7Joined permission analyser listener'
   dkperms.analyse.leaved: '${dkperms.prefix} &7Leaved permission analyser listener'
+  dkperms.log.list: '${dkperms.prefix} &7Leaved permission analyser listener'
   dkperms.server.notPermitted: '&e&lexample.net
   &e
   &cYou are not allowed to join this server.

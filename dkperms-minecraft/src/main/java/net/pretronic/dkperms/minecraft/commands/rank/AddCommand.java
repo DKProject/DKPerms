@@ -18,7 +18,6 @@ import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
-//@Todo permission for preventing setting of higher prioritized accounts
 public class AddCommand extends ObjectCommand<PermissionObject> {
 
     public AddCommand(ObjectOwner owner) {

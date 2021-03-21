@@ -8,7 +8,8 @@ meta:
 messages:
   dkperms.prefix: '&8» &9DKPerms &8|&f'
 
-  dkperms.command.perms.help: '${dkperms.prefix} &Befehle&8:
+  dkperms.restricted: '${dkperms.prefix} &cDieser Befehl ist nur für eingeschrenkte Benutzer verfügbar'
+  dkperms.command.perms.help: '${dkperms.prefix} &7Befehle&8:
   &7/perms info &8- &7Informationen über DKPerms
   &7/perms sync &8- &7Lade Berechtigungen und Gruppen neu
   &7/perms migrate &8- &7Importiere Daten von einem anderen System
