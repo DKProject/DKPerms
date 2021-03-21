@@ -85,9 +85,4 @@ public class PermissionCommand extends MainCommand implements NotFindable, NoPer
         infoCommand.execute(sender,arguments);
     }
 
-    @Override
-    public Collection<String> complete(CommandSender sender, String[] args) {
-        System.out.println(Arrays.toString(args));
-        return super.complete(sender, args);
-    }
 }
