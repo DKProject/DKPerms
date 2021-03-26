@@ -232,9 +232,9 @@ public class PDQObjectStorage implements ObjectStorage {
 
     @Override
     public void deleteObject(int objectId) {
-        this.object.delete()
-                .where("Id",objectId)
-                .execute();
+        this.parent.delete().where("ParentId",objectId).execute();
+        this.parent.delete().where("ObjectId",objectId).execute();
+        this.object.delete().where("Id",objectId).execute();
     }
 
     @Override

@@ -54,6 +54,8 @@ public class GroupMainCommand extends MainObjectCommand<PermissionObject> implem
 
         this.listCommand = new ListCommand(owner);
         this.createCommand = new CreateCommand(owner);
+
+        registerCommand(createCommand);
     }
 
     @Override
