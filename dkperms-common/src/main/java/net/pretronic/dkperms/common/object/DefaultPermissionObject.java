@@ -552,7 +552,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
 
     @Override
     public void delete(PermissionObject executor) {
-        DKPerms.getInstance().getStorage().getObjectStorage().deleteObject(id);
+        DKPerms.getInstance().getObjectManager().deleteObject(this);
     }
 
     @Override

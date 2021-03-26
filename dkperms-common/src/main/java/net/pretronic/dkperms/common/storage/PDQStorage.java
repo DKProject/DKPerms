@@ -152,7 +152,7 @@ public class PDQStorage implements DKPermsStorage {
         DatabaseCollection track_assignments = database.createCollection("dkperms_track_assignments")
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
                 .field("TrackId",DataType.INTEGER,ForeignKey.of(track,"Id"),FieldOption.NOT_NULL)
-                .field("ObjectId",DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
+                .field("ObjectId",DataType.INTEGER,ForeignKey.of(object,"Id", ForeignKey.Option.CASCADE),FieldOption.NOT_NULL)
                 .field("Index",DataType.INTEGER,FieldOption.NOT_NULL)
                 .create();
 
