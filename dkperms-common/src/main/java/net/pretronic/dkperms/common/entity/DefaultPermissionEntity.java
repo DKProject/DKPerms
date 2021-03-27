@@ -129,7 +129,7 @@ public class DefaultPermissionEntity implements PermissionEntity {
 
     @Override
     public void update(PermissionObject executor, PermissionAction action, PermissionScope scope, long timeout) {
-        Validate.notNull(action,scope);//@Todo add executor
+        Validate.notNull(executor,action,scope);
 
         DKPerms.getInstance().getStorage().getPermissionStorage()
                 .updatePermission(id,scope.getId(),action,timeout);

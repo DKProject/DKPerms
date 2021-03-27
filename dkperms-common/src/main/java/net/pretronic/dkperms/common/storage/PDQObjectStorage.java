@@ -39,6 +39,7 @@ public class PDQObjectStorage implements ObjectStorage {
     private DatabaseCollection object;
     private DatabaseCollection object_type;
     private DatabaseCollection object_meta;
+    private DatabaseCollection object_permission;
     private DatabaseCollection parent;
 
     @Override
@@ -232,9 +233,11 @@ public class PDQObjectStorage implements ObjectStorage {
 
     @Override
     public void deleteObject(int objectId) {
-        this.object.delete()
-                .where("Id",objectId)
-                .execute();
+        this.parent.delete().where("ParentId",objectId).execute();
+        this.parent.delete().where("ObjectId",objectId).execute();
+        this.object_meta.delete().where("ObjectId",objectId).execute();
+        this.object_permission.delete().where("ObjectId",objectId).execute();
+        this.object.delete().where("Id",objectId).execute();
     }
 
     @Override
@@ -389,10 +392,11 @@ public class PDQObjectStorage implements ObjectStorage {
                 .whereLower("Timeout",System.currentTimeMillis()).execute();
     }
 
-    public void setCollections(DatabaseCollection object, DatabaseCollection object_type, DatabaseCollection object_meta, DatabaseCollection parent){
+    public void setCollections(DatabaseCollection object, DatabaseCollection object_type, DatabaseCollection object_meta, DatabaseCollection object_permission, DatabaseCollection parent){
         this.object = object;
         this.object_type = object_type;
         this.object_meta = object_meta;
+        this.object_permission = object_permission;
         this.parent = parent;
     }
 }

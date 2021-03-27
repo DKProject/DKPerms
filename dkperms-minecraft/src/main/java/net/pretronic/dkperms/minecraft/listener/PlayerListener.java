@@ -46,8 +46,9 @@ public class PlayerListener {
             }
         }
 
-        if(DKPermsConfig.SERVER_JOIN_FULL_ENABLED
-                && McNative.getInstance().getLocal().getOnlineCount() >= McNative.getInstance().getLocal().getMaxPlayerCount()){
+        int maxPlayers = McNative.getInstance().getLocal().getMaxPlayerCount();
+        int onlineCount = McNative.getInstance().getLocal().getOnlineCount();
+        if(DKPermsConfig.SERVER_JOIN_FULL_ENABLED && maxPlayers > 0 && onlineCount >= maxPlayers){
 
             if(event.getPlayer().hasPermission(DKPermsConfig.SERVER_JOIN_FULL_PERMISSION)){
                 if(DKPermsConfig.SERVER_JOIN_FULL_PRIORITY_KICK && !kickLowestPlayer(event.getPlayer().getDesign().getPriority())){

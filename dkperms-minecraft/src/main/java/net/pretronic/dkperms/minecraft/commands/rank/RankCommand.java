@@ -15,14 +15,19 @@ import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.DefinedNotFindable;
 import net.pretronic.libraries.command.command.object.MainObjectCommand;
+import net.pretronic.libraries.command.command.object.ObjectCompletable;
 import net.pretronic.libraries.command.command.object.ObjectNotFindable;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
+import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import org.mcnative.runtime.api.McNative;
+import org.mcnative.runtime.api.player.ConnectedMinecraftPlayer;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
 
-public class RankCommand extends MainObjectCommand<PermissionObject> implements ObjectNotFindable, DefinedNotFindable<PermissionObject> {
+import java.util.Collection;
+
+public class RankCommand extends MainObjectCommand<PermissionObject> implements ObjectNotFindable, DefinedNotFindable<PermissionObject>, ObjectCompletable {
 
     private final ListCommand listCommand;
 
@@ -78,5 +83,12 @@ public class RankCommand extends MainObjectCommand<PermissionObject> implements 
             }
         }
         sender.sendMessage(Messages.RANK_HELP);
+    }
+
+    @Override
+    public Collection<String> complete(CommandSender sender, String input) {
+        return Iterators.map(McNative.getInstance().getLocal().getConnectedPlayers()
+                ,ConnectedMinecraftPlayer::getName
+                ,player -> player.getName().toLowerCase().startsWith(input.toLowerCase()));
     }
 }

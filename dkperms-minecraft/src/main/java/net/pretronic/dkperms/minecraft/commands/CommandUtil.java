@@ -21,12 +21,16 @@ import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
+import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.duration.DurationProcessor;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class CommandUtil {
 
@@ -171,6 +175,17 @@ public class CommandUtil {
         }else {
             return DKPerms.getInstance().getObjectManager().getSuperAdministrator();
         }
+    }
+
+    public static Collection<String> completeGroups(CommandSender sender, String[] args){
+        if(args.length == 0){
+            return Iterators.map(DKPerms.getInstance().getObjectManager().getObjects(PermissionObjectType.GROUP, DKPermsConfig.OBJECT_GROUP_SCOPE)
+                    , PermissionObject::getName);
+        }else if(args.length == 1){
+            return Iterators.map(DKPerms.getInstance().getObjectManager().getObjects(PermissionObjectType.GROUP, DKPermsConfig.OBJECT_GROUP_SCOPE)
+                    , PermissionObject::getName
+                    , object -> object.getName().toLowerCase().startsWith(args[0]));
+        }else return Collections.emptyList();
     }
 
 }

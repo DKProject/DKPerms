@@ -116,7 +116,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
     }
 
     @Override
-    public void deleteType(PermissionObject executor,int id) {//@Todo check to previous delete objects and log into autdit log
+    public void deleteType(PermissionObject executor,int id) {
         Validate.notNull(executor);
         PermissionObjectType type = getType(id);
         if(type != null) deleteType(executor,type);
@@ -182,7 +182,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
 
     @Override
     public ObjectSearchResult getObjects(PermissionObjectType type, PermissionScope scope) {
-        return search().directLoading().withType(type).withScope(scope).execute();//@Todo remove direct loading
+        return search().withType(type).withScope(scope).execute();
     }
 
     @Override

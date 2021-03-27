@@ -90,7 +90,7 @@ public class PDQStorage implements DKPermsStorage {
                 .field("IsParentAble",DataType.BOOLEAN,FieldOption.NOT_NULL)
                 .create();
 
-        DatabaseCollection object = database.createCollection("dkperms_object")//@Todo check inconsistent with displayName and description
+        DatabaseCollection object = database.createCollection("dkperms_object")
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL,FieldOption.INDEX)
                 .field("AssignmentId", DataType.UUID,FieldOption.INDEX)
                 .field("Name",DataType.STRING,64,FieldOption.NOT_NULL,FieldOption.INDEX)
@@ -152,13 +152,13 @@ public class PDQStorage implements DKPermsStorage {
         DatabaseCollection track_assignments = database.createCollection("dkperms_track_assignments")
                 .field("Id", DataType.INTEGER, FieldOption.AUTO_INCREMENT,FieldOption.PRIMARY_KEY,FieldOption.NOT_NULL)
                 .field("TrackId",DataType.INTEGER,ForeignKey.of(track,"Id"),FieldOption.NOT_NULL)
-                .field("ObjectId",DataType.INTEGER,ForeignKey.of(object,"Id"),FieldOption.NOT_NULL)
+                .field("ObjectId",DataType.INTEGER,ForeignKey.of(object,"Id", ForeignKey.Option.CASCADE),FieldOption.NOT_NULL)
                 .field("Index",DataType.INTEGER,FieldOption.NOT_NULL)
                 .create();
 
         this.auditLogStorage.setCollections(auditLog);
         this.scopeStorage.setCollections(scope);
-        this.objectStorage.setCollections(object,object_type,object_meta,object_groups);
+        this.objectStorage.setCollections(object,object_type,object_meta,object_permissions,object_groups);
         this.parentStorage.setCollections(object_groups);
         this.permissionStorage.setCollections(object_permissions);
         this.trackStorage.setCollections(object,track,track_assignments);

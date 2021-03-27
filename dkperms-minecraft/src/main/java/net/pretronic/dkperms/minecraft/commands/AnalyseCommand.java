@@ -13,16 +13,22 @@ package net.pretronic.dkperms.minecraft.commands;
 import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.permission.analyse.PermissionRequest;
 import net.pretronic.dkperms.minecraft.config.Messages;
+import net.pretronic.libraries.command.Completable;
 import net.pretronic.libraries.command.command.BasicCommand;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.sender.CommandSender;
+import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.StringUtil;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 
+import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
-public class AnalyseCommand extends BasicCommand {
+public class AnalyseCommand extends BasicCommand implements Completable {
+
+    private final List<String> COMMANDS = Arrays.asList("on","off","join","leave");
 
     public AnalyseCommand(ObjectOwner owner) {
         super(owner, CommandConfiguration.newBuilder()
@@ -33,6 +39,10 @@ public class AnalyseCommand extends BasicCommand {
 
     @Override
     public void execute(CommandSender sender, String[] arguments) {
+        if(arguments.length == 0){
+            sender.sendMessage(Messages.ANALYSE_HELP);
+            return;
+        }
         String argument = arguments[0];
         if(StringUtil.equalsOne(argument,"on","enable")){
             DKPerms.getInstance().getAnalyser().enable();
@@ -48,7 +58,16 @@ public class AnalyseCommand extends BasicCommand {
         }else if(argument.equalsIgnoreCase("leave")){
             DKPerms.getInstance().getAnalyser().removeListener(sender);
             sender.sendMessage(Messages.ANALYSE_LEAVED);
+        }else{
+            sender.sendMessage(Messages.ANALYSE_HELP);
         }
+    }
+
+    @Override
+    public Collection<String> complete(CommandSender sender, String[] args) {
+        if(args.length == 0) return COMMANDS;
+        else if(args.length == 1) return Iterators.filter(COMMANDS, command -> command.startsWith(args[0].toLowerCase()));
+        return Collections.emptyList();
     }
 
     private static class PlayerRequestListener implements Consumer<PermissionRequest> {

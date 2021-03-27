@@ -22,9 +22,6 @@ import java.util.Collection;
 
 public class DKPermsConfig {
 
-    @DocumentIgnored //@Todo create an implement simple mode
-    public static String MODE = "SIMPLE";
-
     // Scope Configuration
 
     public static String SCOPE_NAMESPACE = "Minecraft";

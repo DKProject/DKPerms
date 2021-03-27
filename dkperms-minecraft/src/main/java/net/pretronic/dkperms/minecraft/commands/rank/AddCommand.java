@@ -13,13 +13,15 @@ package net.pretronic.dkperms.minecraft.commands.rank;
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
 import net.pretronic.dkperms.minecraft.config.Messages;
+import net.pretronic.libraries.command.Completable;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
-//@Todo permission for preventing setting of higher prioritized accounts
-public class AddCommand extends ObjectCommand<PermissionObject> {
+import java.util.Collection;
+
+public class AddCommand extends ObjectCommand<PermissionObject> implements Completable {
 
     public AddCommand(ObjectOwner owner) {
         super(owner, CommandConfiguration.newBuilder()
@@ -40,5 +42,10 @@ public class AddCommand extends ObjectCommand<PermissionObject> {
         }else{
             sender.sendMessage(Messages.RANK_HELP);
         }
+    }
+
+    @Override
+    public Collection<String> complete(CommandSender sender, String[] args) {
+        return CommandUtil.completeGroups(sender,args);
     }
 }
