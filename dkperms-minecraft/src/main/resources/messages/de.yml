@@ -8,7 +8,8 @@ meta:
 messages:
   dkperms.prefix: '&8» &9DKPerms &8|&f'
 
-  dkperms.command.perms.help: '${dkperms.prefix} &Befehle&8:
+  dkperms.restricted: '${dkperms.prefix} &cDieser Befehl ist nur für eingeschrenkte Benutzer verfügbar'
+  dkperms.command.perms.help: '${dkperms.prefix} &7Befehle&8:
   &7/perms info &8- &7Informationen über DKPerms
   &7/perms sync &8- &7Lade Berechtigungen und Gruppen neu
   &7/perms migrate &8- &7Importiere Daten von einem anderen System
@@ -113,7 +114,7 @@ messages:
   dkperms.object.group.check: '${dkperms.prefix} &7Gruppe &e{group.displayName} &7wurde für &e{object.displayName} &7überprüft&8:  @for("entity" in {result.entries},${dkperms.object.group.check.loop},"\n","\n")
   &8» &7Resultat&8: &e{result.finalAction}'
   dkperms.object.group.check.loop: ' &8- &7{entity.group.displayName} &e{entity.action}'
-  dkperms.object.group.priority.set: '${dkperms.prefix} &7Die Priorität der Gruppe &e{group.displayName} &7wurde zu &e${priority} &7geändert'
+  dkperms.object.group.priority.set: '${dkperms.prefix} &7Die Priorität der Gruppe &e{group.displayName} &7wurde zu &e{priority} &7geändert'
 
   dkperms.user.help: '${dkperms.prefix} &7Spieler Befehle&8:
   &7/perms user <name>
@@ -230,6 +231,13 @@ messages:
   dkperms.analyse.disabled: '${dkperms.prefix} &7Permission Analyse &cdeaktiviert'
   dkperms.analyse.joined: '${dkperms.prefix} &7Du bist der Analyse begetreten'
   dkperms.analyse.leaved: '${dkperms.prefix} &7Du hast die Analyse verlassen'
+  dkperms.analyse.help: '${dkperms.prefix} &7Verfügbare Befehle
+  &7/perms track <name>
+   &7off
+   &7on
+   &7join
+   &7leave'
+
   dkperms.server.notPermitted: '&e&lexample.net
   &e
   &cDu darfst diesen Server nicht betreten

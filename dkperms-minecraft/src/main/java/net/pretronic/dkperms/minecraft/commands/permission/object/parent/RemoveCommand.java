@@ -12,12 +12,15 @@ package net.pretronic.dkperms.minecraft.commands.permission.object.parent;
 
 import net.pretronic.dkperms.api.object.PermissionObject;
 import net.pretronic.dkperms.minecraft.commands.CommandUtil;
+import net.pretronic.libraries.command.Completable;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.ObjectCommand;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
-public class RemoveCommand extends ObjectCommand<PermissionObject> {
+import java.util.Collection;
+
+public class RemoveCommand extends ObjectCommand<PermissionObject> implements Completable {
 
     public RemoveCommand(ObjectOwner owner) {
         super(owner, CommandConfiguration.name("remove","r","unset","u"));
@@ -33,5 +36,10 @@ public class RemoveCommand extends ObjectCommand<PermissionObject> {
         }else{
             CommandUtil.sendInvalidSyntax(sender,"group set","/perms <user/group> <name> group set <key> <value> [scope]");
         }
+    }
+
+    @Override
+    public Collection<String> complete(CommandSender sender, String[] args) {
+        return CommandUtil.completeGroups(sender,args);
     }
 }

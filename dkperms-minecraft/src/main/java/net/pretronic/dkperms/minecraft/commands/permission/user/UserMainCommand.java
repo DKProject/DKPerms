@@ -10,22 +10,33 @@
 
 package net.pretronic.dkperms.minecraft.commands.permission.user;
 
+import net.pretronic.dkperms.api.DKPerms;
 import net.pretronic.dkperms.api.object.PermissionObject;
+import net.pretronic.dkperms.api.object.PermissionObjectType;
 import net.pretronic.dkperms.minecraft.commands.permission.object.meta.MetaCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.object.parent.ParentCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.object.permission.PermissionCommand;
+import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.dkperms.minecraft.config.Messages;
+import net.pretronic.libraries.command.Completable;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.DefinedNotFindable;
 import net.pretronic.libraries.command.command.object.MainObjectCommand;
+import net.pretronic.libraries.command.command.object.ObjectCompletable;
 import net.pretronic.libraries.command.command.object.ObjectNotFindable;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
+import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import org.mcnative.runtime.api.McNative;
+import org.mcnative.runtime.api.network.component.server.ServerStatusResponse;
+import org.mcnative.runtime.api.player.ConnectedMinecraftPlayer;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
 
-public class UserMainCommand extends MainObjectCommand<PermissionObject> implements ObjectNotFindable, DefinedNotFindable<PermissionObject> {
+import java.util.Collection;
+import java.util.function.Function;
+
+public class UserMainCommand extends MainObjectCommand<PermissionObject> implements ObjectNotFindable, DefinedNotFindable<PermissionObject>, ObjectCompletable {
 
     private final InfoCommand infoCommand;
 
@@ -65,5 +76,12 @@ public class UserMainCommand extends MainObjectCommand<PermissionObject> impleme
         }else{
             sender.sendMessage(Messages.USER_HELP);
         }
+    }
+
+    @Override
+    public Collection<String> complete(CommandSender sender, String input) {
+        return Iterators.map(McNative.getInstance().getLocal().getConnectedPlayers()
+                , ConnectedMinecraftPlayer::getName
+                , player -> player.getName().toLowerCase().startsWith(input.toLowerCase()));
     }
 }

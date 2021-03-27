@@ -18,6 +18,8 @@ public interface LogRecord {
 
     int getId();
 
+    int getExecutorId();
+
     PermissionObject getExecutor();
 
     long getTime();
@@ -25,6 +27,8 @@ public interface LogRecord {
     LogType getType();
 
     LogAction getAction();
+
+    int getOwnerId();
 
     PermissionObject getOwner();
 
@@ -42,7 +46,7 @@ public interface LogRecord {
 
 
     /*
-       ExecutorObjectId | Time | Action | ObjectId | ScopeId | Collection | Field | PrimaryKey | OldValue | NewValue
+    ExecutorObjectId | Time | Action | ObjectId | ScopeId | Collection | Field | PrimaryKey | OldValue | NewValue
 
     65567 | 10:00 | CREATE | 973939 | 1 | DKPerms_Object | Deleted | 973939 | 1 | 0 |
     65567 | 10:00 | CREATE | 973939 | 1 | DKPerms_Object | Name | 973939 | Dkrieger | Dkrieger |

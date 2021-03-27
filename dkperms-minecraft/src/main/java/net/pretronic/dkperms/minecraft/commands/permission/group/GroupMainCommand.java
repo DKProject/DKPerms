@@ -22,14 +22,19 @@ import net.pretronic.dkperms.minecraft.config.Messages;
 import net.pretronic.libraries.command.command.configuration.CommandConfiguration;
 import net.pretronic.libraries.command.command.object.DefinedNotFindable;
 import net.pretronic.libraries.command.command.object.MainObjectCommand;
+import net.pretronic.libraries.command.command.object.ObjectCompletable;
 import net.pretronic.libraries.command.command.object.ObjectNotFindable;
 import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
+import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
-public class GroupMainCommand extends MainObjectCommand<PermissionObject> implements ObjectNotFindable, DefinedNotFindable<PermissionObject> {
+public class GroupMainCommand extends MainObjectCommand<PermissionObject> implements ObjectNotFindable, DefinedNotFindable<PermissionObject>, ObjectCompletable {
 
     private final ListCommand listCommand;
     private final CreateCommand createCommand;
@@ -49,6 +54,8 @@ public class GroupMainCommand extends MainObjectCommand<PermissionObject> implem
 
         this.listCommand = new ListCommand(owner);
         this.createCommand = new CreateCommand(owner);
+
+        registerCommand(createCommand);
     }
 
     @Override
@@ -81,5 +88,12 @@ public class GroupMainCommand extends MainObjectCommand<PermissionObject> implem
         sender.sendMessage(Messages.GROUP_NOTFOUND,VariableSet
                 .create().add("group.name",name)
                 .add("group",name));
+    }
+
+    @Override
+    public Collection<String> complete(CommandSender commandSender, String input) {
+        return Iterators.map(DKPerms.getInstance().getObjectManager().getObjects(PermissionObjectType.GROUP, DKPermsConfig.OBJECT_GROUP_SCOPE)
+                ,PermissionObject::getName
+                ,object -> object.getName().toLowerCase().startsWith(input.toLowerCase()));
     }
 }

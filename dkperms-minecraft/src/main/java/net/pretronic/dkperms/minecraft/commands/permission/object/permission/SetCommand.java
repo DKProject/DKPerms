@@ -77,8 +77,10 @@ public class SetCommand extends ObjectCommand<PermissionObject> {
             if (entity == null) {
                 entity = object.setPermission(CommandUtil.getExecutor(sender),scope, permission, action,duration);
             } else {
-                if(modifier == UpdateModifier.FAIL) return; //@Todo send message
-                else duration = modifier.take(entity.getRemainingDuration(),duration);
+                if(modifier == UpdateModifier.FAIL){
+                    sender.sendMessage(Messages.OBJECT_PERMISSION_SET_FAILED, VariableSet.createEmpty());
+                    return;
+                } else duration = modifier.take(entity.getRemainingDuration(),duration);
                 entity.update(null,action,scope,duration);
             }
 

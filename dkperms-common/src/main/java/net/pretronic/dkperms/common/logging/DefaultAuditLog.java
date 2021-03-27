@@ -15,6 +15,7 @@ import net.pretronic.dkperms.api.logging.AuditLog;
 import net.pretronic.dkperms.api.logging.LogAction;
 import net.pretronic.dkperms.api.logging.LogType;
 import net.pretronic.dkperms.api.logging.Loggable;
+import net.pretronic.dkperms.api.logging.record.LogRecordQuery;
 import net.pretronic.dkperms.api.logging.record.LogRecordResult;
 import net.pretronic.dkperms.api.object.PermissionObject;
 
@@ -27,22 +28,7 @@ public class DefaultAuditLog implements AuditLog {
     }
 
     @Override
-    public LogRecordResult get() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public LogRecordResult get(long from, long to) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public LogRecordResult getRecent(int last) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public LogRecordResult getRecent(long time) {
+    public LogRecordQuery search() {
         throw new UnsupportedOperationException();
     }
 
