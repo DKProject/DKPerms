@@ -16,12 +16,11 @@ import net.pretronic.dkperms.minecraft.commands.MigrationCommand;
 import net.pretronic.dkperms.minecraft.commands.SyncCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.group.GroupMainCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.group.ListCommand;
-import net.pretronic.dkperms.minecraft.commands.permission.log.LogListCommand;
+import net.pretronic.dkperms.minecraft.commands.permission.log.LogCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.track.TrackMainCommand;
 import net.pretronic.dkperms.minecraft.commands.permission.user.UserMainCommand;
 import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.dkperms.minecraft.config.Messages;
-import net.pretronic.libraries.command.Completable;
 import net.pretronic.libraries.command.NoPermissionAble;
 import net.pretronic.libraries.command.NotFindable;
 import net.pretronic.libraries.command.command.MainCommand;
@@ -31,9 +30,6 @@ import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
 import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
-
-import java.util.Arrays;
-import java.util.Collection;
 
 public class PermissionCommand extends MainCommand implements NotFindable, NoPermissionAble {
 
@@ -49,7 +45,7 @@ public class PermissionCommand extends MainCommand implements NotFindable, NoPer
         registerCommand(new ListCommand(owner));
         registerCommand(new MigrationCommand(owner));
         registerCommand(new SyncCommand(owner));
-        registerCommand(new LogListCommand(owner));
+        registerCommand(new LogCommand(owner));
         registerCommand(new AnalyseCommand(owner));
         registerCommand(infoCommand);
     }

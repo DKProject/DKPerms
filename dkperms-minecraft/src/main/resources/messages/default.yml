@@ -239,7 +239,9 @@ messages:
    &7join
    &7leave'
 
-  dkperms.log.list: '${dkperms.prefix} &7Leaved permission analyser listener'
+  dkperms.log.list: '${dkperms.prefix} &7Log records &8| &7Page&8: &e{page} @for("record" in {records},${dkperms.log.list.loop},"\n","\n")'
+  dkperms.log.list.loop: ' &8- &a{record.action} &8| &7{record.type} &e{record.field}'
+
   dkperms.server.notPermitted: '&e&lexample.net
   &e
   &cYou are not allowed to join this server.

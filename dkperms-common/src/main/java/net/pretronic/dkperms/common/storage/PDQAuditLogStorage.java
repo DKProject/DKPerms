@@ -13,6 +13,7 @@ package net.pretronic.dkperms.common.storage;
 import net.pretronic.databasequery.api.collection.DatabaseCollection;
 import net.pretronic.dkperms.api.logging.LogAction;
 import net.pretronic.dkperms.api.logging.LogType;
+import net.pretronic.dkperms.api.logging.record.LogRecordQuery;
 import net.pretronic.dkperms.api.storage.AuditLogStorage;
 
 public class PDQAuditLogStorage implements AuditLogStorage {
@@ -21,6 +22,18 @@ public class PDQAuditLogStorage implements AuditLogStorage {
 
     public void setCollections(DatabaseCollection auditCollection){
         this.auditCollection = auditCollection;
+    }
+
+    @Override
+    public LogRecordQuery createQuery() {
+        return new PDQRecordQuery(auditCollection);
+    }
+
+    @Override
+    public void deleteRecords(long beforeTimestamp) {
+        auditCollection.delete()
+                .whereLower("Time",beforeTimestamp)
+                .execute();
     }
 
     @Override

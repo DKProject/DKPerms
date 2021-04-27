@@ -52,14 +52,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependency version -->
-        <dependency.pretronic.libraries>1.2.39.177-SNAPSHOT</dependency.pretronic.libraries>
-        <dependency.pretronic.databasequery>1.2.55.82-SNAPSHOT</dependency.pretronic.databasequery>
+        <dependency.pretronic.libraries>1.2.69.208-SNAPSHOT</dependency.pretronic.libraries>
+        <dependency.pretronic.databasequery>1.2.38.65-SNAPSHOT</dependency.pretronic.databasequery>
 
-        <dependency.mcnative.runtime>1.7.102.30</dependency.mcnative.runtime>
-        <dependency.mcnative.api>1.0.19.26</dependency.mcnative.api>
+        <dependency.mcnative.api>1.2.25.83-SNAPSHOT</dependency.mcnative.api>
+        <dependency.mcnative.runtime>1.10.25.92-SNAPSHOT</dependency.mcnative.runtime>
         <dependency.mcnative.licensing>1.0.5.8-SNAPSHOT</dependency.mcnative.licensing>
-        <dependency.mcnative.buildtool>1.0.0.5</dependency.mcnative.buildtool>
-        <dependency.mcnative.loader>1.7.75.45</dependency.mcnative.loader>
+        <dependency.mcnative.buildtool>1.0.8.15-SNAPSHOT</dependency.mcnative.buildtool>
+        <dependency.mcnative.loader>1.7.75.53</dependency.mcnative.loader>
 
         <dependency.cloudnet.v2>2.1.17</dependency.cloudnet.v2>
         <dependency.cloudnet.v3>3.3.0-RELEASE</dependency.cloudnet.v3>

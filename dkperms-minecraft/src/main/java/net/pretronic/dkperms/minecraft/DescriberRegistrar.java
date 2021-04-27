@@ -17,6 +17,7 @@ import net.pretronic.dkperms.api.object.meta.ObjectMetaEntry;
 import net.pretronic.dkperms.api.permission.analyse.PermissionAnalyseResult;
 import net.pretronic.dkperms.common.entity.DefaultPermissionEntity;
 import net.pretronic.dkperms.common.entity.DefaultPermissionParentEntity;
+import net.pretronic.dkperms.common.logging.DefaultLogRecord;
 import net.pretronic.dkperms.common.object.DefaultPermissionObject;
 import net.pretronic.dkperms.common.object.DefaultPermissionObjectSnapshot;
 import net.pretronic.dkperms.common.object.DefaultPermissionObjectTrack;
@@ -47,6 +48,7 @@ public class DescriberRegistrar {
         VariableDescriberRegistry.registerDescriber(TeamCommand.TeamTree.class);
         VariableDescriberRegistry.registerDescriber(PermissionAnalyseResult.class);
         VariableDescriberRegistry.registerDescriber(BuiltInPermissionObjectType.class);
+        VariableDescriberRegistry.registerDescriber(DefaultLogRecord.class);
 
         VariableDescriber<DKPermsPlayerDesign> designDescriber = VariableDescriberRegistry.registerDescriber(DKPermsPlayerDesign.class);
         ColoredString.makeDescriberColored(designDescriber);

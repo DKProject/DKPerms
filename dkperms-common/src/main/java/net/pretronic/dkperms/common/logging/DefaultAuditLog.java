@@ -29,12 +29,12 @@ public class DefaultAuditLog implements AuditLog {
 
     @Override
     public LogRecordQuery search() {
-        throw new UnsupportedOperationException();
+        return DKPerms.getInstance().getStorage().getAuditLogStorage().createQuery();
     }
 
     @Override
     public void clean(long beforeTimestamp) {
-        throw new UnsupportedOperationException();
+        DKPerms.getInstance().getStorage().getAuditLogStorage().deleteRecords(beforeTimestamp);
     }
 
     @Override
