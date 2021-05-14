@@ -50,7 +50,11 @@ public class DKPermsPermissionHandler implements PermissionHandler, ObserveCallb
 
     @Override
     public String getPrimaryGroup() {
-        PermissionObject group = object.getCurrentSnapshot().getHighestGroup();
+        if(object.getCurrentSnapshot() != null){
+            PermissionObject group = object.getCurrentSnapshot().getHighestGroup();
+            return group != null ? group.getName() : null;
+        }
+        PermissionObject group = object.getHighestParent(DKPerms.getInstance().getScopeManager().getNamespace(DKPermsConfig.SCOPE_NAMESPACE));
         return group != null ? group.getName() : null;
     }
 
