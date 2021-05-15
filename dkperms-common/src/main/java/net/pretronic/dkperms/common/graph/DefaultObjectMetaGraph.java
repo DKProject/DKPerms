@@ -143,6 +143,7 @@ public class DefaultObjectMetaGraph extends AbstractObservable<PermissionObject,
     public void callback(PermissionObject observable, SyncAction action) {
         if(action == SyncAction.OBJECT_GROUP_UPDATE || action == SyncAction.OBJECT_META_UPDATE || action == SyncAction.OBJECT_RELOAD){
             this.result.clear();
+            traversed = false;
         }
         callObservers(observable,action);
     }
