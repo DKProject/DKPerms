@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
 
 public class DefaultObjectMetaGraph extends AbstractObservable<PermissionObject,SyncAction> implements ObjectMetaGraph, ObserveCallback<PermissionObject, SyncAction> {
@@ -37,9 +38,10 @@ public class DefaultObjectMetaGraph extends AbstractObservable<PermissionObject,
     private final Graph<PermissionObject> groups;
 
     private final List<ObjectMetaEntry> result;
+    private boolean traversed;
 
-    private boolean traversing;
-    private final BooleanSupplier sleeper = () -> traversing;
+    private final AtomicBoolean traversing = new AtomicBoolean(false);
+    private final BooleanSupplier sleeper = traversing::get;
 
     public DefaultObjectMetaGraph(PermissionObject owner, Graph<PermissionScope> scopes, Graph<PermissionObject> groups) {
         Validate.notNull(owner,scopes);
@@ -52,25 +54,22 @@ public class DefaultObjectMetaGraph extends AbstractObservable<PermissionObject,
 
     @Override
     public List<ObjectMetaEntry> traverse() {
-        if(traversing) SystemUtil.sleepAsLong(sleeper);
-        if(result.isEmpty()) traverseInternal();
-        return Collections.unmodifiableList(result);
-    }
-
-    private void traverseInternal(){
-        if(traversing){//Additional check
+        if(traversing.get() || (!traversed && !traversing.compareAndSet(false,true))){
             SystemUtil.sleepAsLong(sleeper);
-            return;
         }
-        traversing = true;
-        try{
-            if(groups == null) traverseOne();
-            else traverseMany();
-            traversing = false;
-        }catch (Exception e){
-            traversing = false;
-            throw e;
+        if(!traversed){
+            try{
+                if(groups == null) traverseOne();
+                else traverseMany();
+                traversed = true;
+                traversing.set(false);
+            }catch (Exception e){
+                traversing.set(false);
+                result.clear();
+                throw e;
+            }
         }
+        return Collections.unmodifiableList(result);
     }
 
     @SuppressWarnings("unchecked")
