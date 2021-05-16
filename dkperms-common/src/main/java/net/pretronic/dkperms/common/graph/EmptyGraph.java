@@ -20,14 +20,15 @@ import java.util.List;
 
 public class EmptyGraph<T> extends UnusedObservable<PermissionObject, SyncAction> implements Graph<T> {
 
-    private static Graph EMPTY = new EmptyGraph();
+    private static final Graph<?> EMPTY = new EmptyGraph<>();
 
     @Override
     public List<T> traverse() {
         return Collections.emptyList();
     }
 
+    @SuppressWarnings("unchecked")
     public static <R> Graph<R> newEmptyGraph(){
-        return EMPTY;
+        return (Graph<R>) EMPTY;
     }
 }

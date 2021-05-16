@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
 
 public class ScopeGraph extends UnusedObservable<PermissionObject,SyncAction> implements Graph<PermissionScope> {
@@ -29,9 +30,10 @@ public class ScopeGraph extends UnusedObservable<PermissionObject,SyncAction> im
     private final PermissionScope end;
 
     private final List<PermissionScope> result;
+    private boolean traversed;
 
-    private boolean traversing;
-    private final BooleanSupplier sleeper = () -> traversing;
+    private final AtomicBoolean traversing = new AtomicBoolean(false);
+    private final BooleanSupplier sleeper = traversing::get;
 
     public ScopeGraph(PermissionScope start, PermissionScope end) {
         this.start = start;
@@ -41,18 +43,15 @@ public class ScopeGraph extends UnusedObservable<PermissionObject,SyncAction> im
 
     @Override
     public List<PermissionScope> traverse() {
-        if(traversing) SystemUtil.sleepAsLong(sleeper);
-        if(result.isEmpty()) traverse0();
+        if(traversing.get() || (!traversed && !traversing.compareAndSet(false,true))){
+            SystemUtil.sleepAsLong(sleeper);
+        }
+        if(!traversed) traverse0();
         return Collections.unmodifiableList(result);
     }
 
     private void traverse0(){
-        if(traversing){//Additional check
-            SystemUtil.sleepAsLong(sleeper);
-            return;
-        }
         try{
-            traversing = true;
             result.add(start);
             PermissionScope[] scopes = new PermissionScope[end.getLevel()-start.getLevel()];
             PermissionScope current = end;
@@ -71,9 +70,10 @@ public class ScopeGraph extends UnusedObservable<PermissionObject,SyncAction> im
                     return Integer.compare(level1, level2);
                 }
             });
-            traversing = false;
+            traversed = true;
+            traversing.set(false);
         }catch (Exception e){
-            traversing = false;
+            traversing.set(false);
             throw  e;
         }
     }

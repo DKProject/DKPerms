@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 public class DKPermsPermissionHandler implements PermissionHandler, ObserveCallback<PermissionObject, SyncAction> {
 
     private final PermissionObject object;
-    private PlayerDesign design;
+    private final PlayerDesign design;
 
     public DKPermsPermissionHandler(PermissionObject object) {
         this.object = object;
@@ -50,7 +50,12 @@ public class DKPermsPermissionHandler implements PermissionHandler, ObserveCallb
 
     @Override
     public String getPrimaryGroup() {
-        return object.getCurrentSnapshot().getHighestGroup().getName();
+        if(object.getCurrentSnapshot() != null){
+            PermissionObject group = object.getCurrentSnapshot().getHighestGroup();
+            return group != null ? group.getName() : null;
+        }
+        PermissionObject group = object.getHighestParent(DKPerms.getInstance().getScopeManager().getNamespace(DKPermsConfig.SCOPE_NAMESPACE));
+        return group != null ? group.getName() : null;
     }
 
     @Override

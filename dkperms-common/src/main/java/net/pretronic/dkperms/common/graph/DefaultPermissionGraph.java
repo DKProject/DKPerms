@@ -33,6 +33,7 @@ import net.pretronic.libraries.utility.Validate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
 
 public class DefaultPermissionGraph extends AbstractObservable<PermissionObject,SyncAction> implements PermissionGraph, ObserveCallback<PermissionObject, SyncAction> {
@@ -42,9 +43,10 @@ public class DefaultPermissionGraph extends AbstractObservable<PermissionObject,
     private final Graph<PermissionObject> groups;
 
     private final List<PermissionEntity> result;
+    private boolean traversed;
 
-    private boolean traversing;
-    private final BooleanSupplier sleeper = () -> traversing;
+    private final AtomicBoolean traversing = new AtomicBoolean(false);
+    private final BooleanSupplier sleeper = traversing::get;
 
     public DefaultPermissionGraph(PermissionObject owner, Graph<PermissionScope> scopes, Graph<PermissionObject> groups) {
         Validate.notNull(owner,scopes);
@@ -56,25 +58,21 @@ public class DefaultPermissionGraph extends AbstractObservable<PermissionObject,
 
     @Override
     public List<PermissionEntity> traverse() {
-        if(traversing) SystemUtil.sleepAsLong(sleeper);
-        if(result.isEmpty()) traverseInternal();
-        return Collections.unmodifiableList(result);
-    }
-
-    private void traverseInternal(){
-        if(traversing){//Additional check
+        if(traversing.get() || (!traversed && !traversing.compareAndSet(false,true))){
             SystemUtil.sleepAsLong(sleeper);
-            return;
         }
-        traversing = true;
-        try{
-            if(groups == null) traverseOne();
-            else traverseMany();
-            traversing = false;
-        }catch (Exception e){
-            traversing = false;
-            throw e;
+        if(!traversed){
+            try{
+                if(groups == null) traverseOne();
+                else traverseMany();
+                traversed = true;
+                traversing.set(false);
+            }catch (Exception e){
+                traversing.set(false);
+                throw e;
+            }
         }
+        return Collections.unmodifiableList(result);
     }
 
     @SuppressWarnings("unchecked")
@@ -163,6 +161,7 @@ public class DefaultPermissionGraph extends AbstractObservable<PermissionObject,
     public void callback(PermissionObject observable, SyncAction action) {
         if(action == SyncAction.OBJECT_GROUP_UPDATE || action == SyncAction.OBJECT_PERMISSION_UPDATE || action == SyncAction.OBJECT_RELOAD){
             this.result.clear();
+            traversed = false;
         }
         callObservers(observable,action);
     }

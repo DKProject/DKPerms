@@ -24,16 +24,18 @@ import net.pretronic.libraries.utility.Validate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
 
 public class DefaultObjectGraph extends AbstractObservable<PermissionObject, SyncAction> implements ObjectGraph, ObserveCallback<PermissionObject, SyncAction> {
 
     private final Graph<ParentEntity> inheritanceGraph;
 
-    private List<PermissionObject> result;
+    private final List<PermissionObject> result;
+    private boolean traversed;
 
-    private boolean traversing;
-    private final BooleanSupplier sleeper = () -> traversing;
+    private final AtomicBoolean traversing = new AtomicBoolean(false);
+    private final BooleanSupplier sleeper = traversing::get;
 
     public DefaultObjectGraph(Graph<ParentEntity> inheritanceGraph) {
         Validate.notNull(inheritanceGraph);
@@ -43,18 +45,15 @@ public class DefaultObjectGraph extends AbstractObservable<PermissionObject, Syn
 
     @Override
     public List<PermissionObject> traverse() {
-        if(traversing) SystemUtil.sleepAsLong(sleeper);
-        if(result.isEmpty()) traverse0();
+        if(traversing.get() || (!traversed && !traversing.compareAndSet(false,true))){
+            SystemUtil.sleepAsLong(sleeper);
+        }
+        if(!traversed) traverse0();
         return Collections.unmodifiableList(result);
     }
 
     private void traverse0() {
-        if(traversing){//Additional check
-            SystemUtil.sleepAsLong(sleeper);
-            return;
-        }
         try{
-            traversing = true;
             List<PermissionObject> blocked = new ArrayList<>();
             List<ParentEntity> inheritance = inheritanceGraph.traverse();
 
@@ -74,9 +73,10 @@ public class DefaultObjectGraph extends AbstractObservable<PermissionObject, Syn
                     }
                 }
             }
-            traversing = false;
+            traversed = true;
+            traversing.set(false);
         }catch (Exception e){
-            traversing = false;
+            traversing.set(false);
             throw e;
         }
     }
@@ -109,6 +109,7 @@ public class DefaultObjectGraph extends AbstractObservable<PermissionObject, Syn
     public void callback(PermissionObject observable, SyncAction action) {
         if(action == SyncAction.OBJECT_GROUP_UPDATE || action == SyncAction.OBJECT_META_UPDATE || action == SyncAction.OBJECT_RELOAD){
             this.result.clear();
+            traversed = false;
         }
         callObservers(observable,action);
     }
