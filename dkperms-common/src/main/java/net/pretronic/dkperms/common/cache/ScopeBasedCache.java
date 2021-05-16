@@ -35,6 +35,10 @@ public abstract class ScopeBasedCache<T> {
         this.loadedAll = false;
     }
 
+    public ScopeBasedDataList<T> getCachedEntries() {
+        return entries;
+    }
+
     public ScopeBasedDataList<T> getAll(){
         if(!loadedAll){
             entries.addAll(loadAll(entries.getScopes()));

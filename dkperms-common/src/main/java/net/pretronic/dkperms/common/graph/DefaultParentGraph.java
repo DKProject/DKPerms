@@ -30,6 +30,7 @@ import net.pretronic.libraries.utility.SystemUtil;
 import net.pretronic.libraries.utility.Validate;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
 import java.util.function.ToIntFunction;
 
@@ -43,9 +44,10 @@ public final class DefaultParentGraph extends AbstractObservable<PermissionObjec
     private final Map<ParentEntity,Integer> objectPriority;
 
     private boolean subscribe;
+    private boolean traversed;
 
-    private boolean traversing;
-    private final BooleanSupplier sleeper = () -> traversing;
+    private final AtomicBoolean traversing = new AtomicBoolean(false);
+    private final BooleanSupplier sleeper = traversing::get;
 
     public DefaultParentGraph(PermissionObject owner, Graph<PermissionScope> scopes, boolean subGroups) {
         Validate.notNull(owner,scopes);
@@ -59,29 +61,24 @@ public final class DefaultParentGraph extends AbstractObservable<PermissionObjec
 
     @Override
     public List<ParentEntity> traverse() {
-        if(traversing) SystemUtil.sleepAsLong(sleeper);
-        if(objectPriority.isEmpty()) traverseInternal();
+        if(traversing.get() || (!traversed && !traversing.compareAndSet(false,true))){
+            SystemUtil.sleepAsLong(sleeper);
+        }
+        if(!traversed){
+            try{
+                traverse0();
+                traversed = true;
+                traversing.set(false);
+            }catch (Exception e){
+                traversing.set(false);
+                throw e;
+            }
+        }
         return Collections.unmodifiableList(entities);
     }
 
-    private void traverseInternal(){
-        if(traversing){//Additional check
-            SystemUtil.sleepAsLong(sleeper);
-            return;
-        }
-        traversing = true;
-        try{
-            traverse0();
-            traversing = false;
-        }catch (Exception e){
-            traversing = false;
-            throw e;
-        }
-    }
 
     private void traverse0(){
-
-
         findNextGroups(owner,1);
 
         for (PermissionObject defaultGroup : DKPerms.getInstance().getObjectManager().getDefaultGroups(scopes)) {
@@ -156,6 +153,7 @@ public final class DefaultParentGraph extends AbstractObservable<PermissionObjec
             }
             this.objectPriority.clear();
             this.entities.clear();
+            traversed = false;
         }
         callObservers(observable,action);
     }

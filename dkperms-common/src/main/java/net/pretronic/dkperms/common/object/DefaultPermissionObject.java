@@ -646,4 +646,16 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
             }
         }
     }
+
+    public void checkTimedOutObjects(){
+        boolean toRemove = false;
+        for (ScopeBasedData<ParentEntity> cachedEntry : groupCache.getCachedEntries()) {
+            for (ParentEntity entity : cachedEntry.getData()) {
+                if(entity.hasTimeout()){
+                    toRemove = true;
+                }
+            }
+        }
+        if(toRemove) callObservers(SyncAction.OBJECT_GROUP_UPDATE);
+    }
 }

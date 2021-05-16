@@ -55,7 +55,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
     private Collection<PermissionObjectType> types;
 
     public DefaultPermissionObjectManager(Predicate<PermissionObject> removeListener) {
-        this.objects = new ShadowArraySynchronizableCache<>(1000);
+        this.objects = new ShadowArraySynchronizableCache<>(1024);
         this.objects.setClearOnDisconnect(true);
         this.objects.setExpireAfterAccess(10,TimeUnit.MINUTES);
 
@@ -66,7 +66,7 @@ public class DefaultPermissionObjectManager implements PermissionObjectManager, 
         this.objects.setIdentifierQuery((o, objects) -> o.getId() == (int)objects[0]);
         this.objects.setRemoveListener(removeListener);
 
-        this.searchResults = new ArrayCache<>(100);
+        this.searchResults = new ArrayCache<>(512);
         this.searchResults.setExpireAfterAccess(10, TimeUnit.MINUTES);
         this.searchResults.registerQuery("ByQuery",new ObjectQueryLoader());
 
