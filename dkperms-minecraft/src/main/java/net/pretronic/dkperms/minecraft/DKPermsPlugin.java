@@ -169,6 +169,7 @@ public class DKPermsPlugin extends MinecraftPlugin {
             Duration duration = DurationProcessor.getStandard().parse(DKPermsConfig.DELETE_TIMED_OUT_ENTRIES_INTERVAL);
             getRuntime().getScheduler().createTask(this)
                     .interval(duration.getSeconds(), TimeUnit.SECONDS)
+                    .async()
                     .execute(() -> dkPerms.getStorage().deleteTimedOutEntries())
                     .addListener(future -> {
                         if(future.isFailed()){
@@ -177,6 +178,15 @@ public class DKPermsPlugin extends MinecraftPlugin {
                         }
                     });
         }
+
+        getRuntime().getScheduler().createTask(this)
+                .interval(30, TimeUnit.SECONDS)
+                .async()
+                .execute(() -> {
+                    for (PermissionObject cachedObject : objectManager.getObjects().getCachedObjects()) {
+                        if(cachedObject instanceof  DefaultPermissionObject) ((DefaultPermissionObject) cachedObject).checkTimedOutObjects();
+                    }
+        });
     }
 
     private void copyLegacyConfig(){
