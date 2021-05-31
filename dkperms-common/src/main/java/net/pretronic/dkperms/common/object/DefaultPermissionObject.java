@@ -661,6 +661,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
                 toRemove = true;
             }
         }
+        System.out.println("TIMEOUT CHECK "+toRemove);
         if(toRemove) callObservers(SyncAction.OBJECT_GROUP_UPDATE);
     }
 }
