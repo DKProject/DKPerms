@@ -45,10 +45,7 @@ public class DKPermsPermissionHandler implements PermissionHandler, ObserveCallb
         this.design = new DKPermsPlayerDesign(object);
 
         object.getCurrentSnapshot().subscribeObserver((snapshot, oldScope)
-                -> {
-            System.out.println("SUBSCRIBE TO SNAPSHOT");
-            snapshot.getParentInheritanceGraph().subscribeObserver(DKPermsPermissionHandler.this);
-        });
+                -> snapshot.getParentInheritanceGraph().subscribeObserver(DKPermsPermissionHandler.this));
     }
 
     @Override
