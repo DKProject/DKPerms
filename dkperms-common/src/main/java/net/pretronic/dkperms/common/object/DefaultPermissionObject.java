@@ -11,6 +11,7 @@
 package net.pretronic.dkperms.common.object;
 
 import net.pretronic.dkperms.api.DKPerms;
+import net.pretronic.dkperms.api.TimeoutAble;
 import net.pretronic.dkperms.api.entity.Entity;
 import net.pretronic.dkperms.api.entity.ParentEntity;
 import net.pretronic.dkperms.api.entity.PermissionEntity;
@@ -46,11 +47,13 @@ import net.pretronic.libraries.synchronisation.SynchronisationCaller;
 import net.pretronic.libraries.synchronisation.Synchronizable;
 import net.pretronic.libraries.synchronisation.UnconnectedSynchronisationCaller;
 import net.pretronic.libraries.synchronisation.observer.AbstractObservable;
+import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.Validate;
 import net.pretronic.libraries.utility.annonations.Internal;
 import net.pretronic.libraries.utility.map.Pair;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class DefaultPermissionObject extends AbstractObservable<PermissionObject,SyncAction> implements PermissionObject, VariableObjectToString, Synchronizable {
 
@@ -650,10 +653,12 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     public void checkTimedOutObjects(){
         boolean toRemove = false;
         for (ScopeBasedData<ParentEntity> cachedEntry : groupCache.getCachedEntries()) {
-            for (ParentEntity entity : cachedEntry.getData()) {
-                if(entity.hasTimeout()){
-                    toRemove = true;
+            List<ParentEntity> result = Iterators.remove(cachedEntry.getData(), TimeoutAble::hasTimeout);
+            if(!result.isEmpty()){
+                for (ParentEntity entity : result) {
+                    DKPerms.getInstance().getStorage().getParentStorage().removeParentReference(entity.getId());
                 }
+                toRemove = true;
             }
         }
         if(toRemove) callObservers(SyncAction.OBJECT_GROUP_UPDATE);
