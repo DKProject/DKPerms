@@ -23,7 +23,6 @@
         <module>dkperms-api</module>
         <module>dkperms-common</module>
         <module>dkperms-minecraft</module>
-        <module>dkperms-legacy</module>
     </modules>
 
     <distributionManagement>

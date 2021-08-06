@@ -143,14 +143,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>net.pretronic.dkperms</groupId>
-            <artifactId>dkperms-legacy</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
-
         <!-- Dependencies for migrations -->
 
         <dependency>

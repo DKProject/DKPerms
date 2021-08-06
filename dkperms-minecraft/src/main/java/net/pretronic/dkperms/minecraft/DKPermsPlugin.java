@@ -31,7 +31,6 @@ import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.dkperms.minecraft.integration.DKPermsPlaceholders;
 import net.pretronic.dkperms.minecraft.listener.MinecraftServiceListener;
 import net.pretronic.dkperms.minecraft.listener.PlayerListener;
-import net.pretronic.dkperms.minecraft.migration.DKPermsLegacyMigration;
 import net.pretronic.dkperms.minecraft.migration.cloudnet.CloudNetV2CPermsMigration;
 import net.pretronic.dkperms.minecraft.migration.cloudnet.CloudNetV3CPermsMigration;
 import net.pretronic.dkperms.minecraft.migration.luckperms.LuckPermsMigration;
@@ -257,7 +256,6 @@ public class DKPermsPlugin extends MinecraftPlugin {
     }
 
     private void registerMigrations(DKPerms dkPerms){
-        dkPerms.getMigrationAssistant().registerMigration(new DKPermsLegacyMigration());
         dkPerms.getMigrationAssistant().registerMigration(new CloudNetV2CPermsMigration());
         dkPerms.getMigrationAssistant().registerMigration(new CloudNetV3CPermsMigration());
         dkPerms.getMigrationAssistant().registerMigration(new PermissionsExMigration());
