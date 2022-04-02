@@ -101,8 +101,8 @@
 
     <repositories>
         <repository>
-            <id>cloudnet</id>
-            <url>https://cloudnetservice.eu/repositories/</url>
+            <id>cloudnet-releases</id>
+            <url>https://repo.cloudnetservice.eu/repository/releases/</url>
         </repository>
         <repository>
             <id>releases</id>
