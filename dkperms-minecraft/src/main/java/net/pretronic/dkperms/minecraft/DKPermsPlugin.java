@@ -31,7 +31,6 @@ import net.pretronic.dkperms.minecraft.config.DKPermsConfig;
 import net.pretronic.dkperms.minecraft.integration.DKPermsPlaceholders;
 import net.pretronic.dkperms.minecraft.listener.MinecraftServiceListener;
 import net.pretronic.dkperms.minecraft.listener.PlayerListener;
-import net.pretronic.dkperms.minecraft.migration.DKPermsLegacyMigration;
 import net.pretronic.dkperms.minecraft.migration.cloudnet.CloudNetV2CPermsMigration;
 import net.pretronic.dkperms.minecraft.migration.cloudnet.CloudNetV3CPermsMigration;
 import net.pretronic.dkperms.minecraft.migration.luckperms.LuckPermsMigration;
@@ -69,7 +68,6 @@ public class DKPermsPlugin extends MinecraftPlugin {
 
     public static String RESOURCE_ID ="19303be6-0b2d-11eb-9f43-0242ac180002";
     public static String PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnnSPzyd1FIBtozSjgibJ4ne7uKuJgK/3FN3yQAWGfnlahInKDUdY+eg0aaQGMsc8onJMiVFpsAfIImhdhnRFPwMXQXHTOYKhsYbAz8fNhcZP9O+FFgpBMyLHUMq6deD3l1skp2h9vYPCHG5D04VHiL/v8a20RProUxfxbW4ym4ZBspUM/wEKiWy37P4mavNZtfzpKg+pslINjiQZEcrD+UMXGP0kDQLJ6r8NPRwZiTNWNsQ1JeXaGVd2YaOcd0IR7gwA5DEzjBi+1DlHV8d8cJ7m19k12NY7hxSwRGKPRRiMW5GhWBXI87lRnY4cAWdMKE4X/lAVa0PPltUxf6o0RQIDAQAB";
-
 
     @Lifecycle(state = LifecycleState.LOAD)
     public void onLoad(LifecycleState state){
@@ -258,7 +256,6 @@ public class DKPermsPlugin extends MinecraftPlugin {
     }
 
     private void registerMigrations(DKPerms dkPerms){
-        dkPerms.getMigrationAssistant().registerMigration(new DKPermsLegacyMigration());
         dkPerms.getMigrationAssistant().registerMigration(new CloudNetV2CPermsMigration());
         dkPerms.getMigrationAssistant().registerMigration(new CloudNetV3CPermsMigration());
         dkPerms.getMigrationAssistant().registerMigration(new PermissionsExMigration());

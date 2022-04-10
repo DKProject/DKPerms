@@ -21,11 +21,10 @@ import net.pretronic.libraries.command.sender.CommandSender;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
-import org.mcnative.runtime.api.McNative;
-import org.mcnative.runtime.api.player.ConnectedMinecraftPlayer;
 
 import java.util.Arrays;
 import java.util.Collection;
+
 
 public class TrackMainCommand extends MainObjectCommand<PermissionObjectTrack> implements ObjectNotFindable, DefinedNotFindable<PermissionObjectTrack>, ObjectCompletable {
 
@@ -44,6 +43,9 @@ public class TrackMainCommand extends MainObjectCommand<PermissionObjectTrack> i
 
         listCommand = new TrackListCommand(owner);
         createCommand = new TrackCreateCommand(owner);
+
+        registerCommand(listCommand);
+        registerCommand(createCommand);
     }
 
     @Override
