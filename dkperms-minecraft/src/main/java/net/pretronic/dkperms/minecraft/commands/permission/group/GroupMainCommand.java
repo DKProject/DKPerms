@@ -31,8 +31,9 @@ import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.stream.Collectors;
 
 public class GroupMainCommand extends MainObjectCommand<PermissionObject> implements ObjectNotFindable, DefinedNotFindable<PermissionObject>, ObjectCompletable {
 
@@ -55,6 +56,7 @@ public class GroupMainCommand extends MainObjectCommand<PermissionObject> implem
         this.listCommand = new ListCommand(owner);
         this.createCommand = new CreateCommand(owner);
 
+        registerCommand(listCommand);
         registerCommand(createCommand);
     }
 
@@ -93,7 +95,10 @@ public class GroupMainCommand extends MainObjectCommand<PermissionObject> implem
     @Override
     public Collection<String> complete(CommandSender commandSender, String input) {
         return Iterators.map(DKPerms.getInstance().getObjectManager().getObjects(PermissionObjectType.GROUP, DKPermsConfig.OBJECT_GROUP_SCOPE)
-                ,PermissionObject::getName
-                ,object -> object.getName().toLowerCase().startsWith(input.toLowerCase()));
+                , PermissionObject::getName
+                ,object -> object.getName().toLowerCase().startsWith(input.toLowerCase()))
+                .stream()
+                .sorted()
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 }

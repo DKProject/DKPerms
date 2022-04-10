@@ -474,7 +474,7 @@ public class DefaultPermissionObject extends AbstractObservable<PermissionObject
     @Override
     public PermissionEntity setPermission(PermissionObject executor, PermissionScope scope, String permission,PermissionAction action, long timeout) {
         Validate.notNull(scope,permission,action);
-        if(getPermission(scope,permission) != null) throw new IllegalArgumentException("This permission is already set.");
+        if(getPermission(scope,permission) != null) throw new IllegalArgumentException(" This permission is already set.");
         if(!scope.isSaved()) scope.insert();
         int id = DKPerms.getInstance().getStorage().getPermissionStorage().addPermission(this.id,scope.getId(),permission,action,timeout);
         PermissionEntity entity = new DefaultPermissionEntity(this,id,permission,action,scope,timeout);
