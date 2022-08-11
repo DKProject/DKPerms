@@ -66,9 +66,6 @@ import java.util.function.Predicate;
 
 public class DKPermsPlugin extends MinecraftPlugin {
 
-    public static String RESOURCE_ID ="19303be6-0b2d-11eb-9f43-0242ac180002";
-    public static String PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnnSPzyd1FIBtozSjgibJ4ne7uKuJgK/3FN3yQAWGfnlahInKDUdY+eg0aaQGMsc8onJMiVFpsAfIImhdhnRFPwMXQXHTOYKhsYbAz8fNhcZP9O+FFgpBMyLHUMq6deD3l1skp2h9vYPCHG5D04VHiL/v8a20RProUxfxbW4ym4ZBspUM/wEKiWy37P4mavNZtfzpKg+pslINjiQZEcrD+UMXGP0kDQLJ6r8NPRwZiTNWNsQ1JeXaGVd2YaOcd0IR7gwA5DEzjBi+1DlHV8d8cJ7m19k12NY7hxSwRGKPRRiMW5GhWBXI87lRnY4cAWdMKE4X/lAVa0PPltUxf6o0RQIDAQAB";
-
     @Lifecycle(state = LifecycleState.LOAD)
     public void onLoad(LifecycleState state){
         Configuration config = getConfiguration();
@@ -77,18 +74,6 @@ public class DKPermsPlugin extends MinecraftPlugin {
 
     private void internalBootstrap(Configuration config){
         getLogger().info("DKPerms is starting, please wait..");
-
-        try{
-            McNativeLicenseIntegration.newContext(this,RESOURCE_ID,PUBLIC_KEY).verifyOrCheckout();
-        }catch (LicenseNotValidException | CloudNotCheckoutLicenseException e){
-            getLogger().error("--------------------------------");
-            getLogger().error("-> Invalid license");
-            getLogger().error("-> Error: "+e.getMessage());
-            getLogger().error("--------------------------------");
-            getLogger().info("DKPerms is shutting down");
-            getLoader().shutdown();
-            return;
-        }
 
         copyLegacyConfig();
 
