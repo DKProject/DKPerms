@@ -66,6 +66,7 @@
         <dependency.luckperms>5.0</dependency.luckperms>
 
 
+
         <dependency.hikaricp>3.4.1</dependency.hikaricp>
         <dependency.mariadb.driver>2.4.1</dependency.mariadb.driver>
 
